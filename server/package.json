@@ -1,1 +1,20 @@
-{}
+{
+  "name": "memory-card-server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "migrate": "node-pg-migrate"
+  },
+  "devDependencies": {
+    "node-pg-migrate": "^9.0.0"
+  }
+}
