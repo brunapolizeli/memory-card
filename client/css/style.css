@@ -64,6 +64,10 @@ h1 {
   padding-left: 0;
 }
 
+.currently-playing::-webkit-scrollbar {
+  display: none;
+}
+
 .game-info {
   margin-top: 0;
   scroll-snap-align: center;
