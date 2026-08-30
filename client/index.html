@@ -1,9 +1,40 @@
-<html>
-    <head>
-        <title>My Learning Journal</title>
-        <link rel="stylesheet" href="css/style.css">
-    </head>
-    <body>
-        <h1>index.html</h1>
-    </body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Memory Card: Game Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="content">
+      <header>
+        <h1>Memory Card</h1>
+        <nav>
+          <input type="checkbox" id="menu-toggle" />
+          <label for="menu-toggle" class="hamburger">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line"></span>
+          </label>
+          <ul class="menu">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">My Library</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main>
+        <section class="hero">
+          <h2>Currently Playing</h2>
+          <ul class="currently-playing"></ul>
+          <div class="dots-container"></div>
+        </section>
+        <section class="stats"></section>
+        <section class="my-library"></section>
+        <section class="add-game"></section>
+      </main>
+      <footer>Games data via <a href="https://rawg.io">RAWG API.</a></footer>
+    </div>
+    <script type="module" src="js/render/home.js"></script>
+  </body>
 </html>

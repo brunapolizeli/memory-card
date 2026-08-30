@@ -1,5 +1,148 @@
-html, 
+html,
 body {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f8fc;
+}
+
+.content {
+  padding: 0 10vw;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+#menu-toggle {
+  display: none;
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  width: 30px;
+  height: 22px;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.hamburger .line {
+  width: 100%;
+  height: 3px;
+  background-color: #4a90d9;
+  border-radius: 2px;
+}
+
+.menu {
+  position: absolute;
+  display: none;
+  list-style: none;
+  padding: 0;
+  white-space: nowrap;
+  right: 1%;
+}
+
+#menu-toggle:checked ~ .menu {
+  display: block;
+  background-color:;
+}
+
+h1 {
+  color: #4a90d9;
+  margin-bottom: 0;
+}
+
+.currently-playing {
+  margin-top: 0;
+  overflow-x: scroll;
+  scroll-snap-type: mandatory;
+  display: flex;
+  white-space: nowrap;
+  padding-left: 0;
+}
+
+.game-info {
+  margin-top: 0;
+  scroll-snap-align: center;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  margin-right: 20vw;
+  position: relative;
+}
+
+.game-cover {
+  min-width: 100px;
+  max-width: 300px;
+  opacity: 0.5;
+}
+
+.game-title {
+  position: absolute;
+  top: 30%;
+  background-color: #0ea5c4;
+  color: #fafafa;
+  padding: 1vh 4vw;
+  border-radius: 20%;
+}
+
+.game-details {
+  height: 50%;
+  position: absolute;
+  top: 50%;
+  padding-left: 5vw;
+}
+
+.game-details-one {
+  top: 53%;
+}
+
+.game-details-two {
+  top: 70%;
+}
+
+.game-details-one,
+.game-details-two {
+  display: flex;
+  gap: 2vw;
+  position: absolute;
+}
+
+.game-details-one p,
+.game-details-two p {
+  background-color: #b8e3f0;
+  padding: 1vh 4vw;
+  border-radius: 40%;
+}
+
+.games-list-dot {
+  background-color: #b8e3f0;
+  border-radius: 50%;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+}
+
+.games-list-dot.active {
+  background-color: #4a90d9;
+}
+
+.dots-container {
+  margin-top: 25px;
+  display: flex;
+  gap: 30px;
+  position: absolute;
+  left: 28%;
+}
+
+.hero {
+  position: relative;
+}
+
+footer {
+  margin-top: 100px;
+  position: sticky;
 }
