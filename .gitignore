@@ -18,5 +18,5 @@ Thumbs.db
 client/design/
 
 # mock data
-client/assets/
+client/assets/fake-games/
 client/js/fake-games.js
