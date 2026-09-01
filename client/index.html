@@ -7,25 +7,7 @@
   </head>
   <body>
     <div class="home-content">
-      <header>
-        <h1>Memory Card</h1>
-        <div class="header-components">
-          <button type="button" class="login-btn">Login</button>
-          <nav>
-            <input type="checkbox" id="menu-toggle" />
-            <label for="menu-toggle" class="hamburger">
-              <span class="line"></span>
-              <span class="line"></span>
-              <span class="line"></span>
-            </label>
-            <ul class="menu">
-              <li><a href="#">Home</a></li>
-              <li><a href="#">Profile</a></li>
-              <li><a href="#">My Library</a></li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+      <div id="header-placeholder"></div>
       <main>
         <section class="hero">
           <h2>Currently Playing</h2>
@@ -36,7 +18,7 @@
         <section class="my-library"></section>
         <section class="add-game"></section>
       </main>
-      <footer>Games data via <a href="https://rawg.io">RAWG API.</a></footer>
+      <div id="footer-placeholder"></div>
     </div>
     <div class="modal-overlay">
       <button type="button" class="close-auth-btn">x</button>
@@ -76,6 +58,12 @@
         </form>
       </section>
     </div>
+    <script type="module">
+      import { renderHeader, renderFooter } from "./js/shared/layout.js";
+
+      document.querySelector("#header-placeholder").innerHTML = renderHeader();
+      document.querySelector("#footer-placeholder").innerHTML = renderFooter();
+    </script>
     <script type="module" src="js/render/home.js"></script>
   </body>
 </html>
