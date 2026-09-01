@@ -6,22 +6,25 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <div class="content">
+    <div class="home-content">
       <header>
         <h1>Memory Card</h1>
-        <nav>
-          <input type="checkbox" id="menu-toggle" />
-          <label for="menu-toggle" class="hamburger">
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
-          </label>
-          <ul class="menu">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#">My Library</a></li>
-          </ul>
-        </nav>
+        <div class="header-components">
+          <button type="button" class="login-btn">Login</button>
+          <nav>
+            <input type="checkbox" id="menu-toggle" />
+            <label for="menu-toggle" class="hamburger">
+              <span class="line"></span>
+              <span class="line"></span>
+              <span class="line"></span>
+            </label>
+            <ul class="menu">
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Profile</a></li>
+              <li><a href="#">My Library</a></li>
+            </ul>
+          </nav>
+        </div>
       </header>
       <main>
         <section class="hero">
@@ -34,6 +37,43 @@
         <section class="add-game"></section>
       </main>
       <footer>Games data via <a href="https://rawg.io">RAWG API.</a></footer>
+    </div>
+    <div class="modal-overlay">
+      <button type="button" class="close-auth-btn">x</button>
+      <h1>Welcome Back!</h1>
+      <section class="auth-modal">
+        <form class="login-form">
+          <label for="login-email">Email</label>
+          <input type="text" name="login-email" />
+          <label for="login-password">Password</label>
+          <input type="password" name="login-password" />
+          <p class="error-message login-error" hidden></p>
+          <button class="login-btn">Login</button>
+          <p>
+            Don't have an account?
+            <button type="button" class="toggle-btn" data-target="signup">
+              Go to signup
+            </button>
+          </p>
+        </form>
+        <form class="signup-form" hidden>
+          <label for="signup-username">Username</label>
+          <input type="text" name="signup-username" />
+          <p class="error-message username-error" hidden></p>
+          <label for="signup-email">Email</label>
+          <input type="text" name="signup-email" />
+          <p class="error-message email-error" hidden></p>
+          <label for="signup-password">Password</label>
+          <input type="password" name="signup-password" />
+          <button class="signup-btn">Sign Up</button>
+          <p>
+            Already have an account?
+            <button type="button" class="toggle-btn" data-target="login">
+              Go to login
+            </button>
+          </p>
+        </form>
+      </section>
     </div>
     <script type="module" src="js/render/home.js"></script>
   </body>

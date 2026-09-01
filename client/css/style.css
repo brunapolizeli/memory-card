@@ -3,9 +3,10 @@ body {
   margin: 0;
   padding: 0;
   background-color: #f0f8fc;
+  position: relative;
 }
 
-.content {
+.home-content {
   padding: 0 10vw;
 }
 
@@ -149,4 +150,69 @@ h1 {
 footer {
   margin-top: 100px;
   position: sticky;
+}
+
+.login-form:not([hidden]),
+.signup-form:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  width: 40vw;
+}
+
+.modal-overlay {
+  display: none;
+}
+
+.auth-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(232, 241, 251);
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  top: 10%;
+  padding: 10vh 2vw;
+}
+
+.modal-overlay.visible {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  inset: 0;
+  background-color: white;
+  width: 100vw;
+  height: 100vh;
+}
+
+.modal-overlay h1 {
+  color: black;
+  top: 0;
+  z-index: 10;
+  position: absolute;
+  top: 3%;
+  left: 4%;
+  margin-top: 0;
+}
+
+.modal-overlay .close-auth-btn {
+  color: black;
+  top: 0;
+  z-index: 30;
+  position: absolute;
+  top: 3%;
+  right: 4%;
+}
+
+.header-components {
+  display: flex;
+  gap: 2vw;
+  padding-top: 2vh;
+}
+
+.login-btn,
+.signup-btn {
+  margin-top: 2vh;
 }
