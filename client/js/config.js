@@ -4,4 +4,4 @@ const isLocal =
 
 export const API_BASE_URL = isLocal
   ? "http://localhost:3000"
-  : "https://memory-card-server.vercel.app";
+  : "https://memcard-log-server.vercel.app";
