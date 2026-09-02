@@ -166,13 +166,16 @@ loginForm.addEventListener("submit", async (event) => {
 
   const result = await login(email, password);
 
-  if (
-    result.data.error.includes("Missing") ||
-    result.data.error.includes("Invalid")
-  ) {
+  if (!result.ok) {
     loginError.textContent = result.data.error;
     loginError.hidden = false;
+    return;
   }
+
+  modalOverlay.classList.remove("visible");
+  authModal.classList.remove("visible");
+  document.querySelector(".home-content").inert = false;
+  renderCurrentlyPlaying();
 });
 
 loginForm.addEventListener("input", () => {
@@ -185,6 +188,7 @@ signupForm.addEventListener("submit", async (event) => {
 
   emailError.hidden = true;
   usernameError.hidden = true;
+  signupError.hidden = true;
 
   const username = signupUsername.value;
   const email = signupEmail.value;
@@ -192,16 +196,24 @@ signupForm.addEventListener("submit", async (event) => {
 
   const result = await signup(username, email, password);
 
-  if (result.data.error.includes("Email")) {
-    emailError.textContent = result.data.error;
-    emailError.hidden = false;
-  } else if (result.data.error.includes("Username")) {
-    usernameError.textContent = result.data.error;
-    usernameError.hidden = false;
-  } else if (result.data.error.includes("Missing")) {
-    signupError.textContent = result.data.error;
-    signupError.hidden = false;
+  if (!result.ok) {
+    if (result.data.error.includes("Email")) {
+      emailError.textContent = result.data.error;
+      emailError.hidden = false;
+    } else if (result.data.error.includes("Username")) {
+      usernameError.textContent = result.data.error;
+      usernameError.hidden = false;
+    } else if (result.data.error.includes("Missing")) {
+      signupError.textContent = result.data.error;
+      signupError.hidden = false;
+    }
+    return;
   }
+
+  modalOverlay.classList.remove("visible");
+  authModal.classList.remove("visible");
+  document.querySelector(".home-content").inert = false;
+  renderCurrentlyPlaying();
 });
 
 signupForm.addEventListener("input", () => {
