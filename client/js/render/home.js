@@ -213,6 +213,8 @@ signupForm.addEventListener("submit", async (event) => {
   modalOverlay.classList.remove("visible");
   authModal.classList.remove("visible");
   document.querySelector(".home-content").inert = false;
+
+  await login(email, password);
   renderCurrentlyPlaying();
 });
 

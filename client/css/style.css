@@ -6,7 +6,8 @@ body {
   position: relative;
 }
 
-.home-content {
+.home-content,
+.library-content {
   padding: 0 10vw;
 }
 
@@ -40,7 +41,6 @@ header {
 .menu {
   position: absolute;
   display: none;
-  list-style: none;
   padding: 0;
   white-space: nowrap;
   right: 1%;
@@ -149,7 +149,8 @@ h1 {
 
 footer {
   margin-top: 100px;
-  position: sticky;
+  position: static;
+  bottom: 0;
 }
 
 .login-form:not([hidden]),
@@ -215,4 +216,71 @@ footer {
 .login-btn,
 .signup-btn {
   margin-top: 2vh;
+}
+
+.library-dropdowns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 2vh;
+  justify-items: center;
+}
+
+.library-filters button {
+  min-width: 6rem;
+}
+
+ul {
+  list-style: none;
+}
+
+.filter-options label {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.search-games-api {
+  margin-bottom: 5vh;
+}
+
+.search-games-api-input {
+  width: 80%;
+}
+
+.search-results-api-overlay {
+  display: none;
+}
+
+.search-results-api-overlay.visible {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  background-color: white;
+}
+
+.search-results-api {
+  padding: 10vh 2vw;
+  background-color: rgb(232, 241, 251);
+}
+
+.game-image-api-search {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.search-results-api li {
+  display: flex;
+  align-items: flex-start;
+  gap: 2vw;
+  margin-bottom: 4vh;
+  border-bottom: 1px solid #0ea5c4;
+  padding-bottom: 2vh;
+}
+
+.search-results-api li h3 {
+  font-size: 1rem;
 }

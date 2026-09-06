@@ -32,3 +32,12 @@ export async function signup(signupUsername, signupEmail, signupPassword) {
   const data = await response.json();
   return { ok: response.ok, data };
 }
+
+export async function searchGames(query, page = 1) {
+  const response = await fetch(
+    `${API_BASE_URL}/games/search?search=${encodeURIComponent(query)}&page=${page}`,
+    { credentials: "include" },
+  );
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
