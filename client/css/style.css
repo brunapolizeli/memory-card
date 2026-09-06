@@ -6,6 +6,12 @@ body {
   position: relative;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .home-content,
 .library-content {
   padding: 0 10vw;
@@ -255,14 +261,17 @@ ul {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: 100vw;
   height: auto;
   background-color: white;
+  margin-left: -10vw;
 }
 
 .search-results-api {
-  padding: 10vh 2vw;
   background-color: rgb(232, 241, 251);
+  width: 80%;
+  padding: 0;
+  margin: 0;
 }
 
 .game-image-api-search {
@@ -279,8 +288,17 @@ ul {
   margin-bottom: 4vh;
   border-bottom: 1px solid #0ea5c4;
   padding-bottom: 2vh;
+  position: relative;
 }
 
 .search-results-api li h3 {
   font-size: 1rem;
+  max-width: 10rem;
+  flex-shrink: 1;
+}
+
+.add-game-api-btn {
+  position: absolute;
+  right: 5%;
+  bottom: 5%;
 }
