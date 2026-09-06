@@ -1,6 +1,6 @@
 # Memory Card
 
-A personal video game tracker built with a Frutiger Aero (2004-2013) aesthetic.
+A personal video game tracker, with a Frutiger Aero (2004-2013) visual identity planned once core functionality is complete.
 
 ---
 
@@ -16,7 +16,7 @@ To preview progress correctly, use your browser's mobile emulation mode (DevTool
 
 Memory Card is a personal video game tracker, built solo, from the ground up, as part of the Scrimba Full Stack Path.
 
-The mobile-first frontend layout is based on Scrimba's own [Learning Journal Blog Figma design](https://www.figma.com/design/hE5klIn1AEQ9XWZWmurs7y/Learning-Journal-Blog?node-id=0-1&t=5IRAjYyGX68SigMk-1), used as a starting reference. From there, the theme was swapped from a learning journal to a game tracker, and the visual identity is being deliberately built as a Frutiger Aero (2004-2013) aesthetic instead of Scrimba's original style. A backend is also being built from scratch on top of the frontend brief Scrimba provides: custom authentication, a normalized PostgreSQL schema, and a REST API, paired with a vanilla JS frontend with no framework.
+The mobile-first frontend layout is based on Scrimba's own [Learning Journal Blog Figma design](https://www.figma.com/design/hE5klIn1AEQ9XWZWmurs7y/Learning-Journal-Blog?node-id=0-1&t=5IRAjYyGX68SigMk-1), used as a starting reference. From there, the theme was swapped from a learning journal to a game tracker, and a Frutiger Aero (2004-2013) visual identity is planned to replace Scrimba's original style once the core functionality is complete. A backend is also being built from scratch on top of the frontend brief Scrimba provides: custom authentication, a normalized PostgreSQL schema, and a REST API, paired with a vanilla JS frontend with no framework.
 
 ---
 
