@@ -3,5 +3,5 @@ const isLocal =
   window.location.hostname === "localhost";
 
 export const API_BASE_URL = isLocal
-  ? "http://localhost:3000"
+  ? "http://127.0.0.1:3000"
   : "https://memcard-log-server.vercel.app";

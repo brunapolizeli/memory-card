@@ -1,4 +1,4 @@
-import { searchGames } from "../api.js";
+import { searchGames, addGameFromSearch } from "../api.js";
 
 const searchGamesApiInput = document.querySelector(".search-games-api-input");
 const searchGamesApiBtn = document.querySelector(".search-games-api-btn");
@@ -9,6 +9,7 @@ const searchResultsApi = document.querySelector(".search-results-api");
 const libraryFilters = document.querySelector(".library-filters");
 let currentPage = 1;
 let lastQuery = "";
+let currentSearchResults = [];
 
 function renderSearchedGames(gamesArray) {
   return gamesArray
@@ -91,10 +92,31 @@ searchGamesApiBtn.addEventListener("click", async (event) => {
     currentPage = 1;
     lastQuery = input;
     const result = await searchGames(input, currentPage);
+    currentSearchResults = result.data.results;
     const renderedList = renderSearchedGames(result.data.results);
     searchResultsApi.innerHTML = renderedList;
     renderPagination(result.data.count);
     searchResultsApiOverlay.classList.add("visible");
     libraryFilters.hidden = true;
+  }
+});
+
+searchResultsApi.addEventListener("click", async (event) => {
+  const addButton = event.target.closest(".add-game-api-btn");
+  if (!addButton) return;
+
+  const clickedId = Number(addButton.dataset.id);
+  const game = currentSearchResults.find((g) => g.id === clickedId);
+
+  const result = await addGameFromSearch(game);
+
+  if (result.ok) {
+    addButton.textContent = "Added!";
+    addButton.disabled = true;
+  } else {
+    addButton.textContent = result.data.error;
+    setTimeout(() => {
+      addButton.textContent = "Add";
+    }, 3000);
   }
 });

@@ -41,3 +41,20 @@ export async function searchGames(query, page = 1) {
   const data = await response.json();
   return { ok: response.ok, data };
 }
+
+export async function addGameFromSearch(game) {
+  const response = await fetch(`${API_BASE_URL}/library/add-from-search`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      external_id: game.id,
+      name: game.name,
+      image_url: game.background_image,
+      tags: game.genres.map((g) => g.name),
+      rawg_rating: game.rating,
+    }),
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
