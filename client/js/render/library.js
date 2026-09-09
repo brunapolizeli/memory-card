@@ -1,4 +1,8 @@
-import { searchGames, addGameFromSearch } from "../api.js";
+import {
+  searchGames,
+  addGameFromSearch,
+  getRecentlyAddedGames,
+} from "../api.js";
 
 const searchGamesApiInput = document.querySelector(".search-games-api-input");
 const searchGamesApiBtn = document.querySelector(".search-games-api-btn");
@@ -7,6 +11,7 @@ const searchResultsApiOverlay = document.querySelector(
 );
 const searchResultsApi = document.querySelector(".search-results-api");
 const libraryFilters = document.querySelector(".library-filters");
+const libraryGrid = document.querySelector(".library-grid");
 let currentPage = 1;
 let lastQuery = "";
 let currentSearchResults = [];
@@ -120,3 +125,55 @@ searchResultsApi.addEventListener("click", async (event) => {
     }, 3000);
   }
 });
+
+async function renderRecentlyAddedGames() {
+  const { ok, data } = await getRecentlyAddedGames();
+
+  if (!ok) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  const games = data;
+
+  if (games.length === 0) {
+    currentlyPlaying.innerHTML = `<p class="no-games-message">No games in progress. Add one for it to show here!</p>`;
+    return;
+  }
+
+  const renderedGamesList = games
+    .map(
+      ({
+        name,
+        image_url,
+        platform,
+        tags,
+        status,
+        hours_played,
+        user_rating,
+      }) => {
+        return `<li class="library-game-info">
+                <img class="library-game-cover" src="${image_url}">
+                <div class="library-game-details">
+                  <h3 class="library-game-title">${name}</h3>
+                  <div class="library-game-details-one">
+                    <p>${platform}</p>
+                    <p>${tags?.[0] ?? ""}
+                  </div>
+                  <div class="library-game-details-two">
+                    <p>${status}</p>
+                  </div>
+                  <div class="library-game-details-three">
+                    <p>${hours_played}</p>
+                    <p>${user_rating ?? "No rating"}</p>
+                  </div>
+                </div>
+              </li>`;
+      },
+    )
+    .join("");
+
+  libraryGrid.innerHTML = renderedGamesList;
+}
+
+renderRecentlyAddedGames();

@@ -14,7 +14,7 @@ body {
 
 .home-content,
 .library-content {
-  padding: 0 10vw;
+  padding: 0 5vw;
 }
 
 header {
@@ -50,6 +50,7 @@ header {
   padding: 0;
   white-space: nowrap;
   right: 1%;
+  z-index: 100;
 }
 
 #menu-toggle:checked ~ .menu {
@@ -75,7 +76,7 @@ h1 {
   display: none;
 }
 
-.game-info {
+.hero-game-info {
   margin-top: 0;
   scroll-snap-align: center;
   flex-shrink: 0;
@@ -85,13 +86,13 @@ h1 {
   position: relative;
 }
 
-.game-cover {
+.hero-game-cover {
   min-width: 100px;
   max-width: 300px;
   opacity: 0.5;
 }
 
-.game-title {
+.hero-game-title {
   position: absolute;
   top: 30%;
   background-color: #0ea5c4;
@@ -100,36 +101,36 @@ h1 {
   border-radius: 20%;
 }
 
-.game-details {
+.hero-game-details {
   height: 50%;
   position: absolute;
   top: 50%;
   padding-left: 5vw;
 }
 
-.game-details-one {
+.hero-game-details-one {
   top: 53%;
 }
 
-.game-details-two {
+.hero-game-details-two {
   top: 70%;
 }
 
-.game-details-one,
-.game-details-two {
+.hero-game-details-one,
+.hero-game-details-two {
   display: flex;
   gap: 2vw;
   position: absolute;
 }
 
-.game-details-one p,
-.game-details-two p {
+.hero-game-details-one p,
+.hero-game-details-two p {
   background-color: #b8e3f0;
   padding: 1vh 4vw;
   border-radius: 40%;
 }
 
-.games-list-dot {
+.hero-games-list-dot {
   background-color: #b8e3f0;
   border-radius: 50%;
   display: inline-block;
@@ -137,11 +138,11 @@ h1 {
   height: 10px;
 }
 
-.games-list-dot.active {
+.hero-games-list-dot.active {
   background-color: #4a90d9;
 }
 
-.dots-container {
+.hero-dots-container {
   margin-top: 25px;
   display: flex;
   gap: 30px;
@@ -301,4 +302,23 @@ ul {
   position: absolute;
   right: 5%;
   bottom: 5%;
+}
+
+.library-game-cover {
+  width: 20vw;
+  height: 20vw;
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-items: center;
+  margin: 10px 0;
+  padding: 0;
+}
+
+.library-game-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }

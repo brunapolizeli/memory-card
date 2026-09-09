@@ -1,7 +1,7 @@
 import { getCurrentlyPlaying, login, signup } from "../api.js";
 
 const currentlyPlaying = document.querySelector(".currently-playing");
-const dotsContainer = document.querySelector(".dots-container");
+const dotsContainer = document.querySelector(".hero-dots-container");
 const loginBtn = document.querySelector(".login-btn");
 const authModal = document.querySelector(".auth-modal");
 const loginForm = document.querySelector(".login-form");
@@ -55,17 +55,17 @@ async function renderCurrentlyPlaying() {
         },
         index,
       ) => {
-        return `<li class="game-info" data-index="${index}">
-                <img class="game-cover" src="${image_url}">
-                <div class="game-details">
-                    <h3 class="game-title">${name}</h3>
-                    <div class="game-details-one">
+        return `<li class="hero-game-info" data-index="${index}">
+                <img class="hero-game-cover" src="${image_url}">
+                <div class="hero-game-details">
+                    <h3 class="hero-game-title">${name}</h3>
+                    <div class="hero-game-details-one">
                         <p>${platform}</p>
                         <p>${tags?.[0] ?? ""}</p>
                     </div>
-                    <div class="game-details-two">
+                    <div class="hero-game-details-two">
                         <p>${hours_played}</p>
-                        <p>${user_rating ?? rawg_rating ?? "No rating"}</p>
+                        <p>${user_rating ?? "No rating"}</p>
                     </div>
                 </div>
             </li>`;
@@ -84,13 +84,13 @@ async function renderCurrentlyPlaying() {
   // one dot per displayed game, plus an extra dot if the "see all" card exists
   const gamesListDots = games_slice
     .map((_, index) => {
-      return `<span class="games-list-dot" data-index="${index}"></span>`;
+      return `<span class="hero-games-list-dot" data-index="${index}"></span>`;
     })
     .join("");
 
   const extraDot =
     games.length > 5
-      ? `<span class="games-list-dot" data-index="5"></span>`
+      ? `<span class="hero-games-list-dot" data-index="5"></span>`
       : "";
 
   dotsContainer.innerHTML = gamesListDots + extraDot;
@@ -101,12 +101,12 @@ async function renderCurrentlyPlaying() {
       if (entry.isIntersecting) {
         const activeIndex = entry.target.dataset.index;
 
-        document.querySelectorAll(".games-list-dot").forEach((dot) => {
+        document.querySelectorAll(".hero-games-list-dot").forEach((dot) => {
           dot.classList.remove("active");
         });
 
         document
-          .querySelector(`.games-list-dot[data-index="${activeIndex}"]`)
+          .querySelector(`.hero-games-list-dot[data-index="${activeIndex}"]`)
           .classList.add("active");
       }
     });

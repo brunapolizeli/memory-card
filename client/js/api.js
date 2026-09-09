@@ -4,7 +4,16 @@ export async function getCurrentlyPlaying() {
   const response = await fetch(`${API_BASE_URL}/library/currently-playing`, {
     credentials: "include",
   });
-  return response.json();
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
+
+export async function getRecentlyAddedGames() {
+  const response = await fetch(`${API_BASE_URL}/library/recently-added-games`, {
+    credentials: "include",
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
 }
 
 export async function login(loginEmail, loginPassword) {

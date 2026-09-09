@@ -11,9 +11,9 @@ export function renderHeader() {
               <span class="line"></span>
             </label>
             <ul class="menu">
-              <li><a href="#">Home</a></li>
+              <li><a href="index.html">Home</a></li>
               <li><a href="#">Profile</a></li>
-              <li><a href="#">My Library</a></li>
+              <li><a href="library.html">Library</a></li>
             </ul>
           </nav>
         </div>
