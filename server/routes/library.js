@@ -60,7 +60,7 @@ router.post("/add-from-search", authenticate, async (req, res) => {
 
 router.get("/recently-added-games", authenticate, async (req, res) => {
   const { page } = req.query;
-  const pageSize = 8;
+  const pageSize = 4;
   const offset = (page - 1) * pageSize;
 
   try {

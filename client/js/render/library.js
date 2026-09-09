@@ -149,15 +149,15 @@ function renderRecentlyAddedGames(games) {
                 <div class="library-game-details">
                   <h3 class="library-game-title">${name}</h3>
                   <div class="library-game-details-one">
-                    <p>${platform}</p>
-                    <p>${tags?.[0] ?? ""}</p>
+                    <p>${platform ?? "—"}</p>
+                    <p>${tags?.[0] ?? "—"}</p>
                   </div>
                   <div class="library-game-details-two">
-                    <p>${status}</p>
+                    <p>${status ?? "—"}</p>
                   </div>
                   <div class="library-game-details-three">
-                    <p>${hours_played}</p>
-                    <p>${user_rating ?? "No rating"}</p>
+                    <p><img class="clock-icon" src="assets/icons/clock-icon.png">${hours_played ?? "—"}</p>
+                    <p><img class="star-icon" src="assets/icons/star-icon.png">${user_rating ?? "—"}</p>
                   </div>
                 </div>
               </li>`;
@@ -167,7 +167,7 @@ function renderRecentlyAddedGames(games) {
 }
 
 async function renderLibraryPagination(count) {
-  const totalPages = Math.ceil(count / 8);
+  const totalPages = Math.ceil(count / 4);
   const pageNumbers = getPageNumbers(currentLibraryPage, totalPages);
 
   const paginationHTML = pageNumbers

@@ -225,6 +225,12 @@ footer {
   margin-top: 2vh;
 }
 
+.library-filters {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .library-dropdowns {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -305,26 +311,63 @@ ul {
 }
 
 .library-game-cover {
-  width: 20vw;
-  height: 20vw;
+  width: 30vw;
+  height: 30vw;
 }
 
 .library-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  justify-items: center;
-  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
   padding: 0;
 }
 
 .library-game-info {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 8.125rem 1fr;
+  align-items: start;
+  margin-bottom: 8vh;
+  position: relative;
+  background-color: whitesmoke;
+}
+
+.library-game-details {
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .library-grid-overlay {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.library-game-title {
+  min-height: 2vh;
+  font-size: 1rem;
+}
+
+.star-icon,
+.clock-icon {
+  width: 7vw;
+  height: 7vw;
+}
+
+.library-game-details-one,
+.library-game-details-two,
+.library-game-details-three {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.library-game-details-one p,
+.library-game-details-two p,
+.library-game-details-three p {
+  display: flex;
+  align-items: center;
+  margin: 0 0 2vh;
+}
+
+.library-game-details {
 }
