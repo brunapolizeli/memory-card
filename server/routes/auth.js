@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { authenticate } from "../middleware/authenticate.js";
 
 const router = express.Router();
+const isProduction = process.env.NODE_ENV === "production";
 const saltRounds = 10;
 
 router.get("/me", authenticate, (req, res) => {
@@ -43,6 +44,8 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
+  console.log("NODE_ENV:", process.env.NODE_ENV);
+
   if (!email || !password) {
     return res.status(400).json({ error: "Missing required fields" });
   }
@@ -71,8 +74,8 @@ router.post("/login", async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
