@@ -101,4 +101,4 @@ Game data and cover images provided by the [RAWG API](https://rawg.io).
 
 ## License
 
-This project is licensed under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). Free to use, share, and adapt for non-commercial purposes, with attribution.
+This project is licensed under [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/). Free to view and evaluate, but no modification, redistribution, or commercial use permitted.
