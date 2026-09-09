@@ -6,7 +6,7 @@ import { authenticate } from "../middleware/authenticate.js";
 
 const router = express.Router();
 const isProduction = process.env.NODE_ENV === "production";
-const saltRounds = 10;
+const saltRounds = 12;
 
 router.get("/me", authenticate, (req, res) => {
   res.json({ userId: req.userId });
