@@ -59,16 +59,30 @@ router.post("/add-from-search", authenticate, async (req, res) => {
 });
 
 router.get("/recently-added-games", authenticate, async (req, res) => {
+  const { page } = req.query;
+  const pageSize = 8;
+  const offset = (page - 1) * pageSize;
+
   try {
     const result = await pool.query(
       `SELECT games.name, games.image_url, games.tags, user_games.status, user_games.platform, user_games.hours_played, user_games.user_rating, games.rawg_rating
       FROM user_games
       JOIN games ON user_games.game_id = games.id
       WHERE user_games.user_id = $1
-      ORDER BY user_games.created_at`,
+      ORDER BY user_games.created_at
+      LIMIT $2 OFFSET $3`,
+      [req.userId, pageSize, offset],
+    );
+
+    const countResult = await pool.query(
+      `SELECT COUNT(*) FROM user_games WHERE user_id = $1`,
       [req.userId],
     );
-    res.json(result.rows);
+
+    res.json({
+      results: result.rows,
+      count: Number(countResult.rows[0].count),
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch library" });

@@ -322,3 +322,9 @@ ul {
   flex-direction: row;
   justify-content: space-around;
 }
+
+.library-grid-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

@@ -8,10 +8,13 @@ export async function getCurrentlyPlaying() {
   return { ok: response.ok, data };
 }
 
-export async function getRecentlyAddedGames() {
-  const response = await fetch(`${API_BASE_URL}/library/recently-added-games`, {
-    credentials: "include",
-  });
+export async function getRecentlyAddedGames(page = 1) {
+  const response = await fetch(
+    `${API_BASE_URL}/library/recently-added-games?page=${page}`,
+    {
+      credentials: "include",
+    },
+  );
   const data = await response.json();
   return { ok: response.ok, data };
 }

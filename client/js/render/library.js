@@ -12,7 +12,8 @@ const searchResultsApiOverlay = document.querySelector(
 const searchResultsApi = document.querySelector(".search-results-api");
 const libraryFilters = document.querySelector(".library-filters");
 const libraryGrid = document.querySelector(".library-grid");
-let currentPage = 1;
+let currentApiPage = 1;
+let currentLibraryPage = 1;
 let lastQuery = "";
 let currentSearchResults = [];
 
@@ -55,52 +56,52 @@ function getPageNumbers(currentPage, totalPages) {
   return pages;
 }
 
-function renderPagination(count) {
+function renderApiPagination(count) {
   const totalPages = Math.ceil(count / 10);
-  const pageNumbers = getPageNumbers(currentPage, totalPages);
+  const pageNumbers = getPageNumbers(currentApiPage, totalPages);
 
   const paginationHTML = pageNumbers
     .map((page) => {
       if (page === "...") {
         return `<span>...</span>`;
       }
-      const activeClass = page === currentPage ? "active" : "";
-      return `<button class="page-btn ${activeClass}" data-page="${page}">${page}</button>`;
+      const activeClass = page === currentApiPage ? "active" : "";
+      return `<button class="api-page-btn ${activeClass}" data-api-page="${page}">${page}</button>`;
     })
     .join("");
 
-  const paginationContainer = document.querySelector(".pagination");
+  const paginationContainer = document.querySelector(".api-pagination");
   paginationContainer.innerHTML = paginationHTML;
 
   paginationContainer.addEventListener("click", async (event) => {
-    const clickedButton = event.target.closest(".page-btn");
+    const clickedButton = event.target.closest(".api-page-btn");
     if (!clickedButton) return;
 
-    currentPage = Number(clickedButton.dataset.page);
-    const result = await searchGames(lastQuery, currentPage);
+    currentApiPage = Number(clickedButton.dataset.apiPage);
+    const result = await searchGames(lastQuery, currentApiPage);
     const renderedList = renderSearchedGames(result.data.results);
     searchResultsApi.innerHTML = renderedList;
-    renderPagination(result.data.count);
+    renderApiPagination(result.data.count);
   });
 }
 
-async function performSearch(query) {
+async function performApiSearch(query) {
   lastQuery = query;
-  const result = await searchGames(query, currentPage);
+  const result = await searchGames(query, currentApiPage);
   renderSearchedGames(result.data.results);
-  renderPagination(result.data.count);
+  renderApiPagination(result.data.count);
 }
 
 searchGamesApiBtn.addEventListener("click", async (event) => {
   const input = searchGamesApiInput.value;
   if (input) {
-    currentPage = 1;
+    currentApiPage = 1;
     lastQuery = input;
-    const result = await searchGames(input, currentPage);
+    const result = await searchGames(input, currentApiPage);
     currentSearchResults = result.data.results;
     const renderedList = renderSearchedGames(result.data.results);
     searchResultsApi.innerHTML = renderedList;
-    renderPagination(result.data.count);
+    renderApiPagination(result.data.count);
     searchResultsApiOverlay.classList.add("visible");
     libraryFilters.hidden = true;
   }
@@ -126,22 +127,13 @@ searchResultsApi.addEventListener("click", async (event) => {
   }
 });
 
-async function renderRecentlyAddedGames() {
-  const { ok, data } = await getRecentlyAddedGames();
-
-  if (!ok) {
-    window.location.href = "index.html";
-    return;
-  }
-
-  const games = data;
-
+function renderRecentlyAddedGames(games) {
   if (games.length === 0) {
-    currentlyPlaying.innerHTML = `<p class="no-games-message">No games in progress. Add one for it to show here!</p>`;
-    return;
+    libraryGrid.innerHTML = `<p class="no-games-message">No games in your library yet. Add one to get started!</p>`;
+    return "";
   }
 
-  const renderedGamesList = games
+  return games
     .map(
       ({
         name,
@@ -158,7 +150,7 @@ async function renderRecentlyAddedGames() {
                   <h3 class="library-game-title">${name}</h3>
                   <div class="library-game-details-one">
                     <p>${platform}</p>
-                    <p>${tags?.[0] ?? ""}
+                    <p>${tags?.[0] ?? ""}</p>
                   </div>
                   <div class="library-game-details-two">
                     <p>${status}</p>
@@ -172,8 +164,42 @@ async function renderRecentlyAddedGames() {
       },
     )
     .join("");
-
-  libraryGrid.innerHTML = renderedGamesList;
 }
 
-renderRecentlyAddedGames();
+async function renderLibraryPagination(count) {
+  const totalPages = Math.ceil(count / 8);
+  const pageNumbers = getPageNumbers(currentLibraryPage, totalPages);
+
+  const paginationHTML = pageNumbers
+    .map((page) => {
+      if (page === "...") {
+        return `<span>...</span>`;
+      }
+      const activeClass = page === currentLibraryPage ? "active" : "";
+      return `<button class="library-page-btn ${activeClass}" data-library-page="${page}">${page}</button>`;
+    })
+    .join("");
+
+  const paginationContainer = document.querySelector(".library-pagination");
+  paginationContainer.innerHTML = paginationHTML;
+
+  paginationContainer.addEventListener("click", async (event) => {
+    const clickedButton = event.target.closest(".library-page-btn");
+    if (!clickedButton) return;
+
+    currentLibraryPage = Number(clickedButton.dataset.libraryPage);
+    const result = await getRecentlyAddedGames(currentLibraryPage);
+    const renderedList = renderRecentlyAddedGames(result.data.results);
+    libraryGrid.innerHTML = renderedList;
+    renderLibraryPagination(result.data.count);
+  });
+}
+
+async function loadLibrary() {
+  const result = await getRecentlyAddedGames(currentLibraryPage);
+  const renderedList = renderRecentlyAddedGames(result.data.results);
+  libraryGrid.innerHTML = renderedList;
+  renderLibraryPagination(result.data.count);
+}
+
+loadLibrary();
