@@ -44,8 +44,6 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  console.log("NODE_ENV:", process.env.NODE_ENV);
-
   if (!email || !password) {
     return res.status(400).json({ error: "Missing required fields" });
   }
