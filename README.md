@@ -2,13 +2,15 @@
 
 A personal video game tracker, with a Frutiger Aero (2004-2013) visual identity planned once core functionality is complete.
 
+[**Live Demo — memcard-log.vercel.app**](https://memcard-log.vercel.app/)
+
 ---
 
 ## ⚠️ Current Status
 
 This project is being built mobile-first and is still under **active development**; not all features are implemented yet, and only a handful are described below. New commits are added regularly, so check back to see progress. Desktop breakpoints will be added only after the full mobile experience is complete.
 
-To preview progress correctly, use your browser's mobile emulation mode (DevTools → Toggle device toolbar) or resize the window to a narrow width (~375-425px).
+To preview the project properly in its current stage, open it on a mobile device, use your browser's mobile emulation mode (DevTools → Toggle device toolbar) or resize the window to a narrow width (~375-425px).
 
 ---
 
@@ -32,6 +34,8 @@ The mobile-first frontend layout is based on Scrimba's own [Learning Journal Blo
   - Capped at 5 games, with a linked card to the full library when there are more
   - Distinct states for logged-out, empty library, and populated library
 - Game search powered by the RAWG API, proxied through the backend to keep the API key private
+- **Add Game** flow, allowing users to search RAWG and add games to their library
+  - Reuses an existing entry in the shared `games` catalog when the game is already stored, avoiding duplicate game data
 - Normalized database schema: a shared `games` catalog table plus a `user_games` join table, avoiding duplicate game data across users
 
 ---
@@ -39,12 +43,9 @@ The mobile-first frontend layout is based on Scrimba's own [Learning Journal Blo
 ## Planned Features
 
 - **My Library page**: full grid of the user's games, with multi-select filters (status, platform, genre/tag, completion, playtime, rating) and sorting options
-- **Add Game flow**: search RAWG and add a game to the library, reusing an existing catalog entry when one already exists instead of duplicating it
 - **Game detail page**: status, platform, hours played, rating, a water-drop difficulty scale, completion and platinum tracking (each with optional date and notes)
 - **Profile page**: stats dashboard, including a donut chart of hours by platform
 - Desktop breakpoints, added once the full mobile experience is complete
-- **V1**: Steam API integration for automatic library and playtime import
-- **V2**: social features (public profiles, following, comments)
 
 ---
 
@@ -54,15 +55,20 @@ The mobile-first frontend layout is based on Scrimba's own [Learning Journal Blo
 memory-card/
 ├── client/
 │   ├── assets/
+│   │   ├── icons/
+│   │   ├── default-cover.png
+│   │   └── logged-out.png
 │   ├── css/
 │   │   └── style.css
 │   ├── js/
+│   │   ├── render/
+│   │   │   ├── home.js
+│   │   │   └── library.js
 │   │   ├── shared/
 │   │   │   └── layout.js
-│   │   ├── render/
-│   │   │   └── home.js
 │   │   ├── api.js
-│   │   └── config.js
+│   │   ├── config.js
+│   │   └── main.js
 │   ├── index.html
 │   └── library.html
 ├── server/
@@ -75,9 +81,13 @@ memory-card/
 │   │   ├── auth.js
 │   │   ├── games.js
 │   │   └── library.js
-│   ├── server.js
-│   └── package.json
-└── README.md
+│   ├── .env.example
+│   ├── package.json
+│   └── server.js
+├── .gitignore
+├── LICENSE
+├── README.md
+└── README.pt-BR.md
 ```
 
 ---
@@ -96,6 +106,8 @@ memory-card/
 ## Credits
 
 Game data and cover images provided by the [RAWG API](https://rawg.io).
+
+Icons used throughout the project's interface were generated with ChatGPT.
 
 ---
 
