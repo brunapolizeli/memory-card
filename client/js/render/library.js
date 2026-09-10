@@ -2,6 +2,7 @@ import {
   searchGames,
   addGameFromSearch,
   getRecentlyAddedGames,
+  removeGameFromLibrary,
 } from "../api.js";
 
 const searchGamesApiInput = document.querySelector(".search-games-api-input");
@@ -136,6 +137,7 @@ function renderRecentlyAddedGames(games) {
   return games
     .map(
       ({
+        user_games_id,
         name,
         image_url,
         platform,
@@ -144,7 +146,12 @@ function renderRecentlyAddedGames(games) {
         hours_played,
         user_rating,
       }) => {
-        return `<li class="library-game-info">
+        return `<li class="library-game-info" data-user-game-id="${user_games_id}">
+                <button class="library-game-options-btn" type="button">˙˙˙</button>
+                <ul class="library-game-options-menu" hidden>
+                  <li><button class="library-edit-game-btn">Edit</button></li>
+                  <li><button class="library-remove-game-btn">Remove</button></li>
+                </ul>
                 <img class="library-game-cover" src="${image_url}">
                 <div class="library-game-details">
                   <h3 class="library-game-title">${name}</h3>
@@ -203,3 +210,25 @@ async function loadLibrary() {
 }
 
 loadLibrary();
+
+libraryGrid.addEventListener("click", (event) => {
+  const button = event.target.closest(".library-game-options-btn");
+  if (!button) return;
+
+  const card = button.closest(".library-game-info");
+  const menu = card.querySelector(".library-game-options-menu");
+  menu.hidden = !menu.hidden;
+});
+
+libraryGrid.addEventListener("click", async (event) => {
+  const button = event.target.closest(".library-remove-game-btn");
+  if (!button) return;
+
+  const card = button.closest(".library-game-info");
+  const id = card.dataset.userGameId;
+  const result = await removeGameFromLibrary(id);
+
+  if (result.ok) {
+    loadLibrary();
+  }
+});

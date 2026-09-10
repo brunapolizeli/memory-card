@@ -238,7 +238,8 @@ footer {
   justify-items: center;
 }
 
-.library-filters button {
+.filter-dropdown button,
+.sort-toggle-btns button {
   min-width: 6rem;
 }
 
@@ -344,14 +345,16 @@ ul {
 }
 
 .library-game-title {
+  margin-top: 3vh;
+  margin-right: 2vw;
   min-height: 2vh;
   font-size: 1rem;
 }
 
 .star-icon,
 .clock-icon {
-  width: 7vw;
-  height: 7vw;
+  width: 5vw;
+  height: 5vw;
 }
 
 .library-game-details-one,
@@ -366,8 +369,28 @@ ul {
 .library-game-details-three p {
   display: flex;
   align-items: center;
-  margin: 0 0 2vh;
+  margin: 0 0 2vh 0;
+  padding: 0;
+  gap: 2vw;
 }
 
-.library-game-details {
+.library-game-options-btn {
+  position: absolute;
+  right: 0;
+  width: 2rem;
+  font-size: 1.5rem;
+  border: none;
+  background-color: transparent;
+}
+
+.library-game-options-menu {
+  position: absolute;
+  top: 10%;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(184, 227, 240, 0.5);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(26, 43, 60, 0.15);
+  padding: 2vh 5vw;
 }

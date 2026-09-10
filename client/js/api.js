@@ -70,3 +70,14 @@ export async function addGameFromSearch(game) {
   const data = await response.json();
   return { ok: response.ok, data };
 }
+
+export async function removeGameFromLibrary(id) {
+  const response = await fetch(`${API_BASE_URL}/library/remove-game`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ id }),
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}

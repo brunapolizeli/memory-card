@@ -65,7 +65,7 @@ router.get("/recently-added-games", authenticate, async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT games.name, games.image_url, games.tags, user_games.status, user_games.platform, user_games.hours_played, user_games.user_rating, games.rawg_rating
+      `SELECT games.name, games.image_url, games.tags, user_games.id AS user_games_id, user_games.status, user_games.platform, user_games.hours_played, user_games.user_rating, games.rawg_rating
       FROM user_games
       JOIN games ON user_games.game_id = games.id
       WHERE user_games.user_id = $1
@@ -86,6 +86,26 @@ router.get("/recently-added-games", authenticate, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch library" });
+  }
+});
+
+router.delete("/remove-game", authenticate, async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const result = await pool.query(
+      `DELETE FROM user_games WHERE id = $1 AND user_id = $2`,
+      [id, req.userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game not found in your library" });
+    }
+
+    res.status(200).json({ message: "Game removed from your library" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to remove game from library" });
   }
 });
 
