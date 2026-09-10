@@ -94,7 +94,7 @@ memory-card/
 
 ## Credits
 
-The initial frontend concept was based on a Scrimba project prompt and [Figma reference](https://www.figma.com/design/hE5klIn1AEQ9XWZWmurs7y/Learning-Journal-Blog?node-id=0-1&t=5IRAjYyGX68SigMk-1). The backend, database architecture, authentication, API integration, and subsequent feature and design decisions were developed independently.
+The project was built from scratch based on a Scrimba project prompt and [Figma reference](https://www.figma.com/design/hE5klIn1AEQ9XWZWmurs7y/Learning-Journal-Blog?node-id=0-1&t=5IRAjYyGX68SigMk-1), which provided the initial frontend concept and layout reference. All implementation was done independently. The backend, database architecture, authentication, API integration, and subsequent feature and design decisions were developed beyond the original Scrimba brief.
 
 Game data and cover images are provided by the [RAWG API](https://rawg.io).
 
