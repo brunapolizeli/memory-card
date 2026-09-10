@@ -394,3 +394,13 @@ ul {
   box-shadow: 0 4px 12px rgba(26, 43, 60, 0.15);
   padding: 2vh 5vw;
 }
+
+.page-btn.active {
+  background-color: #4a90d9;
+  color: white;
+}
+
+.library-page-btn.active {
+  background-color: #4a90d9;
+  color: white;
+}
