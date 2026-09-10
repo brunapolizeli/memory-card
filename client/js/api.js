@@ -81,3 +81,20 @@ export async function removeGameFromLibrary(id) {
   const data = await response.json();
   return { ok: response.ok, data };
 }
+
+export async function getCurrentUser() {
+  const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    credentials: "include",
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
+
+export async function logOut() {
+  const response = await fetch(`${API_BASE_URL}/auth/log-out`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}

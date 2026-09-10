@@ -30,7 +30,7 @@
           <label for="login-password">Password</label>
           <input type="password" name="login-password" />
           <p class="error-message login-error" hidden></p>
-          <button class="login-btn">Login</button>
+          <button class="modal-login-btn">Login</button>
           <p>
             Don't have an account?
             <button type="button" class="toggle-btn" data-target="signup">
@@ -48,7 +48,7 @@
           <label for="signup-password">Password</label>
           <input type="password" name="signup-password" />
           <p class="error-message signup-error" hidden></p>
-          <button class="signup-btn">Sign Up</button>
+          <button class="modal-signup-btn">Sign Up</button>
           <p>
             Already have an account?
             <button type="button" class="toggle-btn" data-target="login">
@@ -59,10 +59,17 @@
       </section>
     </div>
     <script type="module">
-      import { renderHeader, renderFooter } from "./js/shared/layout.js";
+      import {
+        renderHeader,
+        renderFooter,
+        updateHeaderAuthState,
+        initHeaderListeners,
+      } from "./js/shared/layout.js";
 
       document.querySelector("#header-placeholder").innerHTML = renderHeader();
       document.querySelector("#footer-placeholder").innerHTML = renderFooter();
+      updateHeaderAuthState();
+      initHeaderListeners();
     </script>
     <script type="module" src="js/render/home.js"></script>
   </body>

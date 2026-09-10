@@ -8,8 +8,22 @@ const router = express.Router();
 const isProduction = process.env.NODE_ENV === "production";
 const saltRounds = 12;
 
-router.get("/me", authenticate, (req, res) => {
-  res.json({ userId: req.userId });
+router.get("/me", authenticate, async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT username FROM users WHERE id = $1",
+      [req.userId],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ userId: req.userId, username: result.rows[0].username });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch user" });
+  }
 });
 
 router.post("/signup", async (req, res) => {
@@ -83,6 +97,15 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Login failed" });
   }
+});
+
+router.delete("/log-out", authenticate, async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  });
+  res.json({ message: "Logged out successfully" });
 });
 
 export default router;

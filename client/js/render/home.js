@@ -1,4 +1,5 @@
 import { getCurrentlyPlaying, login, signup } from "../api.js";
+import { updateHeaderAuthState } from "../shared/layout.js";
 
 const currentlyPlaying = document.querySelector(".currently-playing");
 const dotsContainer = document.querySelector(".hero-dots-container");
@@ -175,6 +176,7 @@ loginForm.addEventListener("submit", async (event) => {
   modalOverlay.classList.remove("visible");
   authModal.classList.remove("visible");
   document.querySelector(".home-content").inert = false;
+  updateHeaderAuthState();
   renderCurrentlyPlaying();
 });
 

@@ -220,9 +220,15 @@ footer {
   padding-top: 2vh;
 }
 
-.login-btn,
-.signup-btn {
+.modal-login-btn,
+.modal-signup-btn {
   margin-top: 2vh;
+}
+
+.login-btn,
+.logout-btn {
+  width: 15vw;
+  height: 3vh;
 }
 
 .library-filters {
