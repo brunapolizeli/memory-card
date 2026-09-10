@@ -1,3 +1,5 @@
+[🇺🇸 English](README.md) | [🇧🇷 Português](README.pt-BR.md)
+
 # Memory Card
 
 A personal video game tracker, with a Frutiger Aero (2004-2013) visual identity planned once core functionality is complete.

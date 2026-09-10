@@ -1,3 +1,5 @@
+[🇺🇸 English](README.md) | [🇧🇷 Português](README.pt-BR.md)
+
 # Memory Card
 
 Um rastreador pessoal de videogames, com uma identidade visual Frutiger Aero (2004–2013) planejada para ser aplicada após a conclusão das funcionalidades principais.
