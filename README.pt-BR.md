@@ -4,7 +4,7 @@
 
 Um rastreador pessoal de videogames desenvolvido com JavaScript vanilla, Node.js, Express e PostgreSQL.
 
-[**Demo ao vivo — memcard-log.vercel.app**](https://memcard-log.vercel.app/)
+[**Demo ao vivo: memcard-log.vercel.app**](https://memcard-log.vercel.app/)
 
 ---
 

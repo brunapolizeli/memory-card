@@ -4,7 +4,7 @@
 
 A personal video game tracker built with vanilla JavaScript, Node.js, Express, and PostgreSQL.
 
-[**Live Demo — memcard-log.vercel.app**](https://memcard-log.vercel.app/)
+[**Live Demo: memcard-log.vercel.app**](https://memcard-log.vercel.app/)
 
 ---
 
