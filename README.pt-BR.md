@@ -2,7 +2,7 @@
 
 # Memory Card
 
-Um rastreador pessoal de videogames, com uma identidade visual Frutiger Aero (2004–2013) planejada para ser aplicada após a conclusão das funcionalidades principais.
+Um rastreador pessoal de videogames desenvolvido com JavaScript vanilla, Node.js, Express e PostgreSQL.
 
 [**Demo ao vivo — memcard-log.vercel.app**](https://memcard-log.vercel.app/)
 
@@ -10,64 +10,58 @@ Um rastreador pessoal de videogames, com uma identidade visual Frutiger Aero (20
 
 ## ⚠️ Status Atual
 
-Este projeto está sendo desenvolvido com abordagem **mobile-first** e ainda está em **desenvolvimento ativo**; nem todas as funcionalidades foram implementadas, e apenas algumas delas estão descritas abaixo. Novos commits são adicionados regularmente, então volte futuramente para acompanhar o progresso. Os breakpoints para desktop serão adicionados somente após a experiência mobile estar completa.
+Memory Card está em **desenvolvimento ativo** e atualmente está sendo construído com abordagem mobile-first. Os breakpoints para desktop serão adicionados após a conclusão da experiência mobile.
 
-Para visualizar o projeto corretamente em seu estágio atual, abra-o em um dispositivo móvel, use o modo de emulação de dispositivos móveis do navegador (DevTools → Toggle device toolbar) ou redimensione a janela para uma largura menor (~375–425px).
+Para visualizar melhor o projeto nesta fase, abra-o em um dispositivo móvel, use o modo de emulação mobile do navegador ou redimensione a janela para ~375–425px.
 
 ---
 
 ## Visão Geral do Projeto
 
-Memory Card é um rastreador pessoal de videogames, desenvolvido individualmente e do zero como parte do Scrimba Full Stack Path.
+Memory Card é um rastreador de videogames full stack desenvolvido individualmente, com autenticação própria, banco de dados PostgreSQL normalizado, API REST e integração com a API da RAWG.
 
-O layout mobile-first do frontend é baseado no [design Figma do Learning Journal Blog da Scrimba](https://www.figma.com/design/hE5klIn1AEQ9XWZWmurs7y/Learning-Journal-Blog?node-id=0-1&t=5IRAjYyGX68SigMk-1), utilizado como referência inicial. A partir dele, o tema foi alterado de um diário de aprendizado para um rastreador de jogos, e uma identidade visual Frutiger Aero (2004–2013) está planejada para substituir o estilo original da Scrimba após a conclusão das funcionalidades principais. Um backend também está sendo desenvolvido do zero sobre o briefing de frontend fornecido pela Scrimba: autenticação própria, um schema PostgreSQL normalizado e uma API REST, combinados com um frontend em JavaScript vanilla, sem frameworks.
+O projeto está sendo desenvolvido com uma identidade visual inspirada em Frutiger Aero (2004–2013) e uma abordagem mobile-first.
 
 ---
 
-## Funcionalidades (implementadas até agora)
+## Funcionalidades
 
-- Autenticação própria (cadastro e login) com hash de senhas usando bcrypt
+- Cadastro e login próprios com hash de senhas usando bcrypt
 - Sessões baseadas em JWT armazenadas em cookies httpOnly
-- Modal de login/cadastro com alternância entre formulários e mensagens de erro específicas por campo (conflitos de e-mail ou nome de usuário, campos ausentes e credenciais inválidas)
-- Header e footer compartilhados, renderizados dinamicamente e reutilizados entre páginas por meio de um módulo JavaScript
-- Menu de navegação mobile do tipo hamburger
-- Carrossel de **"Currently Playing"** na página inicial, utilizando dados em tempo real da biblioteca do usuário
-  - Carrossel com scroll-snap e indicadores de paginação clicáveis sincronizados por meio de IntersectionObserver
-  - Limitado a 5 jogos, com um card contendo link para a biblioteca completa quando houver mais
-  - Estados distintos para usuário deslogado, biblioteca vazia e biblioteca com jogos
-- Busca de jogos utilizando a API da RAWG, intermediada pelo backend para manter a chave da API privada
-- Fluxo de **Add Game**, permitindo buscar jogos na RAWG e adicioná-los à biblioteca do usuário
-  - Reutiliza uma entrada já existente na tabela de catálogo `games` quando o jogo já está armazenado, evitando duplicação de dados
-- Schema de banco de dados normalizado: uma tabela compartilhada `games` como catálogo e uma tabela associativa `user_games`, evitando duplicação dos dados dos jogos entre usuários
+- Modal de login/cadastro com validação e mensagens de erro específicas por campo
+- Header e footer compartilhados, renderizados por meio de um módulo JavaScript reutilizável
+- Navegação mobile com menu hamburger
+- Carrossel de **Currently Playing** preenchido com dados da biblioteca do usuário
+  - Navegação com scroll-snap e indicadores de paginação sincronizados por IntersectionObserver
+  - Até 5 jogos, com link para a biblioteca completa quando houver mais
+  - Estados separados para usuário deslogado, biblioteca vazia e biblioteca com jogos
+- Busca de jogos pela API da RAWG por meio de um proxy no backend
+- Fluxo de **Add Game** para adicionar jogos da RAWG à biblioteca do usuário
+  - Entradas já existentes no catálogo compartilhado `games` são reutilizadas em vez de duplicadas
+- Estrutura de banco de dados normalizada utilizando as tabelas `games` e `user_games`
 
 ---
 
 ## Funcionalidades Planejadas
 
-- **Página My Library**: grid completo dos jogos do usuário, com filtros de múltipla seleção (status, plataforma, gênero/tag, conclusão, tempo de jogo e avaliação) e opções de ordenação
-- **Página de detalhes do jogo**: status, plataforma, horas jogadas, avaliação, escala de dificuldade representada por gotas d'água, acompanhamento de conclusão e platina (cada um com data e observações opcionais)
-- **Página de perfil**: dashboard de estatísticas, incluindo um gráfico de rosca mostrando as horas jogadas por plataforma
-- Breakpoints para desktop, adicionados após a conclusão da experiência mobile
+- Página **Library** com filtros e ordenação por status, plataforma, gênero/tag, conclusão, tempo de jogo e avaliação
+- Página de **detalhes do jogo** com status, plataforma, tempo de jogo, avaliação, dificuldade, conclusão, platina, datas e observações
+- Página de **perfil** com estatísticas e gráficos
+- Layout responsivo para desktop
 
 ---
 
 ## Estrutura do Projeto
 
-```
+```text
 memory-card/
 ├── client/
 │   ├── assets/
-│   │   ├── icons/
-│   │   ├── default-cover.png
-│   │   └── logged-out.png
 │   ├── css/
 │   │   └── style.css
 │   ├── js/
 │   │   ├── render/
-│   │   │   ├── home.js
-│   │   │   └── library.js
 │   │   ├── shared/
-│   │   │   └── layout.js
 │   │   ├── api.js
 │   │   ├── config.js
 │   │   └── main.js
@@ -75,44 +69,39 @@ memory-card/
 │   └── library.html
 ├── server/
 │   ├── db/
-│   │   └── pool.js
 │   ├── middleware/
-│   │   └── authenticate.js
 │   ├── migrations/
 │   ├── routes/
-│   │   ├── auth.js
-│   │   ├── games.js
-│   │   └── library.js
-│   ├── .env.example
 │   ├── package.json
 │   └── server.js
-├── .gitignore
-├── LICENSE
 ├── README.md
 └── README.pt-BR.md
 ```
 
 ---
 
-## Tecnologias Utilizadas
+## Tecnologias
 
-- **Frontend**: JavaScript Vanilla, HTML5, CSS3 (Grid, Flexbox, scroll-snap)
-- **Backend**: Node.js, Express
-- **Banco de Dados**: PostgreSQL (hospedado na [Neon](https://neon.tech)), utilizando `node-pg-migrate` para migrations do schema
-- **Autenticação**: bcrypt para hash de senhas e JSON Web Tokens para sessões
-- **API Externa**: [RAWG Video Games Database API](https://rawg.io/apidocs)
-- **Deploy**: Vercel (frontend como site estático e backend como Serverless Functions)
+- **Frontend:** JavaScript vanilla, HTML5, CSS3
+- **Backend:** Node.js, Express
+- **Banco de Dados:** PostgreSQL hospedado na [Neon](https://neon.tech)
+- **Migrations:** `node-pg-migrate`
+- **Autenticação:** bcrypt, JSON Web Tokens, cookies httpOnly
+- **API Externa:** [RAWG Video Games Database API](https://rawg.io/apidocs)
+- **Deploy:** Vercel
 
 ---
 
 ## Créditos
 
-Dados dos jogos e imagens de capa fornecidos pela [API da RAWG](https://rawg.io).
+O conceito inicial do frontend foi baseado em um prompt de projeto e uma [referência Figma](https://www.figma.com/design/hE5klIn1AEQ9XWZWmurs7y/Learning-Journal-Blog?node-id=0-1&t=5IRAjYyGX68SigMk-1) da Scrimba. O backend, a arquitetura do banco de dados, autenticação, integração com APIs e as decisões posteriores de funcionalidades e design foram desenvolvidos de forma independente.
 
-Os ícones utilizados na interface do projeto foram gerados com o ChatGPT.
+Dados dos jogos e imagens de capa são fornecidos pela [API da RAWG](https://rawg.io).
+
+Os ícones utilizados na interface foram gerados com o ChatGPT.
 
 ---
 
 ## Licença
 
-Este projeto está licenciado sob a [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/). É livre para visualização e avaliação, mas modificações, redistribuição ou uso comercial não são permitidos.
+Licenciado sob [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/). Livre para visualização e avaliação; modificações, redistribuição e uso comercial não são permitidos.
