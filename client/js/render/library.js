@@ -7,6 +7,9 @@ import {
 
 const searchGamesApiInput = document.querySelector(".search-games-api-input");
 const searchGamesApiBtn = document.querySelector(".search-games-api-btn");
+const closeSearchResultsApiBtn = document.querySelector(
+  ".close-search-results-api-btn",
+);
 const searchResultsApiOverlay = document.querySelector(
   ".search-results-api-overlay",
 );
@@ -106,6 +109,11 @@ searchGamesApiBtn.addEventListener("click", async (event) => {
     searchResultsApiOverlay.classList.add("visible");
     libraryFilters.hidden = true;
   }
+});
+
+closeSearchResultsApiBtn.addEventListener("click", () => {
+  searchResultsApiOverlay.classList.remove("visible");
+  libraryFilters.hidden = false;
 });
 
 searchResultsApi.addEventListener("click", async (event) => {

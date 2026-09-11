@@ -279,9 +279,15 @@ ul {
   height: auto;
   background-color: white;
   margin-left: -10vw;
+  position: relative;
 }
 
-.search-results-api {
+.close-search-results-api-btn {
+  position: absolute;
+  right: 5%;
+}
+
+.search-results .search-results-api {
   background-color: rgb(232, 241, 251);
   width: 80%;
   padding: 0;
