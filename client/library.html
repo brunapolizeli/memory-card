@@ -195,11 +195,17 @@
       <div id="footer-placeholder"></div>
     </div>
     <script type="module">
-      import { renderHeader, renderFooter, updateHeaderAuthState } from "./js/shared/layout.js";
+      import {
+        renderHeader,
+        renderFooter,
+        updateHeaderAuthState,
+        initHeaderListeners,
+      } from "./js/shared/layout.js";
 
       document.querySelector("#header-placeholder").innerHTML = renderHeader();
       document.querySelector("#footer-placeholder").innerHTML = renderFooter();
       updateHeaderAuthState();
+      initHeaderListeners();
     </script>
     <script type="module" src="js/render/library.js"></script>
   </body>

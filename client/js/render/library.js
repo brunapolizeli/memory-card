@@ -203,10 +203,16 @@ async function renderLibraryPagination(count) {
 }
 
 async function loadLibrary() {
-  const result = await getRecentlyAddedGames(currentLibraryPage);
-  const renderedList = renderRecentlyAddedGames(result.data.results);
+  const { ok, data } = await getRecentlyAddedGames(currentLibraryPage);
+
+  if (!ok) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  const renderedList = renderRecentlyAddedGames(data.results);
   libraryGrid.innerHTML = renderedList;
-  renderLibraryPagination(result.data.count);
+  renderLibraryPagination(data.count);
 }
 
 loadLibrary();
