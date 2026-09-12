@@ -34,11 +34,12 @@ router.post("/signup", async (req, res) => {
   }
 
   try {
+    const normalizedEmail = email.toLowerCase();
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
     const result = await pool.query(
       "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id, username, email",
-      [username, email, passwordHash],
+      [username, normalizedEmail, passwordHash],
     );
 
     res.status(201).json(result.rows[0]);
@@ -63,9 +64,10 @@ router.post("/login", async (req, res) => {
   }
 
   try {
+    const normalizedEmail = email.toLowerCase();
     const result = await pool.query(
       "SELECT id, username, email, password_hash FROM users WHERE email = $1",
-      [email],
+      [normalizedEmail],
     );
 
     const user = result.rows[0];
