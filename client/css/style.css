@@ -409,12 +409,8 @@ ul {
   padding: 2vh 5vw;
 }
 
-.page-btn.active {
-  background-color: #4a90d9;
-  color: white;
-}
-
-.library-page-btn.active {
+.library-page-btn.active,
+.api-page-btn.active {
   background-color: #4a90d9;
   color: white;
 }
