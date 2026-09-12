@@ -19,178 +19,193 @@
             placeholder="Add a new game to your library..."
           />
           <button class="search-games-api-btn">Search</button>
+        </section>
+        <div class="library-main-content">
           <section class="search-results-api-overlay">
-            <button class="close-search-results-api-btn" type="button">x</button>
+            <button class="close-search-results-api-btn" type="button">
+              x
+            </button>
             <ul class="search-results-api"></ul>
             <div class="api-pagination"></div>
           </section>
-        </section>
-        <section class="library-filters">
-          <div class="library-dropdowns">
-            <div class="filter-dropdown" data-filter="status">
-              <button type="button" class="filter-toggle">Status</button>
-              <ul class="filter-options" hidden>
-                <li>
-                  <label
-                    >Wishlist <input type="checkbox" value="wishlist"
-                  /></label>
-                </li>
-                <li>
-                  <label
-                    >Backlog <input type="checkbox" value="backlog"
-                  /></label>
-                </li>
-                <li>
-                  <label
-                    >Playing <input type="checkbox" value="playing"
-                  /></label>
-                </li>
-                <li>
-                  <label
-                    >On Hold <input type="checkbox" value="on-hold"
-                  /></label>
-                </li>
-                <li>
-                  <label
-                    >Finished <input type="checkbox" value="finished"
-                  /></label>
-                </li>
-                <li>
-                  <label
-                    >Replaying <input type="checkbox" value="replaying"
-                  /></label>
-                </li>
-                <li>
-                  <label
-                    >Dropped <input type="checkbox" value="dropped"
-                  /></label>
-                </li>
-              </ul>
+          <section class="library-filters">
+            <div class="library-dropdowns">
+              <div class="filter-dropdown" data-filter="status">
+                <button type="button" class="filter-toggle">Status</button>
+                <ul class="filter-options" hidden>
+                  <li>
+                    <label
+                      >Wishlist <input type="checkbox" value="wishlist"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >Backlog <input type="checkbox" value="backlog"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >Playing <input type="checkbox" value="playing"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >On Hold <input type="checkbox" value="on-hold"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >Finished <input type="checkbox" value="finished"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >Replaying <input type="checkbox" value="replaying"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >Dropped <input type="checkbox" value="dropped"
+                    /></label>
+                  </li>
+                </ul>
+              </div>
+              <div class="filter-dropdown" data-filter="platform">
+                <button type="button" class="filter-toggle">Platform</button>
+                <ul class="filter-options" hidden>
+                  <li>
+                    <label
+                      >placeholder <input type="checkbox" value="placeholder"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >placeholder <input type="checkbox" value="placeholder"
+                    /></label>
+                  </li>
+                </ul>
+              </div>
+              <div class="filter-dropdown" data-filter="genres-tags">
+                <button type="button" class="filter-toggle">Genres/Tags</button>
+                <ul class="filter-options" hidden>
+                  <li>
+                    <label
+                      >placeholder <input type="checkbox" value="placeholder"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >placeholder <input type="checkbox" value="placeholder"
+                    /></label>
+                  </li>
+                </ul>
+              </div>
+              <div class="filter-dropdown" data-filter="completion">
+                <button type="button" class="filter-toggle">Completion</button>
+                <ul class="filter-options" hidden>
+                  <li>
+                    <label
+                      >Completed <input type="checkbox" value="completed"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >Platinum <input type="checkbox" value="platinum"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >In Progress <input type="checkbox" value="in-progress"
+                    /></label>
+                  </li>
+                </ul>
+              </div>
+              <div class="filter-dropdown" data-filter="playtime">
+                <button type="button" class="filter-toggle">Playtime</button>
+                <ul class="filter-options" hidden>
+                  <li>
+                    <label>0-10h <input type="checkbox" value="0-10h" /></label>
+                  </li>
+                  <li>
+                    <label
+                      >10-25h <input type="checkbox" value="10-25h"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >25-50h <input type="checkbox" value="25-50h"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >50-100h <input type="checkbox" value="50-100h"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >100-250h <input type="checkbox" value="100-250h"
+                    /></label>
+                  </li>
+                  <li>
+                    <label>250h+ <input type="checkbox" value="250h+" /></label>
+                  </li>
+                </ul>
+              </div>
+              <div class="filter-dropdown" data-filter="user-rating">
+                <button type="button" class="filter-toggle">Your Rating</button>
+                <ul class="filter-options" hidden>
+                  <li>
+                    <label
+                      >5 <input type="checkbox" value="five-stars"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >4 <input type="checkbox" value="four-stars"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >3 <input type="checkbox" value="three-stars"
+                    /></label>
+                  </li>
+                  <li>
+                    <label>2 <input type="checkbox" value="two-stars" /></label>
+                  </li>
+                  <li>
+                    <label>1 <input type="checkbox" value="one-star" /></label>
+                  </li>
+                  <li>
+                    <label
+                      >Not rated yet <input type="checkbox" value="not-rated"
+                    /></label>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <div class="filter-dropdown" data-filter="platform">
-              <button type="button" class="filter-toggle">Platform</button>
-              <ul class="filter-options" hidden>
-                <li>
-                  <label
-                    >placeholder <input type="checkbox" value="placeholder"
-                  /></label>
-                </li>
-                <li>
-                  <label
-                    >placeholder <input type="checkbox" value="placeholder"
-                  /></label>
-                </li>
-              </ul>
+            <div class="search-games-library">
+              <input
+                class="search-games-library-input"
+                type="text"
+                placeholder="Search a game by name..."
+                required
+              />
+              <button class="search-games-library-btn">Search</button>
             </div>
-            <div class="filter-dropdown" data-filter="genres-tags">
-              <button type="button" class="filter-toggle">Genres/Tags</button>
-              <ul class="filter-options" hidden>
-                <li>
-                  <label
-                    >placeholder <input type="checkbox" value="placeholder"
-                  /></label>
-                </li>
-                <li>
-                  <label
-                    >placeholder <input type="checkbox" value="placeholder"
-                  /></label>
-                </li>
-              </ul>
+            <div class="sort-toggles">
+              <h3>Sort by</h3>
+              <div class="sort-toggle-btns">
+                <button class="sort-by-name-btn">Name</button>
+                <button class="sort-by-hours-btn">Hours</button>
+                <button class="sort-by-rating-btn">Rating</button>
+              </div>
             </div>
-            <div class="filter-dropdown" data-filter="completion">
-              <button type="button" class="filter-toggle">Completion</button>
-              <ul class="filter-options" hidden>
-                <li>
-                  <label
-                    >Completed <input type="checkbox" value="completed"
-                  /></label>
-                </li>
-                <li>
-                  <label
-                    >Platinum <input type="checkbox" value="platinum"
-                  /></label>
-                </li>
-                <li>
-                  <label
-                    >In Progress <input type="checkbox" value="in-progress"
-                  /></label>
-                </li>
-              </ul>
-            </div>
-            <div class="filter-dropdown" data-filter="playtime">
-              <button type="button" class="filter-toggle">Playtime</button>
-              <ul class="filter-options" hidden>
-                <li>
-                  <label>0-10h <input type="checkbox" value="0-10h" /></label>
-                </li>
-                <li>
-                  <label>10-25h <input type="checkbox" value="10-25h" /></label>
-                </li>
-                <li>
-                  <label>25-50h <input type="checkbox" value="25-50h" /></label>
-                </li>
-                <li>
-                  <label
-                    >50-100h <input type="checkbox" value="50-100h"
-                  /></label>
-                </li>
-                <li>
-                  <label
-                    >100-250h <input type="checkbox" value="100-250h"
-                  /></label>
-                </li>
-                <li>
-                  <label>250h+ <input type="checkbox" value="250h+" /></label>
-                </li>
-              </ul>
-            </div>
-            <div class="filter-dropdown" data-filter="user-rating">
-              <button type="button" class="filter-toggle">Your Rating</button>
-              <ul class="filter-options" hidden>
-                <li>
-                  <label>5 <input type="checkbox" value="five-stars" /></label>
-                </li>
-                <li>
-                  <label>4 <input type="checkbox" value="four-stars" /></label>
-                </li>
-                <li>
-                  <label>3 <input type="checkbox" value="three-stars" /></label>
-                </li>
-                <li>
-                  <label>2 <input type="checkbox" value="two-stars" /></label>
-                </li>
-                <li>
-                  <label>1 <input type="checkbox" value="one-star" /></label>
-                </li>
-                <li>
-                  <label
-                    >Not rated yet <input type="checkbox" value="not-rated"
-                  /></label>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="search-games-library">
-            <input
-              class="search-games-library-input"
-              type="text"
-              placeholder="Search a game by name..."
-              required
-            />
-            <button class="search-games-library-btn">Search</button>
-          </div>
-          <div class="sort-toggles">
-            <h3>Sort by</h3>
-            <div class="sort-toggle-btns">
-              <button class="sort-by-name-btn">Name</button>
-              <button class="sort-by-hours-btn">Hours</button>
-              <button class="sort-by-rating-btn">Rating</button>
-            </div>
-          </div>
-        <section class="library-grid-overlay">
-          <ul class="library-grid"></ul>
-          <div class="library-pagination"></div>
-        </section>
+          </section>
+          <section class="library-grid-overlay">
+            <ul class="library-grid"></ul>
+            <div class="library-pagination"></div>
+          </section>
+        </div>
       </main>
 
       <div id="footer-placeholder"></div>

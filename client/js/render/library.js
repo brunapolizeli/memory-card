@@ -15,6 +15,7 @@ const searchResultsApiOverlay = document.querySelector(
 );
 const searchResultsApi = document.querySelector(".search-results-api");
 const libraryFilters = document.querySelector(".library-filters");
+const libraryGridOverlay = document.querySelector(".library-grid-overlay");
 const libraryGrid = document.querySelector(".library-grid");
 let currentApiPage = 1;
 let currentLibraryPage = 1;
@@ -83,17 +84,11 @@ function renderApiPagination(count) {
 
     currentApiPage = Number(clickedButton.dataset.apiPage);
     const result = await searchGames(lastQuery, currentApiPage);
+    currentSearchResults = result.data.results;
     const renderedList = renderSearchedGames(result.data.results);
     searchResultsApi.innerHTML = renderedList;
     renderApiPagination(result.data.count);
   });
-}
-
-async function performApiSearch(query) {
-  lastQuery = query;
-  const result = await searchGames(query, currentApiPage);
-  renderSearchedGames(result.data.results);
-  renderApiPagination(result.data.count);
 }
 
 searchGamesApiBtn.addEventListener("click", async (event) => {
@@ -108,12 +103,14 @@ searchGamesApiBtn.addEventListener("click", async (event) => {
     renderApiPagination(result.data.count);
     searchResultsApiOverlay.classList.add("visible");
     libraryFilters.hidden = true;
+    libraryGridOverlay.hidden = true;
   }
 });
 
 closeSearchResultsApiBtn.addEventListener("click", () => {
   searchResultsApiOverlay.classList.remove("visible");
   libraryFilters.hidden = false;
+  libraryGridOverlay.hidden = false;
 });
 
 searchResultsApi.addEventListener("click", async (event) => {
