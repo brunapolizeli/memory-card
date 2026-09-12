@@ -55,7 +55,6 @@ header {
 
 #menu-toggle:checked ~ .menu {
   display: block;
-  background-color:;
 }
 
 h1 {
