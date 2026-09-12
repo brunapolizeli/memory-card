@@ -26,7 +26,7 @@ function renderSearchedGames(gamesArray) {
   return gamesArray
     .map(({ id, name, background_image }) => {
       return `<li>
-              <img class="game-image-api-search" src="${background_image ?? "assets/default-cover.png"}">
+              <img class="game-image-api-search" src="${background_image ?? "assets/library/default-cover.png"}">
               <h3>${name}</h3>
               <button class="add-game-api-btn" data-id="${id}">Add</button>
             </li>`;

@@ -26,7 +26,7 @@ async function renderCurrentlyPlaying() {
 
   // not logged in: show the illustration instead of the carousel
   if (!ok) {
-    currentlyPlaying.innerHTML = `<img src="assets/logged-out.png" alt="Please log in to see your currently playing games" class="logged-out-illustration">`;
+    currentlyPlaying.innerHTML = `<img src="assets/home/logged-out.png" alt="Please log in to see your currently playing games" class="logged-out-illustration">`;
     return;
   }
 
