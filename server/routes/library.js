@@ -109,4 +109,28 @@ router.delete("/remove-game", authenticate, async (req, res) => {
   }
 });
 
+router.get("/game-details", authenticate, async (req, res) => {
+  const { id } = req.query;
+
+  try {
+    const result = await pool.query(
+      `SELECT games.name, games.image_url, games.tags, games.rawg_rating, user_games.*
+      FROM user_games
+      JOIN games ON user_games.game_id = games.id
+      WHERE user_games.id = $1 AND user_games.user_id = $2`,
+      [id, req.userId],
+    );
+
+    const game = result.rows[0];
+
+    if (!game) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    res.json(game);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch game" });
+  }
+});
+
 export default router;
