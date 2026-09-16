@@ -98,3 +98,30 @@ export async function logOut() {
   const data = await response.json();
   return { ok: response.ok, data };
 }
+
+export async function getGameDetails(id) {
+  const response = await fetch(
+    `${API_BASE_URL}/library/game-details?id=${id}`,
+    {
+      credentials: "include",
+    },
+  );
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
+
+export async function updateProgress(id, started, completed, platinum) {
+  const response = await fetch(`${API_BASE_URL}/library/update-progress`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      id,
+      started,
+      completed,
+      platinum,
+    }),
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}

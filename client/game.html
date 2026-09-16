@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Memory Card: Game Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="game-content">
+      <div id="header-placeholder"></div>
+
+      <main>
+        <section class="game-details-page">
+          <section class="game-page-intro">
+            <h2 class="game-page-title"></h2>
+            <img class="game-page-cover" />
+          </section>
+          <section class="game-page-stats">
+            <section class="game-progress">
+              <div class="progress-dropdown">
+                <button type="button" class="progress-toggle-btn"></button>
+                <ul class="progress-options" hidden>
+                  <li>
+                    <label
+                      >Haven't Started
+                      <input type="radio" name="progress" value="not-started"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >Started
+                      <input type="radio" name="progress" value="started"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >Completed
+                      <input type="radio" name="progress" value="completed"
+                    /></label>
+                  </li>
+                  <li>
+                    <label
+                      >Platinum
+                      <input type="radio" name="progress" value="platinum"
+                    /></label>
+                  </li>
+                </ul>
+              </div>
+            </section>
+          </section>
+        </section>
+      </main>
+
+      <div id="footer-placeholder"></div>
+    </div>
+
+    <script type="module">
+      import {
+        renderHeader,
+        renderFooter,
+        updateHeaderAuthState,
+        initHeaderListeners,
+      } from "./js/shared/layout.js";
+
+      document.querySelector("#header-placeholder").innerHTML = renderHeader();
+      document.querySelector("#footer-placeholder").innerHTML = renderFooter();
+      updateHeaderAuthState();
+      initHeaderListeners();
+    </script>
+    <script type="module" src="js/render/game.js"></script>
+  </body>
+</html>

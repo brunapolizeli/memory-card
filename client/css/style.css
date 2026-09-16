@@ -426,3 +426,14 @@ ul {
   background-color: #4a90d9;
   color: white;
 }
+
+.game-page-cover {
+  object-fit: contain;
+  width: 100%;
+}
+
+.game-details-page {
+  padding: 5vw;
+  display: flex;
+  flex-direction: column;
+}

@@ -133,4 +133,26 @@ router.get("/game-details", authenticate, async (req, res) => {
   }
 });
 
+router.patch("/update-progress", authenticate, async (req, res) => {
+  const { id, started, completed, platinum } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_games
+      SET started = $1, completed = $2, platinum = $3
+      WHERE id = $4 AND user_id = $5`,
+      [started, completed, platinum, id, req.userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    res.json({ message: "Progress updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game progress" });
+  }
+});
+
 export default router;
