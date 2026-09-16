@@ -46,6 +46,8 @@ progressOptions.addEventListener("change", async (event) => {
     progressValues.completed,
     progressValues.platinum,
   );
+
+  loadGame();
 });
 
 async function loadGame() {
