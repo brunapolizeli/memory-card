@@ -377,7 +377,8 @@ ul {
 }
 
 .star-icon,
-.clock-icon {
+.clock-icon,
+.progress-icon {
   width: 5vw;
   height: 5vw;
 }
@@ -436,4 +437,28 @@ ul {
   padding: 5vw;
   display: flex;
   flex-direction: column;
+}
+
+.progress-toggle-btn,
+.status-toggle-btn {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.game-progress-title,
+.game-status-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.game-progress,
+.game-status {
+  background: linear-gradient(180deg, #e8f1fb 0%, white 100%);
+  border-radius: 10px;
+  box-shadow:
+    0 4px 12px rgba(41, 97, 153, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  padding: 3px 7px;
+  margin-top: 10px;
 }

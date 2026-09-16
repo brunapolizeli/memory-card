@@ -125,3 +125,17 @@ export async function updateProgress(id, started, completed, platinum) {
   const data = await response.json();
   return { ok: response.ok, data };
 }
+
+export async function updateStatus(id, status) {
+  const response = await fetch(`${API_BASE_URL}/library/update-status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      id,
+      status,
+    }),
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
