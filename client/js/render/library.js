@@ -5,6 +5,7 @@ import {
   removeGameFromLibrary,
 } from "../api.js";
 
+// --- DOM references ---
 const searchGamesApiInput = document.querySelector(".search-games-api-input");
 const searchGamesApiBtn = document.querySelector(".search-games-api-btn");
 const closeSearchResultsApiBtn = document.querySelector(
@@ -20,8 +21,9 @@ const libraryGrid = document.querySelector(".library-grid");
 let currentApiPage = 1;
 let currentLibraryPage = 1;
 let lastQuery = "";
-let currentSearchResults = [];
+let currentSearchResults = []; // stores the last search results so "Add" can look up the clicked game
 
+// builds one <li> per RAWG search result
 function renderSearchedGames(gamesArray) {
   return gamesArray
     .map(({ id, name, background_image }) => {
@@ -34,6 +36,7 @@ function renderSearchedGames(gamesArray) {
     .join("");
 }
 
+// opens/closes each library filter dropdown independently
 document.querySelectorAll(".filter-toggle").forEach((button) => {
   button.addEventListener("click", () => {
     const dropdown = button.closest(".filter-dropdown");
@@ -42,6 +45,7 @@ document.querySelectorAll(".filter-toggle").forEach((button) => {
   });
 });
 
+// builds the [1, "...", 5, 6, 7, "...", 20] pattern for pagination
 function getPageNumbers(currentPage, totalPages) {
   const pages = [];
   const delta = 1;
@@ -61,6 +65,7 @@ function getPageNumbers(currentPage, totalPages) {
   return pages;
 }
 
+// renders pagination for the RAWG search results and handles page clicks
 function renderApiPagination(count) {
   const totalPages = Math.ceil(count / 10);
   const pageNumbers = getPageNumbers(currentApiPage, totalPages);
@@ -91,6 +96,7 @@ function renderApiPagination(count) {
   });
 }
 
+// runs a new RAWG search, shows the results overlay, and hides the library behind it
 searchGamesApiBtn.addEventListener("click", async (event) => {
   const input = searchGamesApiInput.value;
   if (input) {
@@ -107,12 +113,14 @@ searchGamesApiBtn.addEventListener("click", async (event) => {
   }
 });
 
+// closes the search overlay and restores the library view
 closeSearchResultsApiBtn.addEventListener("click", () => {
   searchResultsApiOverlay.classList.remove("visible");
   libraryFilters.hidden = false;
   libraryGridOverlay.hidden = false;
 });
 
+// handles clicking "Add" on a search result, using currentSearchResults to find the full game object
 searchResultsApi.addEventListener("click", async (event) => {
   const addButton = event.target.closest(".add-game-api-btn");
   if (!addButton) return;
@@ -133,6 +141,7 @@ searchResultsApi.addEventListener("click", async (event) => {
   }
 });
 
+// builds one <li> per game already in the user's library
 function renderRecentlyAddedGames(games) {
   if (games.length === 0) {
     libraryGrid.innerHTML = `<p class="no-games-message">No games in your library yet. Add one to get started!</p>`;
@@ -178,6 +187,7 @@ function renderRecentlyAddedGames(games) {
     .join("");
 }
 
+// renders pagination for the user's library and handles page clicks
 async function renderLibraryPagination(count) {
   const totalPages = Math.ceil(count / 4);
   const pageNumbers = getPageNumbers(currentLibraryPage, totalPages);
@@ -207,6 +217,7 @@ async function renderLibraryPagination(count) {
   });
 }
 
+// fetches and renders the user's library; redirects to the home page if not authenticated
 async function loadLibrary() {
   const { ok, data } = await getRecentlyAddedGames(currentLibraryPage);
 
@@ -222,6 +233,7 @@ async function loadLibrary() {
 
 loadLibrary();
 
+// toggles the options menu ("..." button) for a specific game card
 libraryGrid.addEventListener("click", (event) => {
   const button = event.target.closest(".library-game-options-btn");
   if (!button) return;
@@ -231,6 +243,7 @@ libraryGrid.addEventListener("click", (event) => {
   menu.hidden = !menu.hidden;
 });
 
+// removes a game from the library and reloads the list on success
 libraryGrid.addEventListener("click", async (event) => {
   const button = event.target.closest(".library-remove-game-btn");
   if (!button) return;
@@ -242,4 +255,14 @@ libraryGrid.addEventListener("click", async (event) => {
   if (result.ok) {
     loadLibrary();
   }
+});
+
+// redirects to the game details page for editing
+libraryGrid.addEventListener("click", async (event) => {
+  const button = event.target.closest(".library-edit-game-btn");
+  if (!button) return;
+
+  const card = button.closest(".library-game-info");
+  const id = card.dataset.userGameId;
+  window.location.href = `game.html?id=${id}`;
 });

@@ -1,6 +1,7 @@
 import { getCurrentlyPlaying, login, signup } from "../api.js";
 import { updateHeaderAuthState } from "../shared/layout.js";
 
+// --- DOM references ---
 const currentlyPlaying = document.querySelector(".currently-playing");
 const dotsContainer = document.querySelector(".hero-dots-container");
 const loginBtn = document.querySelector(".login-btn");
