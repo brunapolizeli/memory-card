@@ -21,6 +21,7 @@ const libraryGrid = document.querySelector(".library-grid");
 let currentApiPage = 1;
 let currentLibraryPage = 1;
 let lastQuery = "";
+let gameIdToRemove = null;
 let currentSearchResults = []; // stores the last search results so "Add" can look up the clicked game
 
 // builds one <li> per RAWG search result
@@ -244,18 +245,32 @@ libraryGrid.addEventListener("click", (event) => {
 });
 
 // removes a game from the library and reloads the list on success
-libraryGrid.addEventListener("click", async (event) => {
+libraryGrid.addEventListener("click", (event) => {
   const button = event.target.closest(".library-remove-game-btn");
   if (!button) return;
 
   const card = button.closest(".library-game-info");
-  const id = card.dataset.userGameId;
-  const result = await removeGameFromLibrary(id);
-
-  if (result.ok) {
-    loadLibrary();
-  }
+  gameIdToRemove = card.dataset.userGameId;
+  document.querySelector(".confirm-remove-overlay").hidden = false;
 });
+
+document
+  .querySelector(".confirm-remove-cancel-btn")
+  .addEventListener("click", () => {
+    document.querySelector(".confirm-remove-overlay").hidden = true;
+    gameIdToRemove = null;
+  });
+
+document
+  .querySelector(".confirm-remove-yes-btn")
+  .addEventListener("click", async () => {
+    const result = await removeGameFromLibrary(gameIdToRemove);
+    document.querySelector(".confirm-remove-overlay").hidden = true;
+
+    if (result.ok) {
+      loadLibrary();
+    }
+  });
 
 // redirects to the game details page for editing
 libraryGrid.addEventListener("click", async (event) => {

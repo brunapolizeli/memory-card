@@ -380,7 +380,7 @@ ul {
 .clock-icon,
 .game-page-icon {
   width: 5vw;
-  height: 5vw;
+  height: auto;
 }
 
 .library-game-details-one,
@@ -461,4 +461,26 @@ ul {
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
   padding: 3px 7px;
   margin-top: 10px;
+}
+
+.confirm-remove-overlay {
+  display: none;
+}
+
+.confirm-remove-overlay:not([hidden]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
+
+.confirm-remove-modal {
+  background-color: white;
+  padding: 5vh 5vw;
+  border-radius: 12px;
+  max-width: 80vw;
+  text-align: center;
 }
