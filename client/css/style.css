@@ -446,14 +446,16 @@ ul {
 }
 
 .game-progress-title,
-.game-status-title {
+.game-status-title,
+.game-details-title {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
 .game-progress,
-.game-status {
+.game-status,
+.game-details {
   background: linear-gradient(180deg, #e8f1fb 0%, white 100%);
   border-radius: 10px;
   box-shadow:
@@ -483,4 +485,78 @@ ul {
   border-radius: 12px;
   max-width: 80vw;
   text-align: center;
+}
+
+.platform-search-overlay {
+  display: none;
+}
+
+.platform-search-overlay:not([hidden]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(26, 43, 60, 0.4);
+  z-index: 100;
+}
+
+.platform-search-modal {
+  background-color: white;
+  width: 85vw;
+  max-height: 70vh;
+  border-radius: 16px;
+  padding: 3vh 4vw;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(10px) scale(0.97);
+  opacity: 0;
+  animation: modal-rise 0.2s ease-out forwards;
+}
+
+.platform-search-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2vh;
+}
+
+.close-platform-search-btn {
+  border: none;
+  background-color: transparent;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.platform-search-input {
+  width: 100%;
+  padding: 1.5vh 3vw;
+  border: 1px solid #b8e3f0;
+  border-radius: 20px;
+  margin-bottom: 2vh;
+  box-sizing: border-box;
+}
+
+.platform-search-results {
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.platform-search-results li {
+  padding: 1.2vh 2vw;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.platform-search-results li:hover {
+  background-color: #b8e3f0;
+}
+
+@keyframes modal-rise {
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }

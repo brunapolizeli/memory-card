@@ -48,7 +48,6 @@ export async function signup(signupUsername, signupEmail, signupPassword) {
 export async function searchGames(query, page = 1) {
   const response = await fetch(
     `${API_BASE_URL}/games/search?search=${encodeURIComponent(query)}&page=${page}`,
-    { credentials: "include" },
   );
   const data = await response.json();
   return { ok: response.ok, data };
@@ -136,6 +135,26 @@ export async function updateStatus(id, status) {
       status,
     }),
   });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
+
+export async function updatePlatform(id, name) {
+  const response = await fetch(`${API_BASE_URL}/library/update-platform`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      id,
+      name,
+    }),
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
+
+export async function getPlatforms() {
+  const response = await fetch(`${API_BASE_URL}/games/search-platforms`);
   const data = await response.json();
   return { ok: response.ok, data };
 }

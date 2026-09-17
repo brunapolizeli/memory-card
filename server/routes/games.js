@@ -27,4 +27,25 @@ router.get("/search", async (req, res) => {
   }
 });
 
+router.get("/search-platforms", async (req, res) => {
+  try {
+    const page1Response = await fetch(
+      `https://api.rawg.io/api/platforms?key=${process.env.RAWG_API_KEY}&page=1`,
+    );
+    const page2Response = await fetch(
+      `https://api.rawg.io/api/platforms?key=${process.env.RAWG_API_KEY}&page=2`,
+    );
+
+    const page1Data = await page1Response.json();
+    const page2Data = await page2Response.json();
+
+    const allPlatforms = page1Data.results.concat(page2Data.results);
+
+    res.json(allPlatforms);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch platforms" });
+  }
+});
+
 export default router;

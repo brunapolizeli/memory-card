@@ -110,9 +110,36 @@
                 </ul>
               </div>
             </section>
+            <section class="game-details">
+              <div class="game-details-title">
+                <img
+                  class="gamepad-icon game-page-icon"
+                  src="assets/icons/gamepad-icon.png"
+                />
+                <h3>Details</h3>
+              </div>
+              <div class="platform-selection">
+                <h4>Platform</h4>
+                <button class="platform-selection-btn" type="button"></button>
+              </div>
+            </section>
           </section>
         </section>
       </main>
+      <div class="platform-search-overlay" hidden>
+        <div class="platform-search-modal">
+          <div class="platform-search-header">
+            <h3>Select Platform</h3>
+            <button type="button" class="close-platform-search-btn">x</button>
+          </div>
+          <input
+            type="text"
+            class="platform-search-input"
+            placeholder="Search platform..."
+          />
+          <ul class="platform-search-results"></ul>
+        </div>
+      </div>
 
       <div id="footer-placeholder"></div>
     </div>

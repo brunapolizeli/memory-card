@@ -1,4 +1,10 @@
-import { getGameDetails, updateProgress, updateStatus } from "../api.js";
+import {
+  getGameDetails,
+  updateProgress,
+  updateStatus,
+  updatePlatform,
+  getPlatforms,
+} from "../api.js";
 
 const params = new URLSearchParams(window.location.search);
 const gameId = params.get("id");
@@ -8,6 +14,19 @@ const progressToggleBtn = document.querySelector(".progress-toggle-btn");
 const progressOptions = document.querySelector(".progress-options");
 const statusToggleBtn = document.querySelector(".status-toggle-btn");
 const statusOptions = document.querySelector(".status-options");
+const platformSelectionBtn = document.querySelector(".platform-selection-btn");
+const platformSearchOverlay = document.querySelector(
+  ".platform-search-overlay",
+);
+const closePlatformSearchBtn = document.querySelector(
+  ".close-platform-search-btn",
+);
+const main = document.querySelector("main");
+const platformSearchInput = document.querySelector(".platform-search-input");
+const platformSearchResults = document.querySelector(
+  ".platform-search-results",
+);
+let allPlatforms = [];
 
 function renderIntro(game) {
   gamePageTitle.textContent = game.name;
@@ -39,6 +58,11 @@ function getStatusLabel(game) {
 
   if (!game.status) return "Choose Status";
   return statusLabels[game.status];
+}
+
+function getPlatformLabel(game) {
+  if (!game.platform) return "Choose Platform";
+  return game.platform;
 }
 
 progressToggleBtn.addEventListener("click", () => {
@@ -78,6 +102,51 @@ statusOptions.addEventListener("change", async (event) => {
   loadGame();
 });
 
+platformSelectionBtn.addEventListener("click", async () => {
+  platformSearchOverlay.hidden = false;
+  main.inert = true;
+  const result = await getPlatforms();
+  allPlatforms = result.data;
+});
+
+closePlatformSearchBtn.addEventListener("click", () => {
+  platformSearchOverlay.hidden = true;
+  main.inert = false;
+});
+
+platformSearchInput.addEventListener("input", (event) => {
+  const searchTerm = event.target.value;
+
+  const filtered = allPlatforms.filter((platform) => {
+    return platform.name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
+
+  const platforms = filtered.slice(0, 5);
+
+  const renderedPlatformsList = platforms
+    .map(({ name }) => {
+      return `<li class="platform" data-name="${name}"><h5>${name}</h5></li>`;
+    })
+    .join("");
+
+  platformSearchResults.innerHTML = `<h4 class="platform-search-results-title">Platforms</h4>`;
+  platformSearchResults.innerHTML += renderedPlatformsList;
+});
+
+platformSearchResults.addEventListener("click", async (event) => {
+  const item = event.target.closest(".platform");
+  if (!item) return;
+
+  const name = item.dataset.name;
+  const result = await updatePlatform(gameId, name);
+
+  if (result.ok) {
+    loadGame();
+    platformSearchOverlay.hidden = true;
+    main.inert = false;
+  }
+});
+
 async function loadGame() {
   const { ok, data } = await getGameDetails(gameId);
   if (!ok) return;
@@ -86,6 +155,8 @@ async function loadGame() {
   progressToggleBtn.textContent = progressLabel;
   const statusLabel = getStatusLabel(data);
   statusToggleBtn.textContent = statusLabel;
+  const platformLabel = getPlatformLabel(data);
+  platformSelectionBtn.textContent = platformLabel;
 }
 
 loadGame();

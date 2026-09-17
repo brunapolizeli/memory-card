@@ -177,4 +177,26 @@ router.patch("/update-status", authenticate, async (req, res) => {
   }
 });
 
+router.patch("/update-platform", authenticate, async (req, res) => {
+  const { id, name } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_games
+      SET platform = $1
+      WHERE id = $2 AND user_id = $3`,
+      [name, id, req.userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    res.json({ message: "Platform updated sucessfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game platform" });
+  }
+});
+
 export default router;
