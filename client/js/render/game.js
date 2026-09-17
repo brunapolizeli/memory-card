@@ -3,6 +3,7 @@ import {
   updateProgress,
   updateStatus,
   updatePlatform,
+  updateHoursPlayed,
   getPlatforms,
 } from "../api.js";
 
@@ -26,6 +27,7 @@ const platformSearchInput = document.querySelector(".platform-search-input");
 const platformSearchResults = document.querySelector(
   ".platform-search-results",
 );
+const playtimeField = document.querySelector(".playtime-field");
 let allPlatforms = [];
 
 function renderIntro(game) {
@@ -63,6 +65,11 @@ function getStatusLabel(game) {
 function getPlatformLabel(game) {
   if (!game.platform) return "Choose Platform";
   return game.platform;
+}
+
+function getPlaytimeLabel(game) {
+  if (!game.hours_played) return 0;
+  return game.hours_played;
 }
 
 progressToggleBtn.addEventListener("click", () => {
@@ -147,6 +154,28 @@ platformSearchResults.addEventListener("click", async (event) => {
   }
 });
 
+playtimeField.addEventListener("input", async (event) => {
+  playtimeField.value = playtimeField.value.replace(/[^0-9.]/g, "");
+  let hours = playtimeField.value;
+  const firstDotIndex = hours.indexOf(".");
+
+  if (firstDotIndex !== -1) {
+    const beforeDot = hours.slice(0, firstDotIndex + 1);
+    const afterDot = hours.slice(firstDotIndex + 1).replace(/\./g, "");
+    hours = beforeDot + afterDot;
+  }
+
+  playtimeField.value = hours;
+});
+
+playtimeField.addEventListener("blur", async (event) => {
+  const result = await updateHoursPlayed(gameId, playtimeField.value);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
 async function loadGame() {
   const { ok, data } = await getGameDetails(gameId);
   if (!ok) return;
@@ -157,6 +186,8 @@ async function loadGame() {
   statusToggleBtn.textContent = statusLabel;
   const platformLabel = getPlatformLabel(data);
   platformSelectionBtn.textContent = platformLabel;
+  const playtimeLabel = getPlaytimeLabel(data);
+  playtimeField.value = playtimeLabel;
 }
 
 loadGame();

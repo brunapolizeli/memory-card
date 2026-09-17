@@ -175,7 +175,7 @@ function renderRecentlyAddedGames(games) {
                     <p>${tags?.[0] ?? "—"}</p>
                   </div>
                   <div class="library-game-details-two">
-                    <p>${status ?? "—"}</p>
+                    <p>${status ? status.charAt(0).toUpperCase() + status.slice(1) : "—"}</p>
                   </div>
                   <div class="library-game-details-three">
                     <p><img class="clock-icon" src="assets/icons/clock-icon.png">${hours_played ?? "—"}</p>
