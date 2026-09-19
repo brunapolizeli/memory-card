@@ -197,7 +197,6 @@ footer {
 
 .modal-overlay h1 {
   color: black;
-  top: 0;
   z-index: 10;
   position: absolute;
   top: 3%;
@@ -207,7 +206,6 @@ footer {
 
 .modal-overlay .close-auth-btn {
   color: black;
-  top: 0;
   z-index: 30;
   position: absolute;
   top: 3%;
@@ -380,7 +378,9 @@ ul {
 .clock-icon,
 .game-page-icon {
   width: 5vw;
-  height: auto;
+  height: 5vw;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .library-game-details-one,
@@ -552,6 +552,65 @@ ul {
 
 .platform-search-results li:hover {
   background-color: #b8e3f0;
+}
+
+.game-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+}
+
+.platform-selection {
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.platform-selection-title,
+.hours-played-field-title,
+.minutes-played-field-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.platform-selection-title img,
+.hours-played-field-title img,
+.minutes-played-field-title img {
+  width: 5vw;
+  height: 5vw;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.platform-selection-btn {
+  width: 6rem;
+  height: 2rem;
+}
+
+.playtime-wrapper {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.hours-played-wrapper,
+.minutes-played-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.hours-played-field,
+.minutes-played-field {
+  width: 4rem;
+  height: 2rem;
 }
 
 @keyframes modal-rise {

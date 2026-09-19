@@ -27,7 +27,8 @@ const platformSearchInput = document.querySelector(".platform-search-input");
 const platformSearchResults = document.querySelector(
   ".platform-search-results",
 );
-const playtimeField = document.querySelector(".playtime-field");
+const hoursPlayedField = document.querySelector(".hours-played-field");
+const minutesPlayedField = document.querySelector(".minutes-played-field");
 let allPlatforms = [];
 
 function renderIntro(game) {
@@ -67,9 +68,14 @@ function getPlatformLabel(game) {
   return game.platform;
 }
 
-function getPlaytimeLabel(game) {
+function getHoursPlayedLabel(game) {
   if (!game.hours_played) return 0;
   return game.hours_played;
+}
+
+function getMinutesPlayedLabel(game) {
+  if (!game.minutes_played) return 0;
+  return game.minutes_played;
 }
 
 progressToggleBtn.addEventListener("click", () => {
@@ -154,22 +160,50 @@ platformSearchResults.addEventListener("click", async (event) => {
   }
 });
 
-playtimeField.addEventListener("input", async (event) => {
-  playtimeField.value = playtimeField.value.replace(/[^0-9.]/g, "");
-  let hours = playtimeField.value;
-  const firstDotIndex = hours.indexOf(".");
+hoursPlayedField.addEventListener("input", () => {
+  hoursPlayedField.value = hoursPlayedField.value.replace(/[^0-9]/g, "");
 
-  if (firstDotIndex !== -1) {
-    const beforeDot = hours.slice(0, firstDotIndex + 1);
-    const afterDot = hours.slice(firstDotIndex + 1).replace(/\./g, "");
-    hours = beforeDot + afterDot;
+  if (
+    hoursPlayedField.value.length > 1 &&
+    hoursPlayedField.value.charAt(0) === "0"
+  ) {
+    hoursPlayedField.value = hoursPlayedField.value.slice(1);
   }
 
-  playtimeField.value = hours;
+  if (hoursPlayedField.value.length === 0) {
+    hoursPlayedField.value = 0;
+  }
 });
 
-playtimeField.addEventListener("blur", async (event) => {
-  const result = await updateHoursPlayed(gameId, playtimeField.value);
+hoursPlayedField.addEventListener("blur", async () => {
+  const result = await updateHoursPlayed(gameId, hoursPlayedField.value);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
+minutesPlayedField.addEventListener("input", () => {
+  minutesPlayedField.value = minutesPlayedField.value.replace(/[^0-9]/g, "");
+
+  if (
+    minutesPlayedField.value.length > 1 &&
+    minutesPlayedField.value.charAt(0) === "0"
+  ) {
+    minutesPlayedField.value = minutesPlayedField.value.slice(1);
+  }
+
+  if (minutesPlayedField.value > 59) {
+    minutesPlayedField.value = 59;
+  }
+
+  if (minutesPlayedField.value.length === 0) {
+    minutesPlayedField.value = 0;
+  }
+});
+
+minutesPlayedField.addEventListener("blur", async () => {
+  const result = await updateMinutesPlayed(gameId, minutesPlayedField.value);
 
   if (result.ok) {
     loadGame();
@@ -180,14 +214,11 @@ async function loadGame() {
   const { ok, data } = await getGameDetails(gameId);
   if (!ok) return;
   renderIntro(data);
-  const progressLabel = getProgressLabel(data);
-  progressToggleBtn.textContent = progressLabel;
-  const statusLabel = getStatusLabel(data);
-  statusToggleBtn.textContent = statusLabel;
-  const platformLabel = getPlatformLabel(data);
-  platformSelectionBtn.textContent = platformLabel;
-  const playtimeLabel = getPlaytimeLabel(data);
-  playtimeField.value = playtimeLabel;
+  progressToggleBtn.textContent = getProgressLabel(data);
+  statusToggleBtn.textContent = getStatusLabel(data);
+  platformSelectionBtn.textContent = getPlatformLabel(data);
+  hoursPlayedField.value = getHoursPlayedLabel(data);
+  minutesPlayedField.value = getMinutesPlayedLabel(data);
 }
 
 loadGame();

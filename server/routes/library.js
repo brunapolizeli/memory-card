@@ -221,4 +221,32 @@ router.patch("/update-hours-played", authenticate, async (req, res) => {
   }
 });
 
+router.patch("/update-minutes-played", authenticate, async (req, res) => {
+  const { id, minutes_played } = req.body;
+
+  if (minutes_played > 59) {
+    return res
+      .status(400)
+      .json({ error: "Minutes played field must not exceed 59" });
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_games
+      SET minutes_played = $1
+      WHERE id = $2 AND user_id = $3`,
+      [minutes_played, id, req.userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    res.json({ message: "Playtime updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game playtime" });
+  }
+});
+
 export default router;
