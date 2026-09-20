@@ -1,18 +1,18 @@
 [🇺🇸 English](README.md) | [🇧🇷 Português](README.pt-BR.md)
 
+## ⚠️ Current Status
+
+Under active development, mobile-first. Desktop is not yet supported.
+
+For the best experience, view on a mobile device, use your browser's mobile emulation mode, or resize your window to ~375–425px.
+
+---
+
 # Memory Card
 
 A personal video game tracker built with vanilla JavaScript, Node.js, Express, and PostgreSQL.
 
 [**Live Demo: memcard-log.vercel.app**](https://memcard-log.vercel.app/)
-
----
-
-## ⚠️ Current Status
-
-Memory Card is under **active development** and is currently being built mobile-first. Desktop breakpoints will be added once the mobile experience is complete.
-
-For the best experience at this stage, open the project on a mobile device, use your browser's mobile emulation mode, or resize the window to ~375–425px.
 
 ---
 
@@ -29,7 +29,7 @@ The project is being developed with a Frutiger Aero (2004–2013) inspired visua
 - Custom signup and login with bcrypt password hashing
 - JWT-based sessions stored in httpOnly cookies
 - Login/signup modal with field-specific validation and error messages
-- Shared header and footer rendered through a reusable JavaScript module
+- Shared header and footer rendered through a reusable JavaScript module, with live login/logout state
 - Mobile hamburger navigation
 - **Currently Playing** carousel populated from the user's library
   - Scroll-snap navigation with pagination dots synced via IntersectionObserver
@@ -38,15 +38,25 @@ The project is being developed with a Frutiger Aero (2004–2013) inspired visua
 - Game search powered by the RAWG API through a backend proxy
 - **Add Game** flow for adding RAWG games to a user's library
   - Existing entries in the shared `games` catalog are reused instead of duplicated
+- **Library** page with:
+  - Paginated grid of the user's games
+  - Game removal with a confirmation modal
+  - Navigation to a game's details page
+- **Game details** page with:
+  - Progress tracking (not started / started / completed / platinum)
+  - Status selection across 7 states (Wishlist, Backlog, Playing, On Hold, Finished, Replaying, Dropped)
+  - Platform selection via a searchable list sourced from the RAWG platforms API
+  - Editable hours and minutes played, with input sanitization
+  - User rating on a 6-star scale, with a dynamic, color-coded label
 - Normalized database structure using shared `games` and `user_games` tables
 
 ---
 
 ## Planned Features
 
-- **Library** page with filtering and sorting by status, platform, genre/tag, completion, playtime, and rating
-- **Game detail** page with status, platform, playtime, rating, difficulty, completion, platinum tracking, dates, and notes
-- **Profile** page with statistics and charts
+- Library filtering and sorting by status, platform, genre/tag, completion, playtime, and rating
+- Difficulty rating, completion/platinum dates, and notes on the game details page
+- Profile page with statistics and charts
 - Desktop responsive layout
 
 ---
@@ -66,7 +76,8 @@ memory-card/
 │   │   ├── config.js
 │   │   └── main.js
 │   ├── index.html
-│   └── library.html
+│   ├── library.html
+│   └── game.html
 ├── server/
 │   ├── db/
 │   ├── middleware/

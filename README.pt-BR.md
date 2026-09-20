@@ -1,18 +1,18 @@
 [🇺🇸 English](README.md) | [🇧🇷 Português](README.pt-BR.md)
 
+## ⚠️ Status Atual
+
+Em desenvolvimento ativo, mobile-first. Desktop ainda não é suportado.
+
+Para a melhor experiência, visualize em um dispositivo móvel, use o modo de emulação mobile do navegador, ou redimensione sua janela para ~375–425px.
+
+---
+
 # Memory Card
 
 Um rastreador pessoal de videogames desenvolvido com JavaScript vanilla, Node.js, Express e PostgreSQL.
 
 [**Demo ao vivo: memcard-log.vercel.app**](https://memcard-log.vercel.app/)
-
----
-
-## ⚠️ Status Atual
-
-Memory Card está em **desenvolvimento ativo** e atualmente está sendo construído com abordagem mobile-first. Os breakpoints para desktop serão adicionados após a conclusão da experiência mobile.
-
-Para visualizar melhor o projeto nesta fase, abra-o em um dispositivo móvel, use o modo de emulação mobile do navegador ou redimensione a janela para ~375–425px.
 
 ---
 
@@ -29,7 +29,7 @@ O projeto está sendo desenvolvido com uma identidade visual inspirada em Frutig
 - Cadastro e login próprios com hash de senhas usando bcrypt
 - Sessões baseadas em JWT armazenadas em cookies httpOnly
 - Modal de login/cadastro com validação e mensagens de erro específicas por campo
-- Header e footer compartilhados, renderizados por meio de um módulo JavaScript reutilizável
+- Header e footer compartilhados, renderizados por meio de um módulo JavaScript reutilizável, com estado de login/logout em tempo real
 - Navegação mobile com menu hamburger
 - Carrossel de **Currently Playing** preenchido com dados da biblioteca do usuário
   - Navegação com scroll-snap e indicadores de paginação sincronizados por IntersectionObserver
@@ -38,14 +38,24 @@ O projeto está sendo desenvolvido com uma identidade visual inspirada em Frutig
 - Busca de jogos pela API da RAWG por meio de um proxy no backend
 - Fluxo de **Add Game** para adicionar jogos da RAWG à biblioteca do usuário
   - Entradas já existentes no catálogo compartilhado `games` são reutilizadas em vez de duplicadas
+- Página **Library** com:
+  - Grid paginado com os jogos do usuário
+  - Remoção de jogo com modal de confirmação
+  - Navegação para a página de detalhes de cada jogo
+- Página de **detalhes do jogo** com:
+  - Acompanhamento de progresso (não iniciado / iniciado / completo / platina)
+  - Seleção de status entre 7 estados (Wishlist, Backlog, Playing, On Hold, Finished, Replaying, Dropped)
+  - Seleção de plataforma via lista pesquisável, alimentada pela API de plataformas da RAWG
+  - Horas e minutos jogados editáveis, com sanitização de entrada
+  - Avaliação do usuário em escala de 6 estrelas, com rótulo dinâmico e colorido
 - Estrutura de banco de dados normalizada utilizando as tabelas `games` e `user_games`
 
 ---
 
 ## Funcionalidades Planejadas
 
-- Página **Library** com filtros e ordenação por status, plataforma, gênero/tag, conclusão, tempo de jogo e avaliação
-- Página de **detalhes do jogo** com status, plataforma, tempo de jogo, avaliação, dificuldade, conclusão, platina, datas e observações
+- Filtros e ordenação na Library por status, plataforma, gênero/tag, conclusão, tempo de jogo e avaliação
+- Dificuldade, datas de conclusão/platina e observações na página de detalhes do jogo
 - Página de **perfil** com estatísticas e gráficos
 - Layout responsivo para desktop
 
@@ -66,7 +76,8 @@ memory-card/
 │   │   ├── config.js
 │   │   └── main.js
 │   ├── index.html
-│   └── library.html
+│   ├── library.html
+│   └── game.html
 ├── server/
 │   ├── db/
 │   ├── middleware/
