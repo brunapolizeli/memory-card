@@ -2,6 +2,7 @@
   --color-primary-blue: #4a90d9;
   --color-accent-cyan: #0ea5c4;
   --color-pale-blue: #b8e3f0;
+  --color-pale-blue-soft: rgba(184, 227, 240, 0.3);
   --color-shadow-dark: rgba(26, 43, 60, 0.15);
   --color-shadow-dark-strong: rgba(26, 43, 60, 0.4);
   --color-shadow-card: rgba(41, 97, 153, 0.5);
@@ -401,6 +402,10 @@ ul {
   flex-shrink: 0;
 }
 
+.downward-arrow-icon {
+  width: 0.7rem;
+}
+
 .library-game-details-one,
 .library-game-details-two,
 .library-game-details-three {
@@ -458,9 +463,13 @@ ul {
 }
 
 .progress-toggle-btn,
-.status-toggle-btn {
+.status-toggle-btn,
+.platform-selection-btn {
   width: 100%;
   margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .game-progress-title,
@@ -479,7 +488,7 @@ ul {
   box-shadow:
     0 4px 12px var(--color-shadow-card),
     inset 0 1px 0 var(--color-glass-highlight);
-  padding: 3px 7px;
+  padding: 5px 10px;
   margin-top: 0.625rem;
 }
 
@@ -570,14 +579,6 @@ ul {
   grid-template-rows: repeat(3, auto);
 }
 
-.platform-selection {
-  grid-row: 1;
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  gap: 0.3125rem;
-}
-
 .platform-selection-title,
 .hours-played-field-title,
 .minutes-played-field-title,
@@ -587,26 +588,51 @@ ul {
   align-items: center;
   gap: 0.625rem;
   white-space: nowrap;
+  margin: 0 0 0.6rem 0;
 }
 
-.platform-selection-btn {
-  width: 100%;
-  height: 1.5rem;
+.platform-selection,
+.hours-played-wrapper,
+.minutes-played-wrapper,
+.user-rating-wrapper {
+  background-color: var(--color-pale-blue-soft);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.3125rem 0.625rem;
+  box-shadow: 0 0 4px var(--color-primary-blue);
 }
 
-.playtime-wrapper {
-  grid-row: 2;
+.platform-selection {
+  grid-row: 1;
   grid-column: 1 / -1;
   display: flex;
-  align-items: flex-start;
-  gap: 0.9375rem;
+  align-items: center;
+  gap: 0.3125rem;
 }
 
 .hours-played-wrapper,
 .minutes-played-wrapper {
+  grid-row: 2;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
   gap: 0.3125rem;
+}
+
+.hours-played-wrapper {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.minutes-played-wrapper {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.user-rating-wrapper {
+  grid-row: 3;
+  grid-column: 1 / -1;
 }
 
 .hours-played-field,

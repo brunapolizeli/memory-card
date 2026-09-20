@@ -34,6 +34,7 @@ const minutesPlayedField = document.querySelector(".minutes-played-field");
 const userRatingStars = document.querySelector(".user-rating-stars");
 const userRatingFraction = document.querySelector(".user-rating-fraction");
 const userRatingLabel = document.querySelector(".user-rating-label");
+const downwardArrowIcon = `<img class="downward-arrow-icon" src="assets/icons/downward-arrow-icon.png">`;
 let allPlatforms = [];
 
 function renderIntro(game) {
@@ -256,9 +257,9 @@ async function loadGame() {
   const { ok, data } = await getGameDetails(gameId);
   if (!ok) return;
   renderIntro(data);
-  progressToggleBtn.textContent = getProgressLabel(data);
-  statusToggleBtn.textContent = getStatusLabel(data);
-  platformSelectionBtn.textContent = getPlatformLabel(data);
+  progressToggleBtn.innerHTML = `${getProgressLabel(data)} ${downwardArrowIcon}`;
+  statusToggleBtn.innerHTML = `${getStatusLabel(data)} ${downwardArrowIcon}`;
+  platformSelectionBtn.innerHTML = `${getPlatformLabel(data)} ${downwardArrowIcon}`;
   hoursPlayedField.value = getHoursPlayedLabel(data);
   minutesPlayedField.value = getMinutesPlayedLabel(data);
   renderFilledStars(data.user_rating);
