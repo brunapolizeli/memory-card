@@ -4,6 +4,8 @@ import {
   updateStatus,
   updatePlatform,
   updateHoursPlayed,
+  updateMinutesPlayed,
+  updateUserRating,
   getPlatforms,
 } from "../api.js";
 
@@ -29,6 +31,9 @@ const platformSearchResults = document.querySelector(
 );
 const hoursPlayedField = document.querySelector(".hours-played-field");
 const minutesPlayedField = document.querySelector(".minutes-played-field");
+const userRatingStars = document.querySelector(".user-rating-stars");
+const userRatingFraction = document.querySelector(".user-rating-fraction");
+const userRatingLabel = document.querySelector(".user-rating-label");
 let allPlatforms = [];
 
 function renderIntro(game) {
@@ -76,6 +81,41 @@ function getHoursPlayedLabel(game) {
 function getMinutesPlayedLabel(game) {
   if (!game.minutes_played) return 0;
   return game.minutes_played;
+}
+
+function getUserRatingFraction(game) {
+  if (!game.user_rating) return "";
+  return `${game.user_rating}/5`;
+}
+
+function getUserRatingLabel(game) {
+  const ratingLabels = {
+    1: { label: "Terrible", color: "#C77B6B" },
+    2: { label: "Bad", color: "#E0A458" },
+    3: { label: "Okay", color: "#E8D06B" },
+    4: { label: "Good", color: "#4A90D9" },
+    5: { label: "Great", color: "#8FC97D" },
+    6: { label: "Masterpiece", color: "#0EA5C4" },
+  };
+
+  if (!game.user_rating) return "";
+  return ratingLabels[game.user_rating];
+}
+
+function renderFilledStars(user_rating) {
+  document.querySelectorAll(".star-btn").forEach((star) => {
+    const img = star.querySelector("img");
+
+    const value = Number(star.dataset.value);
+
+    if (value === 6 && user_rating === 6) {
+      img.src = `assets/icons/special-user-rating-icon.png`;
+    } else if (value <= user_rating && value !== 6) {
+      img.src = `assets/icons/yellow-user-rating-icon.png`;
+    } else {
+      img.src = `assets/icons/empty-rating-icon.png`;
+    }
+  });
 }
 
 progressToggleBtn.addEventListener("click", () => {
@@ -200,6 +240,18 @@ minutesPlayedField.addEventListener("blur", async () => {
   }
 });
 
+userRatingStars.addEventListener("click", async (event) => {
+  const star = event.target.closest(".star-btn");
+
+  const value = star.dataset.value;
+
+  const result = await updateUserRating(gameId, value);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
 async function loadGame() {
   const { ok, data } = await getGameDetails(gameId);
   if (!ok) return;
@@ -209,6 +261,12 @@ async function loadGame() {
   platformSelectionBtn.textContent = getPlatformLabel(data);
   hoursPlayedField.value = getHoursPlayedLabel(data);
   minutesPlayedField.value = getMinutesPlayedLabel(data);
+  renderFilledStars(data.user_rating);
+  userRatingFraction.innerHTML = getUserRatingFraction(data);
+  const userRatingLabelObj = getUserRatingLabel(data);
+  userRatingLabel.innerHTML = userRatingLabelObj.label;
+  userRatingLabel.style.color = userRatingLabelObj.color;
+  userRatingLabel.style.backgroundColor = userRatingLabelObj.color + "33";
 }
 
 loadGame();

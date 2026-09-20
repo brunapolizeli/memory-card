@@ -393,7 +393,8 @@ ul {
 .game-page-icon,
 .platform-selection-title img,
 .hours-played-field-title img,
-.minutes-played-field-title img {
+.minutes-played-field-title img,
+.user-rating-section-icon {
   width: 5vw;
   height: 5vw;
   object-fit: contain;
@@ -579,7 +580,8 @@ ul {
 
 .platform-selection-title,
 .hours-played-field-title,
-.minutes-played-field-title {
+.minutes-played-field-title,
+.user-rating-title {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -611,6 +613,32 @@ ul {
 .minutes-played-field {
   width: 2rem;
   height: 1.5rem;
+}
+
+.empty-rating-icon {
+  width: 2rem;
+}
+
+.user-rating-stars {
+  display: flex;
+  padding: 0;
+}
+
+.star-btn {
+  background-color: transparent;
+  border: none;
+}
+
+.user-rating-tooltip {
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+}
+
+.user-rating-label {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
 }
 
 @keyframes modal-rise {

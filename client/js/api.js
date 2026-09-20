@@ -184,6 +184,20 @@ export async function updateMinutesPlayed(id, minutes_played) {
   return { ok: response.ok, data };
 }
 
+export async function updateUserRating(id, value) {
+  const response = await fetch(`${API_BASE_URL}/library/update-user-rating`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      id,
+      value,
+    }),
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
+
 export async function getPlatforms() {
   const response = await fetch(`${API_BASE_URL}/games/search-platforms`);
   const data = await response.json();
