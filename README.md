@@ -18,7 +18,7 @@ A personal video game tracker built with vanilla JavaScript, Node.js, Express, a
 
 ## Project Overview
 
-Memory Card is a solo full-stack video game tracker with custom authentication, a normalized PostgreSQL database, a REST API, and integration with the RAWG API.
+Memory Card is a full-stack video game tracker with custom authentication, a normalized PostgreSQL database, a REST API, and integration with the RAWG API.
 
 The project is being developed with a Frutiger Aero (2004–2013) inspired visual identity and a mobile-first approach.
 
@@ -105,7 +105,7 @@ memory-card/
 
 ## Credits
 
-The project was built from scratch based on a Scrimba project prompt and [Figma reference](https://www.figma.com/design/hE5klIn1AEQ9XWZWmurs7y/Learning-Journal-Blog?node-id=0-1&t=5IRAjYyGX68SigMk-1), which provided the initial frontend concept and layout reference. All implementation was done independently. The backend, database architecture, authentication, API integration, and subsequent feature and design decisions were developed beyond the original Scrimba brief.
+The project is being built from scratch based on a Scrimba project prompt and [Figma reference](https://www.figma.com/design/hE5klIn1AEQ9XWZWmurs7y/Learning-Journal-Blog?node-id=0-1&t=5IRAjYyGX68SigMk-1), which provided the initial frontend concept and layout reference. The backend, database architecture, authentication, API integration, and subsequent feature and design decisions were developed beyond the original Scrimba brief.
 
 Game data and cover images are provided by the [RAWG API](https://rawg.io).
 
