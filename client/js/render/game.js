@@ -160,19 +160,28 @@ platformSearchResults.addEventListener("click", async (event) => {
   }
 });
 
+function sanitizeNumericField(field, max) {
+  field.value = field.value.replace(/[^0-9]/g, "");
+
+  if (field.value.length > 1 && field.value.charAt(0) === "0") {
+    field.value = field.value.slice(1);
+  }
+
+  if (max !== undefined && Number(field.value) > max) {
+    field.value = String(max);
+  }
+
+  if (field.value.length === 0) {
+    field.value = "0";
+  }
+}
+
 hoursPlayedField.addEventListener("input", () => {
-  hoursPlayedField.value = hoursPlayedField.value.replace(/[^0-9]/g, "");
+  sanitizeNumericField(hoursPlayedField);
+});
 
-  if (
-    hoursPlayedField.value.length > 1 &&
-    hoursPlayedField.value.charAt(0) === "0"
-  ) {
-    hoursPlayedField.value = hoursPlayedField.value.slice(1);
-  }
-
-  if (hoursPlayedField.value.length === 0) {
-    hoursPlayedField.value = 0;
-  }
+minutesPlayedField.addEventListener("input", () => {
+  sanitizeNumericField(minutesPlayedField, 59);
 });
 
 hoursPlayedField.addEventListener("blur", async () => {
@@ -180,25 +189,6 @@ hoursPlayedField.addEventListener("blur", async () => {
 
   if (result.ok) {
     loadGame();
-  }
-});
-
-minutesPlayedField.addEventListener("input", () => {
-  minutesPlayedField.value = minutesPlayedField.value.replace(/[^0-9]/g, "");
-
-  if (
-    minutesPlayedField.value.length > 1 &&
-    minutesPlayedField.value.charAt(0) === "0"
-  ) {
-    minutesPlayedField.value = minutesPlayedField.value.slice(1);
-  }
-
-  if (minutesPlayedField.value > 59) {
-    minutesPlayedField.value = 59;
-  }
-
-  if (minutesPlayedField.value.length === 0) {
-    minutesPlayedField.value = 0;
   }
 });
 
