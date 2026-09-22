@@ -6,6 +6,7 @@ import {
   updateHoursPlayed,
   updateMinutesPlayed,
   updateUserRating,
+  updateDifficulty,
   getPlatforms,
 } from "../api.js";
 
@@ -37,6 +38,10 @@ const userRatingLabel = document.querySelector(".user-rating-label");
 const downwardArrowIcon = `<img class="downward-arrow-icon" src="assets/icons/downward-arrow-icon.png">`;
 const rawgStars = document.querySelectorAll(".rawg-rating-stars li");
 const rawgRatingFraction = document.querySelector(".rawg-rating-fraction");
+const difficultyDrops = document.querySelector(".difficulty-drops");
+const difficultyLabel = document.querySelector(".difficulty-label");
+const userRatingTooltip = document.querySelector(".user-rating-tooltip");
+const difficultyTooltip = document.querySelector(".difficulty-tooltip");
 let allPlatforms = [];
 
 function renderIntro(game) {
@@ -101,7 +106,7 @@ function getUserRatingLabel(game) {
     6: { label: "Masterpiece", color: "#0EA5C4" },
   };
 
-  if (!game.user_rating) return "";
+  if (!game.user_rating) return { label: "", color: "transparent" };
   return ratingLabels[game.user_rating];
 }
 
@@ -121,9 +126,36 @@ function renderFilledStars(user_rating) {
   });
 }
 
+function renderFilledDrops(difficulty) {
+  document.querySelectorAll(".drop-btn").forEach((drop) => {
+    const img = drop.querySelector("img");
+
+    const value = Number(drop.dataset.value);
+
+    if (value <= difficulty) {
+      img.src = `assets/icons/filled-difficulty-icon.png`;
+    } else {
+      img.src = `assets/icons/empty-difficulty-icon.png`;
+    }
+  });
+}
+
 function getRawgRatingFraction(game) {
-  if (!game.user_rating) return "";
+  if (!game.rawg_rating) return "";
   return `${game.rawg_rating}/5`;
+}
+
+function getDifficultyLabel(game) {
+  const difficultyLabels = {
+    1: { label: "Easy", color: "#8FC97D" },
+    2: { label: "Medium", color: "#B8D96B" },
+    3: { label: "Tricky", color: "#E8D06B" },
+    4: { label: "Hard", color: "#E0A458" },
+    5: { label: "Brutal", color: "#C77B6B" },
+  };
+
+  if (!game.difficulty) return { label: "", color: "transparent" };
+  return difficultyLabels[game.difficulty];
 }
 
 progressToggleBtn.addEventListener("click", () => {
@@ -279,23 +311,58 @@ function renderRawgRating(game) {
   });
 }
 
+difficultyDrops.addEventListener("click", async (event) => {
+  const drop = event.target.closest(".drop-btn");
+
+  const value = drop.dataset.value;
+
+  const result = await updateDifficulty(gameId, value);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
 async function loadGame() {
   const { ok, data } = await getGameDetails(gameId);
   if (!ok) return;
+
   renderIntro(data);
+
   progressToggleBtn.innerHTML = `${getProgressLabel(data)} ${downwardArrowIcon}`;
   statusToggleBtn.innerHTML = `${getStatusLabel(data)} ${downwardArrowIcon}`;
   platformSelectionBtn.innerHTML = `${getPlatformLabel(data)} ${downwardArrowIcon}`;
+
   hoursPlayedField.value = getHoursPlayedLabel(data);
   minutesPlayedField.value = getMinutesPlayedLabel(data);
+
   renderFilledStars(data.user_rating);
   userRatingFraction.innerHTML = getUserRatingFraction(data);
-  const userRatingLabelObj = getUserRatingLabel(data);
-  userRatingLabel.innerHTML = userRatingLabelObj.label;
-  userRatingLabel.style.color = userRatingLabelObj.color;
-  userRatingLabel.style.backgroundColor = userRatingLabelObj.color + "33";
+
+  if (!data.user_rating) {
+    userRatingTooltip.hidden = true;
+  } else {
+    userRatingTooltip.hidden = false;
+    const userRatingLabelObj = getUserRatingLabel(data);
+    userRatingLabel.innerHTML = userRatingLabelObj.label;
+    userRatingLabel.style.color = userRatingLabelObj.color;
+    userRatingLabel.style.backgroundColor = userRatingLabelObj.color + "33";
+  }
+
   renderRawgRating(data);
   rawgRatingFraction.innerHTML = getRawgRatingFraction(data);
+
+  renderFilledDrops(data.difficulty);
+
+  if (!data.difficulty) {
+    difficultyTooltip.hidden = true;
+  } else {
+    difficultyTooltip.hidden = false;
+    const difficultyLabelObj = getDifficultyLabel(data);
+    difficultyLabel.innerHTML = difficultyLabelObj.label;
+    difficultyLabel.style.color = difficultyLabelObj.color;
+    difficultyLabel.style.backgroundColor = difficultyLabelObj.color + "33";
+  }
 }
 
 loadGame();

@@ -271,4 +271,26 @@ router.patch("/update-user-rating", authenticate, async (req, res) => {
   }
 });
 
+router.patch("/update-difficulty", authenticate, async (req, res) => {
+  const { id, value } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_games
+      SET difficulty = $1
+      WHERE id = $2 AND user_id = $3`,
+      [value, id, req.userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    res.json({ message: "Difficulty updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game difficulty" });
+  }
+});
+
 export default router;

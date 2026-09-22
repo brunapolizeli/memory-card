@@ -403,7 +403,8 @@ ul {
 .hours-played-field-title img,
 .minutes-played-field-title img,
 .user-rating-section-icon,
-.rawg-rating-section-icon {
+.rawg-rating-section-icon,
+.difficulty-section-icon {
   width: 5vw;
   height: 5vw;
   object-fit: contain;
@@ -591,7 +592,8 @@ ul {
 .hours-played-field-title,
 .minutes-played-field-title,
 .user-rating-title,
-.rawg-rating-title {
+.rawg-rating-title,
+.difficulty-title {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -604,7 +606,8 @@ ul {
 .hours-played-wrapper,
 .minutes-played-wrapper,
 .user-rating-wrapper,
-.rawg-rating-wrapper {
+.rawg-rating-wrapper,
+.difficulty-wrapper {
   background-color: var(--color-pale-blue-soft);
   border-radius: 0.5rem;
   margin-bottom: 1rem;
@@ -651,28 +654,38 @@ ul {
   height: 1.5rem;
 }
 
-.empty-rating-icon {
+.empty-rating-icon,
+.empty-difficulty-icon {
   width: 2rem;
 }
 
-.user-rating-stars {
+.user-rating-stars,
+.difficulty-drops {
   display: flex;
   padding: 0;
   margin-bottom: 0;
 }
 
-.star-btn {
+.star-btn,
+.drop-btn {
   background-color: transparent;
   border: none;
 }
 
-.user-rating-tooltip {
+.user-rating-tooltip:not([hidden]) {
   display: flex;
   align-items: center;
   gap: 0.3125rem;
 }
 
-.user-rating-label {
+.difficulty-tooltip {
+  position: absolute;
+  top: 12%;
+  right: 9%;
+}
+
+.user-rating-label,
+.difficulty-label {
   display: inline-block;
   padding: 0.2rem 0.6rem;
   border-radius: 1rem;
@@ -707,6 +720,21 @@ ul {
 .rawg-rating-wrapper {
   grid-row: 4;
   grid-column: 1 / -1;
+}
+
+.difficulty-wrapper {
+  grid-row: 5;
+  grid-column: 1 / -1;
+}
+
+.difficulty-row {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 0.5rem;
+}
+
+.difficulty-tooltip {
 }
 
 @keyframes modal-rise {
