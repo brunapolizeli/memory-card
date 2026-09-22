@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Memory Card: Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="dashboard-content">
+      <div id="header-placeholder"></div>
+
+      <main>
+        <section class="dashboard-page"></section>
+      </main>
+
+      <div id="footer-placeholder"></div>
+    </div>
+
+    <script type="module">
+      import {
+        renderHeader,
+        renderFooter,
+        updateHeaderAuthState,
+        initHeaderListeners,
+      } from "./js/shared/layout.js";
+
+      document.querySelector("#header-placeholder").innerHTML = renderHeader();
+      document.querySelector("#footer-placeholder").innerHTML = renderFooter();
+      updateHeaderAuthState();
+      initHeaderListeners();
+    </script>
+    <script type="module" src="js/render/dashboard.js"></script>
+  </body>
+</html>

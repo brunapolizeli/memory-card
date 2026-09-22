@@ -16,7 +16,7 @@ export function renderHeader() {
             </label>
             <ul class="menu">
               <li><a href="index.html">Home</a></li>
-              <li><a href="#">Profile</a></li>
+              <li><a href="dashboard.html">Dashboard</a></li>
               <li><a href="library.html">Library</a></li>
             </ul>
           </nav>
