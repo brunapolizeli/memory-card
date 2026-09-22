@@ -404,7 +404,8 @@ ul {
 .minutes-played-field-title img,
 .user-rating-section-icon,
 .rawg-rating-section-icon,
-.difficulty-section-icon {
+.difficulty-section-icon,
+.calendar-icon {
   width: 5vw;
   height: 5vw;
   object-fit: contain;
@@ -483,7 +484,8 @@ ul {
 
 .game-progress-title,
 .game-status-title,
-.game-details-title {
+.game-details-title,
+.timeline-title {
   display: flex;
   align-items: center;
   gap: 0.625rem;
@@ -491,7 +493,8 @@ ul {
 
 .game-progress,
 .game-status,
-.game-details {
+.game-details,
+.timeline-section {
   background: linear-gradient(180deg, #e8f1fb 0%, white 100%);
   border-radius: 0.625rem;
   box-shadow:
@@ -607,7 +610,10 @@ ul {
 .minutes-played-wrapper,
 .user-rating-wrapper,
 .rawg-rating-wrapper,
-.difficulty-wrapper {
+.difficulty-wrapper,
+.start-date-wrapper,
+.completed-date-wrapper,
+.platinum-date-wrapper {
   background-color: var(--color-pale-blue-soft);
   border-radius: 0.5rem;
   margin-bottom: 1rem;
@@ -734,7 +740,11 @@ ul {
   gap: 0.5rem;
 }
 
-.difficulty-tooltip {
+.start-date-wrapper,
+.completed-date-wrapper,
+.platinum-date-wrapper {
+  display: flex;
+  justify-content: space-between;
 }
 
 @keyframes modal-rise {

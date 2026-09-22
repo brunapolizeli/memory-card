@@ -7,6 +7,9 @@ import {
   updateMinutesPlayed,
   updateUserRating,
   updateDifficulty,
+  updateStartDate,
+  updateCompletedDate,
+  updatePlatinumDate,
   getPlatforms,
 } from "../api.js";
 
@@ -42,6 +45,9 @@ const difficultyDrops = document.querySelector(".difficulty-drops");
 const difficultyLabel = document.querySelector(".difficulty-label");
 const userRatingTooltip = document.querySelector(".user-rating-tooltip");
 const difficultyTooltip = document.querySelector(".difficulty-tooltip");
+const startDateField = document.querySelector(".start-date-field");
+const completedDateField = document.querySelector(".completed-date-field");
+const platinumDateField = document.querySelector(".platinum-date-field");
 let allPlatforms = [];
 
 function renderIntro(game) {
@@ -156,6 +162,11 @@ function getDifficultyLabel(game) {
 
   if (!game.difficulty) return { label: "", color: "transparent" };
   return difficultyLabels[game.difficulty];
+}
+
+function getDate(game, field) {
+  if (!game[field]) return "";
+  return game[field].slice(0, 10);
 }
 
 progressToggleBtn.addEventListener("click", () => {
@@ -323,6 +334,16 @@ difficultyDrops.addEventListener("click", async (event) => {
   }
 });
 
+startDateField.addEventListener("change", async () => {
+  const date = startDateField.value;
+
+  const result = await updateStartDate(gameId, date);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
 async function loadGame() {
   const { ok, data } = await getGameDetails(gameId);
   if (!ok) return;
@@ -363,6 +384,10 @@ async function loadGame() {
     difficultyLabel.style.color = difficultyLabelObj.color;
     difficultyLabel.style.backgroundColor = difficultyLabelObj.color + "33";
   }
+
+  startDateField.value = getDate(data, "start_date");
+  completedDateField.value = getDate(data, "completed_date");
+  platinumDateField.value = getDate(data, "platinum_date");
 }
 
 loadGame();

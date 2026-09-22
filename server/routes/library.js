@@ -293,4 +293,67 @@ router.patch("/update-difficulty", authenticate, async (req, res) => {
   }
 });
 
+router.patch("/update-start-date", authenticate, async (req, res) => {
+  const { id, date } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_games
+      SET start_date = $1
+      WHERE id = $2 AND user_id = $3`,
+      [date, id, req.userId],
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    res.json({ message: "Start date updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game start date" });
+  }
+});
+
+router.patch("/update-completed-date", authenticate, async (req, res) => {
+  const { id, date } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_games
+      SET completed_date = $1
+      WHERE id = $2 AND user_id = $3`,
+      [date, id, req.userId],
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    res.json({ message: "Completed date updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game completed date" });
+  }
+});
+
+router.patch("/update-platinum-date", authenticate, async (req, res) => {
+  const { id, date } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_games
+      SET platinum_date = $1
+      WHERE id = $2 AND user_id = $3`,
+      [date, id, req.userId],
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    res.json({ message: "Platinum date updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game platinum date" });
+  }
+});
+
 export default router;
