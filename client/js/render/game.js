@@ -35,6 +35,8 @@ const userRatingStars = document.querySelector(".user-rating-stars");
 const userRatingFraction = document.querySelector(".user-rating-fraction");
 const userRatingLabel = document.querySelector(".user-rating-label");
 const downwardArrowIcon = `<img class="downward-arrow-icon" src="assets/icons/downward-arrow-icon.png">`;
+const rawgStars = document.querySelectorAll(".rawg-rating-stars li");
+const rawgRatingFraction = document.querySelector(".rawg-rating-fraction");
 let allPlatforms = [];
 
 function renderIntro(game) {
@@ -117,6 +119,11 @@ function renderFilledStars(user_rating) {
       img.src = `assets/icons/empty-rating-icon.png`;
     }
   });
+}
+
+function getRawgRatingFraction(game) {
+  if (!game.user_rating) return "";
+  return `${game.rawg_rating}/5`;
 }
 
 progressToggleBtn.addEventListener("click", () => {
@@ -253,6 +260,25 @@ userRatingStars.addEventListener("click", async (event) => {
   }
 });
 
+function renderRawgRating(game) {
+  const rating = game.rawg_rating;
+  const integer = Math.floor(rating);
+  const decimal_percentage = (rating - integer) * 100;
+
+  rawgStars.forEach((li, index) => {
+    const star = li.querySelector(".rawg-star");
+    const fill = star.querySelector(".star-fill");
+
+    if (index < integer) {
+      fill.style.width = `100%`;
+    } else if (index === integer && decimal_percentage !== 0) {
+      fill.style.width = `${decimal_percentage}%`;
+    } else {
+      fill.style.width = `0%`;
+    }
+  });
+}
+
 async function loadGame() {
   const { ok, data } = await getGameDetails(gameId);
   if (!ok) return;
@@ -268,6 +294,8 @@ async function loadGame() {
   userRatingLabel.innerHTML = userRatingLabelObj.label;
   userRatingLabel.style.color = userRatingLabelObj.color;
   userRatingLabel.style.backgroundColor = userRatingLabelObj.color + "33";
+  renderRawgRating(data);
+  rawgRatingFraction.innerHTML = getRawgRatingFraction(data);
 }
 
 loadGame();

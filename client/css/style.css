@@ -99,7 +99,7 @@ h1 {
 }
 
 .hero-game-cover {
-  width: 30vw;
+  width: 100vw;
   aspect-ratio: 4 / 4;
   object-fit: contain;
   opacity: 0.5;
@@ -117,7 +117,7 @@ h1 {
 .hero-game-details {
   height: 50%;
   position: absolute;
-  top: 50%;
+  top: 30%;
   padding-left: 5vw;
 }
 
@@ -138,9 +138,16 @@ h1 {
 
 .hero-game-details-one p,
 .hero-game-details-two p {
-  background-color: var(--color-pale-blue);
-  padding: 1vh 4vw;
   border-radius: 40%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 1vh 4vw;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .hero-games-list-dot {
@@ -395,7 +402,8 @@ ul {
 .platform-selection-title img,
 .hours-played-field-title img,
 .minutes-played-field-title img,
-.user-rating-section-icon {
+.user-rating-section-icon,
+.rawg-rating-section-icon {
   width: 5vw;
   height: 5vw;
   object-fit: contain;
@@ -582,7 +590,8 @@ ul {
 .platform-selection-title,
 .hours-played-field-title,
 .minutes-played-field-title,
-.user-rating-title {
+.user-rating-title,
+.rawg-rating-title {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -594,7 +603,8 @@ ul {
 .platform-selection,
 .hours-played-wrapper,
 .minutes-played-wrapper,
-.user-rating-wrapper {
+.user-rating-wrapper,
+.rawg-rating-wrapper {
   background-color: var(--color-pale-blue-soft);
   border-radius: 0.5rem;
   margin-bottom: 1rem;
@@ -648,6 +658,7 @@ ul {
 .user-rating-stars {
   display: flex;
   padding: 0;
+  margin-bottom: 0;
 }
 
 .star-btn {
@@ -665,6 +676,37 @@ ul {
   display: inline-block;
   padding: 0.2rem 0.6rem;
   border-radius: 1rem;
+}
+
+.rawg-star {
+  position: relative;
+  display: inline-block;
+}
+
+.star-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.filled-star-icon {
+  display: block;
+  height: 100%;
+  width: 2rem;
+  object-fit: contain;
+}
+
+.rawg-rating-stars {
+  display: flex;
+  gap: 0.8125rem;
+  padding: 0;
+}
+
+.rawg-rating-wrapper {
+  grid-row: 4;
+  grid-column: 1 / -1;
 }
 
 @keyframes modal-rise {

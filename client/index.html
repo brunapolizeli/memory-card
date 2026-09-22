@@ -9,14 +9,49 @@
     <div class="home-content">
       <div id="header-placeholder"></div>
       <main>
-        <section class="hero">
-          <h2>Currently Playing</h2>
-          <ul class="currently-playing"></ul>
-          <div class="hero-dots-container"></div>
+        <section class="stats">
+          <h2>Your Library</h2>
+          <ul class="stats-grid">
+            <li class="stat-card">
+              <p class="stat-label">Games Tracked</p>
+              <p class="stat-value"></p>
+            </li>
+            <li class="stat-card">
+              <p class="stat-label">Completed</p>
+              <p class="stat-value"></p>
+            </li>
+            <li class="stat-card">
+              <p class="stat-label">Platinum</p>
+              <p class="stat-value"></p>
+            </li>
+            <li class="stat-card">
+              <p class="stat-label">Hours Logged</p>
+              <p class="stat-value"></p>
+            </li>
+          </ul>
         </section>
-        <section class="stats"></section>
-        <section class="my-library"></section>
-        <section class="add-game"></section>
+
+        <section class="my-library">
+          <div class="my-library-header">
+            <h2>Recently Added</h2>
+            <a href="library.html">See all</a>
+          </div>
+          <ul class="recently-added-list"></ul>
+        </section>
+
+        <section class="add-game">
+          <h2>Add a game</h2>
+          <p>Search the RAWG catalog and start tracking something new.</p>
+          <div class="add-game-search">
+            <input
+              type="text"
+              class="add-game-search-input"
+              placeholder="Search a game..."
+              aria-label="Search for a game"
+            />
+            <button type="button" class="add-game-search-btn">→</button>
+          </div>
+        </section>
       </main>
       <div id="footer-placeholder"></div>
     </div>
