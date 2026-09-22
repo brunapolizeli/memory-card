@@ -10,6 +10,8 @@ import {
   updateStartDate,
   updateCompletedDate,
   updatePlatinumDate,
+  updateCompletedNotes,
+  updatePlatinumNotes,
   getPlatforms,
 } from "../api.js";
 
@@ -48,6 +50,8 @@ const difficultyTooltip = document.querySelector(".difficulty-tooltip");
 const startDateField = document.querySelector(".start-date-field");
 const completedDateField = document.querySelector(".completed-date-field");
 const platinumDateField = document.querySelector(".platinum-date-field");
+const completedNotesField = document.querySelector(".completed-notes-field");
+const platinumNotesField = document.querySelector(".platinum-notes-field");
 let allPlatforms = [];
 
 function renderIntro(game) {
@@ -167,6 +171,11 @@ function getDifficultyLabel(game) {
 function getDate(game, field) {
   if (!game[field]) return "";
   return game[field].slice(0, 10);
+}
+
+function getNotes(game, field) {
+  if (!game[field]) return "";
+  return game[field];
 }
 
 progressToggleBtn.addEventListener("click", () => {
@@ -344,6 +353,46 @@ startDateField.addEventListener("change", async () => {
   }
 });
 
+completedDateField.addEventListener("change", async () => {
+  const date = completedDateField.value;
+
+  const result = await updateCompletedDate(gameId, date);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
+platinumDateField.addEventListener("change", async () => {
+  const date = platinumDateField.value;
+
+  const result = await updatePlatinumDate(gameId, date);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
+completedNotesField.addEventListener("change", async () => {
+  const note = completedNotesField.value;
+
+  const result = await updateCompletedNotes(gameId, note);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
+platinumNotesField.addEventListener("change", async () => {
+  const note = platinumNotesField.value;
+
+  const result = await updatePlatinumNotes(gameId, note);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
 async function loadGame() {
   const { ok, data } = await getGameDetails(gameId);
   if (!ok) return;
@@ -388,6 +437,9 @@ async function loadGame() {
   startDateField.value = getDate(data, "start_date");
   completedDateField.value = getDate(data, "completed_date");
   platinumDateField.value = getDate(data, "platinum_date");
+
+  completedNotesField.value = getNotes(data, "completed_notes");
+  platinumNotesField.value = getNotes(data, "platinum_notes");
 }
 
 loadGame();

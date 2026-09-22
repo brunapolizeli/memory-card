@@ -356,4 +356,46 @@ router.patch("/update-platinum-date", authenticate, async (req, res) => {
   }
 });
 
+router.patch("/update-completed-notes", authenticate, async (req, res) => {
+  const { id, note } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_games
+      SET completed_notes = $1
+      WHERE id = $2 AND user_id = $3`,
+      [note, id, req.userId],
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    res.json({ message: "Completed notes updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game completed notes" });
+  }
+});
+
+router.patch("/update-platinum-notes", authenticate, async (req, res) => {
+  const { id, note } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_games
+      SET platinum_notes = $1
+      WHERE id = $2 AND user_id = $3`,
+      [note, id, req.userId],
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    res.json({ message: "Platinum notes updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game platinum notes" });
+  }
+});
+
 export default router;

@@ -405,7 +405,8 @@ ul {
 .user-rating-section-icon,
 .rawg-rating-section-icon,
 .difficulty-section-icon,
-.calendar-icon {
+.calendar-icon,
+.note-icon {
   width: 5vw;
   height: 5vw;
   object-fit: contain;
@@ -485,7 +486,8 @@ ul {
 .game-progress-title,
 .game-status-title,
 .game-details-title,
-.timeline-title {
+.timeline-title,
+.notes-title {
   display: flex;
   align-items: center;
   gap: 0.625rem;
@@ -494,7 +496,8 @@ ul {
 .game-progress,
 .game-status,
 .game-details,
-.timeline-section {
+.timeline-section,
+.notes-section {
   background: linear-gradient(180deg, #e8f1fb 0%, white 100%);
   border-radius: 0.625rem;
   box-shadow:
@@ -613,7 +616,9 @@ ul {
 .difficulty-wrapper,
 .start-date-wrapper,
 .completed-date-wrapper,
-.platinum-date-wrapper {
+.platinum-date-wrapper,
+.completed-notes-wrapper,
+.platinum-notes-wrapper {
   background-color: var(--color-pale-blue-soft);
   border-radius: 0.5rem;
   margin-bottom: 1rem;
@@ -745,6 +750,21 @@ ul {
 .platinum-date-wrapper {
   display: flex;
   justify-content: space-between;
+}
+
+.completed-notes-wrapper,
+.platinum-notes-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.completed-notes-field,
+.platinum-notes-field {
+  field-sizing: content;
+  min-height: 5rem;
+  min-width: 10rem;
+  width: 40vw;
 }
 
 @keyframes modal-rise {
