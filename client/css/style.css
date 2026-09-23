@@ -730,12 +730,12 @@ ul {
 }
 
 .rawg-rating-wrapper {
-  grid-row: 4;
+  grid-row: 5;
   grid-column: 1 / -1;
 }
 
 .difficulty-wrapper {
-  grid-row: 5;
+  grid-row: 4;
   grid-column: 1 / -1;
 }
 
@@ -783,6 +783,10 @@ ul {
 
   display: inline-block;
   width: fit-content;
+}
+
+.difficulty-subtitle {
+  margin-bottom: 0;
 }
 
 @keyframes modal-rise {

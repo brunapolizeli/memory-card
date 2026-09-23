@@ -65,7 +65,10 @@ router.get("/recently-added-games", authenticate, async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT games.name, games.image_url, games.tags, user_games.id AS user_games_id, user_games.status, user_games.platform, user_games.hours_played, user_games.user_rating, games.rawg_rating
+      `SELECT games.name, games.image_url, games.tags, 
+      user_games.id AS user_games_id, user_games.status, 
+      user_games.platform, user_games.hours_played, 
+      user_games.user_rating, games.rawg_rating
       FROM user_games
       JOIN games ON user_games.game_id = games.id
       WHERE user_games.user_id = $1
