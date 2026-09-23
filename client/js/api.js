@@ -291,6 +291,20 @@ export async function updatePlatinumNotes(id, note) {
   return { ok: response.ok, data };
 }
 
+export async function updateGameModes(id, modes) {
+  const response = await fetch(`${API_BASE_URL}/library/update-game-modes`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      id,
+      modes,
+    }),
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
+
 export async function getPlatforms() {
   const response = await fetch(`${API_BASE_URL}/games/search-platforms`);
   const data = await response.json();

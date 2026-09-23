@@ -407,7 +407,9 @@ ul {
 .difficulty-section-icon,
 .calendar-icon,
 .note-icon,
-.leftward-arrow-icon {
+.leftward-arrow-icon,
+.plus-icon,
+.game-mode-icon {
   width: 5vw;
   height: 5vw;
   object-fit: contain;
@@ -488,17 +490,20 @@ ul {
 .game-status-title,
 .game-details-title,
 .timeline-title,
-.notes-title {
+.notes-title,
+.game-mode-title {
   display: flex;
   align-items: center;
   gap: 0.625rem;
+  flex-wrap: wrap;
 }
 
 .game-progress,
 .game-status,
 .game-details,
 .timeline-section,
-.notes-section {
+.notes-section,
+.game-mode-section {
   background: linear-gradient(180deg, #e8f1fb 0%, white 100%);
   border-radius: 0.625rem;
   box-shadow:
@@ -647,12 +652,10 @@ ul {
 
 .hours-played-wrapper {
   grid-column: 1;
-  grid-row: 2;
 }
 
 .minutes-played-wrapper {
   grid-column: 2;
-  grid-row: 2;
 }
 
 .user-rating-wrapper {
@@ -773,20 +776,81 @@ ul {
   border: 1px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-
   border-radius: 50%;
   padding: 0.4375rem 0.6rem;
-
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.12),
     0 2px 6px rgba(0, 0, 0, 0.08);
-
   display: inline-block;
   width: fit-content;
 }
 
 .difficulty-subtitle {
   margin-bottom: 0;
+}
+
+.user-rating-subtitle,
+.difficulty-subtitle,
+.game-mode-subtitle {
+  width: 100%;
+  margin: 0.2rem 0 0 0;
+  font-size: 0.85rem;
+  color: #5b7a99;
+}
+
+.game-mode-input-row {
+  position: relative;
+  margin-top: 0.625rem;
+}
+
+.game-mode-field {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+  border: 1px solid var(--color-pale-blue);
+  border-radius: 1.25rem;
+}
+
+.add-mode-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.added-game-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0;
+}
+
+.mode-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--color-pale-blue-soft);
+  border: 1px solid var(--color-primary-blue);
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.remove-mode-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-primary-blue);
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0;
 }
 
 @keyframes modal-rise {

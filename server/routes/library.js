@@ -401,4 +401,26 @@ router.patch("/update-platinum-notes", authenticate, async (req, res) => {
   }
 });
 
+router.patch("/update-game-modes", authenticate, async (req, res) => {
+  const { id, modes } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_games
+      SET game_modes = $1
+      WHERE id = $2 AND user_id = $3`,
+      [modes, id, req.userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game not found" });
+    }
+
+    res.json({ message: "Game modes updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game modes" });
+  }
+});
+
 export default router;

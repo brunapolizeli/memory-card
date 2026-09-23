@@ -12,6 +12,7 @@ import {
   updatePlatinumDate,
   updateCompletedNotes,
   updatePlatinumNotes,
+  updateGameModes,
   getPlatforms,
 } from "../api.js";
 
@@ -52,12 +53,20 @@ const completedDateField = document.querySelector(".completed-date-field");
 const platinumDateField = document.querySelector(".platinum-date-field");
 const completedNotesField = document.querySelector(".completed-notes-field");
 const platinumNotesField = document.querySelector(".platinum-notes-field");
+const gameModeField = document.querySelector(".game-mode-field");
+const addModeBtn = document.querySelector(".add-mode-btn");
+const addedGameModesList = document.querySelector(".added-game-modes");
+let gameModes = [];
 let allPlatforms = [];
+
+// ---- Intro (title, cover) ----
 
 function renderIntro(game) {
   gamePageTitle.textContent = game.name;
   gamePageCover.src = game.image_url;
 }
+
+// ---- Progress ----
 
 function getProgressLabel(game) {
   if (game.platinum) {
@@ -69,113 +78,6 @@ function getProgressLabel(game) {
   } else {
     return "Haven't Started";
   }
-}
-
-function getStatusLabel(game) {
-  const statusLabels = {
-    wishlist: "Wishlist",
-    backlog: "Backlog",
-    playing: "Playing",
-    "on-hold": "On Hold",
-    finished: "Finished",
-    replaying: "Replaying",
-    dropped: "Dropped",
-  };
-
-  if (!game.status) return "Choose Status";
-  return statusLabels[game.status];
-}
-
-function getPlatformLabel(game) {
-  if (!game.platform) return "Choose Platform";
-  return game.platform;
-}
-
-function getHoursPlayedLabel(game) {
-  if (!game.hours_played) return 0;
-  return game.hours_played;
-}
-
-function getMinutesPlayedLabel(game) {
-  if (!game.minutes_played) return 0;
-  return game.minutes_played;
-}
-
-function getUserRatingFraction(game) {
-  if (!game.user_rating) return "";
-  return `${game.user_rating}/5`;
-}
-
-function getUserRatingLabel(game) {
-  const ratingLabels = {
-    1: { label: "Terrible", color: "#C77B6B" },
-    2: { label: "Bad", color: "#E0A458" },
-    3: { label: "Okay", color: "#E8D06B" },
-    4: { label: "Good", color: "#4A90D9" },
-    5: { label: "Great", color: "#8FC97D" },
-    6: { label: "Masterpiece", color: "#0EA5C4" },
-  };
-
-  if (!game.user_rating) return { label: "", color: "transparent" };
-  return ratingLabels[game.user_rating];
-}
-
-function renderFilledStars(user_rating) {
-  document.querySelectorAll(".star-btn").forEach((star) => {
-    const img = star.querySelector("img");
-
-    const value = Number(star.dataset.value);
-
-    if (value === 6 && user_rating === 6) {
-      img.src = `assets/icons/special-user-rating-icon.png`;
-    } else if (value <= user_rating && value !== 6) {
-      img.src = `assets/icons/yellow-user-rating-icon.png`;
-    } else {
-      img.src = `assets/icons/empty-rating-icon.png`;
-    }
-  });
-}
-
-function renderFilledDrops(difficulty) {
-  document.querySelectorAll(".drop-btn").forEach((drop) => {
-    const img = drop.querySelector("img");
-
-    const value = Number(drop.dataset.value);
-
-    if (value <= difficulty) {
-      img.src = `assets/icons/filled-difficulty-icon.png`;
-    } else {
-      img.src = `assets/icons/empty-difficulty-icon.png`;
-    }
-  });
-}
-
-function getRawgRatingFraction(game) {
-  if (!game.rawg_rating) return "";
-  return `${game.rawg_rating}/5`;
-}
-
-function getDifficultyLabel(game) {
-  const difficultyLabels = {
-    1: { label: "Easy", color: "#8FC97D" },
-    2: { label: "Medium", color: "#B8D96B" },
-    3: { label: "Tricky", color: "#E8D06B" },
-    4: { label: "Hard", color: "#E0A458" },
-    5: { label: "Brutal", color: "#C77B6B" },
-  };
-
-  if (!game.difficulty) return { label: "", color: "transparent" };
-  return difficultyLabels[game.difficulty];
-}
-
-function getDate(game, field) {
-  if (!game[field]) return "";
-  return game[field].slice(0, 10);
-}
-
-function getNotes(game, field) {
-  if (!game[field]) return "";
-  return game[field];
 }
 
 progressToggleBtn.addEventListener("click", () => {
@@ -204,6 +106,23 @@ progressOptions.addEventListener("change", async (event) => {
   loadGame();
 });
 
+// ---- Status ----
+
+function getStatusLabel(game) {
+  const statusLabels = {
+    wishlist: "Wishlist",
+    backlog: "Backlog",
+    playing: "Playing",
+    "on-hold": "On Hold",
+    finished: "Finished",
+    replaying: "Replaying",
+    dropped: "Dropped",
+  };
+
+  if (!game.status) return "Choose Status";
+  return statusLabels[game.status];
+}
+
 statusToggleBtn.addEventListener("click", () => {
   statusOptions.hidden = !statusOptions.hidden;
 });
@@ -214,6 +133,13 @@ statusOptions.addEventListener("change", async (event) => {
 
   loadGame();
 });
+
+// ---- Platform ----
+
+function getPlatformLabel(game) {
+  if (!game.platform) return "Choose Platform";
+  return game.platform;
+}
 
 platformSelectionBtn.addEventListener("click", async () => {
   platformSearchOverlay.hidden = false;
@@ -260,6 +186,20 @@ platformSearchResults.addEventListener("click", async (event) => {
   }
 });
 
+// ---- Hours / Minutes played ----
+
+function getHoursPlayedLabel(game) {
+  if (!game.hours_played) return 0;
+  return game.hours_played;
+}
+
+function getMinutesPlayedLabel(game) {
+  if (!game.minutes_played) return 0;
+  return game.minutes_played;
+}
+
+// Shared by hours and minutes fields: strips non-digits, removes leading
+// zero, and clamps to an optional max (used for minutes, capped at 59).
 function sanitizeNumericField(field, max) {
   field.value = field.value.replace(/[^0-9]/g, "");
 
@@ -300,6 +240,43 @@ minutesPlayedField.addEventListener("blur", async () => {
   }
 });
 
+// ---- Your Rating (user rating, 1-6 stars) ----
+
+function getUserRatingFraction(game) {
+  if (!game.user_rating) return "";
+  return `${game.user_rating}/5`;
+}
+
+function getUserRatingLabel(game) {
+  const ratingLabels = {
+    1: { label: "Terrible", color: "#C77B6B" },
+    2: { label: "Bad", color: "#E0A458" },
+    3: { label: "Okay", color: "#E8D06B" },
+    4: { label: "Good", color: "#4A90D9" },
+    5: { label: "Great", color: "#8FC97D" },
+    6: { label: "Masterpiece", color: "#0EA5C4" },
+  };
+
+  if (!game.user_rating) return { label: "", color: "transparent" };
+  return ratingLabels[game.user_rating];
+}
+
+function renderFilledStars(user_rating) {
+  document.querySelectorAll(".star-btn").forEach((star) => {
+    const img = star.querySelector("img");
+
+    const value = Number(star.dataset.value);
+
+    if (value === 6 && user_rating === 6) {
+      img.src = `assets/icons/special-user-rating-icon.png`;
+    } else if (value <= user_rating && value !== 6) {
+      img.src = `assets/icons/yellow-user-rating-icon.png`;
+    } else {
+      img.src = `assets/icons/empty-rating-icon.png`;
+    }
+  });
+}
+
 userRatingStars.addEventListener("click", async (event) => {
   const star = event.target.closest(".star-btn");
 
@@ -311,6 +288,54 @@ userRatingStars.addEventListener("click", async (event) => {
     loadGame();
   }
 });
+
+// ---- Difficulty Score (1-5 drops) ----
+
+function getDifficultyLabel(game) {
+  const difficultyLabels = {
+    1: { label: "Easy", color: "#8FC97D" },
+    2: { label: "Medium", color: "#B8D96B" },
+    3: { label: "Tricky", color: "#E8D06B" },
+    4: { label: "Hard", color: "#E0A458" },
+    5: { label: "Brutal", color: "#C77B6B" },
+  };
+
+  if (!game.difficulty) return { label: "", color: "transparent" };
+  return difficultyLabels[game.difficulty];
+}
+
+function renderFilledDrops(difficulty) {
+  document.querySelectorAll(".drop-btn").forEach((drop) => {
+    const img = drop.querySelector("img");
+
+    const value = Number(drop.dataset.value);
+
+    if (value <= difficulty) {
+      img.src = `assets/icons/filled-difficulty-icon.png`;
+    } else {
+      img.src = `assets/icons/empty-difficulty-icon.png`;
+    }
+  });
+}
+
+difficultyDrops.addEventListener("click", async (event) => {
+  const drop = event.target.closest(".drop-btn");
+
+  const value = drop.dataset.value;
+
+  const result = await updateDifficulty(gameId, value);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
+// ---- RAWG Rating (read-only, partial star fill) ----
+
+function getRawgRatingFraction(game) {
+  if (!game.rawg_rating) return "";
+  return `${game.rawg_rating}/5`;
+}
 
 function renderRawgRating(game) {
   const rating = game.rawg_rating;
@@ -331,17 +356,56 @@ function renderRawgRating(game) {
   });
 }
 
-difficultyDrops.addEventListener("click", async (event) => {
-  const drop = event.target.closest(".drop-btn");
+// ---- Game Modes (free-text tags, stored as an array) ----
 
-  const value = drop.dataset.value;
+function renderGameModes() {
+  addedGameModesList.innerHTML = gameModes
+    .map((mode) => {
+      return `<li class="mode-tag">${mode} <button type="button" class="remove-mode-btn" data-mode="${mode}">×</button></li>`;
+    })
+    .join("");
+}
 
-  const result = await updateDifficulty(gameId, value);
+addModeBtn.addEventListener("click", async () => {
+  const newMode = gameModeField.value.trim();
+  if (!newMode) return;
+
+  gameModes.push(newMode);
+  gameModeField.value = "";
+  renderGameModes();
+
+  const result = await updateGameModes(gameId, gameModes);
 
   if (result.ok) {
     loadGame();
   }
 });
+
+// Delegated listener: catches clicks on any "×" button inside the list,
+// since each tag (and its remove button) is generated dynamically.
+addedGameModesList.addEventListener("click", async (event) => {
+  const btn = event.target.closest(".remove-mode-btn");
+  if (!btn) return;
+
+  const modeToRemove = btn.dataset.mode;
+  gameModes = gameModes.filter((mode) => mode !== modeToRemove);
+  renderGameModes();
+
+  const result = await updateGameModes(gameId, gameModes);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
+// ---- Timeline (start / completed / platinum dates) ----
+
+// Dates come back from the backend with a time/timezone attached; an
+// <input type="date"> only accepts yyyy-mm-dd, so this trims it down.
+function getDate(game, field) {
+  if (!game[field]) return "";
+  return game[field].slice(0, 10);
+}
 
 startDateField.addEventListener("change", async () => {
   const date = startDateField.value;
@@ -373,6 +437,13 @@ platinumDateField.addEventListener("change", async () => {
   }
 });
 
+// ---- Notes (completion / platinum) ----
+
+function getNotes(game, field) {
+  if (!game[field]) return "";
+  return game[field];
+}
+
 completedNotesField.addEventListener("change", async () => {
   const note = completedNotesField.value;
 
@@ -392,6 +463,8 @@ platinumNotesField.addEventListener("change", async () => {
     loadGame();
   }
 });
+
+// ---- Load / render everything ----
 
 async function loadGame() {
   const { ok, data } = await getGameDetails(gameId);
@@ -419,9 +492,6 @@ async function loadGame() {
     userRatingLabel.style.backgroundColor = userRatingLabelObj.color + "33";
   }
 
-  renderRawgRating(data);
-  rawgRatingFraction.innerHTML = getRawgRatingFraction(data);
-
   renderFilledDrops(data.difficulty);
 
   if (!data.difficulty) {
@@ -433,6 +503,12 @@ async function loadGame() {
     difficultyLabel.style.color = difficultyLabelObj.color;
     difficultyLabel.style.backgroundColor = difficultyLabelObj.color + "33";
   }
+
+  renderRawgRating(data);
+  rawgRatingFraction.innerHTML = getRawgRatingFraction(data);
+
+  gameModes = data.game_modes || [];
+  renderGameModes();
 
   startDateField.value = getDate(data, "start_date");
   completedDateField.value = getDate(data, "completed_date");
