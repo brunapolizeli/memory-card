@@ -21,13 +21,18 @@ const libraryGrid = document.querySelector(".library-grid");
 const statusFilterOptionsCheckboxes = document.querySelectorAll(
   ".status-filter-options input[type='checkbox']",
 );
+const progressFilterOptionsCheckboxes = document.querySelectorAll(
+  ".progress-filter-options input[type='checkbox']",
+);
 const statusFilterOptions = document.querySelector(".status-filter-options");
+const progressFilterOptions = document.querySelector(
+  ".progress-filter-options",
+);
 let currentApiPage = 1;
 let currentLibraryPage = 1;
 let lastQuery = "";
 let gameIdToRemove = null;
 let currentSearchResults = [];
-let selectedStatuses = [];
 
 // builds one <li> per RAWG search result
 function renderSearchedGames(gamesArray) {
@@ -147,13 +152,21 @@ searchResultsApi.addEventListener("click", async (event) => {
   }
 });
 
-function getSelectedStatuses() {
-  return [...statusFilterOptionsCheckboxes]
+// generic helper: reads the currently checked boxes out of any given NodeList,
+// used by both the status and progress filter groups
+function getSelectedValues(checkboxes) {
+  return [...checkboxes]
     .filter((checkbox) => checkbox.checked)
     .map((checkbox) => checkbox.value);
 }
 
+// reload the library (back to page 1) whenever a filter checkbox changes
 statusFilterOptions.addEventListener("change", () => {
+  currentLibraryPage = 1;
+  loadLibrary();
+});
+
+progressFilterOptions.addEventListener("change", () => {
   currentLibraryPage = 1;
   loadLibrary();
 });
@@ -229,7 +242,8 @@ async function renderLibraryPagination(count) {
     currentLibraryPage = Number(clickedButton.dataset.libraryPage);
     const result = await getGamesList(
       currentLibraryPage,
-      getSelectedStatuses(),
+      getSelectedValues(statusFilterOptionsCheckboxes),
+      getSelectedValues(progressFilterOptionsCheckboxes),
     );
     const renderedList = renderGamesList(result.data.results);
     libraryGrid.innerHTML = renderedList;
@@ -237,17 +251,19 @@ async function renderLibraryPagination(count) {
   });
 }
 
-// fetches and renders the user's library; redirects to the home page if not authenticated
+// fetches and renders the user's library, filtered by whatever status/progress
+// checkboxes are currently checked; redirects to the home page if not authenticated
 async function loadLibrary() {
   const { ok, data } = await getGamesList(
     currentLibraryPage,
-    getSelectedStatuses(),
+    getSelectedValues(statusFilterOptionsCheckboxes),
+    getSelectedValues(progressFilterOptionsCheckboxes),
   );
 
-  // if (!ok) {
-  //window.location.href = "index.html";
-  //return;
-  //}
+  if (!ok) {
+    window.location.href = "index.html";
+    return;
+  }
 
   const renderedList = renderGamesList(data.results);
   libraryGrid.innerHTML = renderedList;
@@ -266,7 +282,7 @@ libraryGrid.addEventListener("click", (event) => {
   menu.hidden = !menu.hidden;
 });
 
-// removes a game from the library and reloads the list on success
+// opens the remove-confirmation modal for a specific game
 libraryGrid.addEventListener("click", (event) => {
   const button = event.target.closest(".library-remove-game-btn");
   if (!button) return;
@@ -276,6 +292,7 @@ libraryGrid.addEventListener("click", (event) => {
   document.querySelector(".confirm-remove-overlay").hidden = false;
 });
 
+// cancels the removal and closes the modal without deleting anything
 document
   .querySelector(".confirm-remove-cancel-btn")
   .addEventListener("click", () => {
@@ -283,6 +300,7 @@ document
     gameIdToRemove = null;
   });
 
+// confirms the removal, deletes the game, and reloads the list on success
 document
   .querySelector(".confirm-remove-yes-btn")
   .addEventListener("click", async () => {

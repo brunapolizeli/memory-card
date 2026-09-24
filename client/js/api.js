@@ -8,11 +8,15 @@ export async function getCurrentlyPlaying() {
   return { ok: response.ok, data };
 }
 
-export async function getGamesList(page = 1, statuses = []) {
+export async function getGamesList(page = 1, statuses = [], progress = []) {
   let url = `${API_BASE_URL}/library/games-list?page=${page}`;
 
   statuses.forEach((status) => {
     url += `&statuses=${status}`;
+  });
+
+  progress.forEach((progressItem) => {
+    url += `&progress=${progressItem}`;
   });
 
   const response = await fetch(url, {

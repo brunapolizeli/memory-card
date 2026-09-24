@@ -59,7 +59,7 @@ router.post("/add-from-search", authenticate, async (req, res) => {
 });
 
 router.get("/games-list", authenticate, async (req, res) => {
-  const { page, statuses } = req.query;
+  const { page, statuses, progress } = req.query;
   const pageSize = 4;
   const offset = (page - 1) * pageSize;
 
@@ -67,6 +67,12 @@ router.get("/games-list", authenticate, async (req, res) => {
     ? Array.isArray(statuses)
       ? statuses
       : [statuses]
+    : undefined;
+
+  const progressArray = progress
+    ? Array.isArray(progress)
+      ? progress
+      : [progress]
     : undefined;
 
   let query = `SELECT games.name, games.image_url, games.tags, 
@@ -84,10 +90,24 @@ router.get("/games-list", authenticate, async (req, res) => {
     values.push(statusesArray);
   }
 
+  if (progressArray) {
+    const progressConditions = [];
+
+    if (progressArray.includes("completed")) {
+      progressConditions.push("user_games.completed = true");
+    }
+
+    if (progressArray.includes("platinum")) {
+      progressConditions.push("user_games.platinum = true");
+    }
+
+    if (progressConditions.length > 0) {
+      query += ` AND (${progressConditions.join(" OR ")})`;
+    }
+  }
+
   query += ` ORDER BY user_games.created_at DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
   values.push(pageSize, offset);
-
-  console.log(values);
 
   try {
     const result = await pool.query(query, values);
