@@ -1,7 +1,7 @@
 import {
   searchGames,
   addGameFromSearch,
-  getRecentlyAddedGames,
+  getGamesList,
   removeGameFromLibrary,
 } from "../api.js";
 
@@ -18,11 +18,16 @@ const searchResultsApi = document.querySelector(".search-results-api");
 const libraryFilters = document.querySelector(".library-filters");
 const libraryGridOverlay = document.querySelector(".library-grid-overlay");
 const libraryGrid = document.querySelector(".library-grid");
+const statusFilterOptionsCheckboxes = document.querySelectorAll(
+  ".status-filter-options input[type='checkbox']",
+);
+const statusFilterOptions = document.querySelector(".status-filter-options");
 let currentApiPage = 1;
 let currentLibraryPage = 1;
 let lastQuery = "";
 let gameIdToRemove = null;
-let currentSearchResults = []; // stores the last search results so "Add" can look up the clicked game
+let currentSearchResults = [];
+let selectedStatuses = [];
 
 // builds one <li> per RAWG search result
 function renderSearchedGames(gamesArray) {
@@ -142,8 +147,19 @@ searchResultsApi.addEventListener("click", async (event) => {
   }
 });
 
+function getSelectedStatuses() {
+  return [...statusFilterOptionsCheckboxes]
+    .filter((checkbox) => checkbox.checked)
+    .map((checkbox) => checkbox.value);
+}
+
+statusFilterOptions.addEventListener("change", () => {
+  currentLibraryPage = 1;
+  loadLibrary();
+});
+
 // builds one <li> per game already in the user's library
-function renderRecentlyAddedGames(games) {
+function renderGamesList(games) {
   if (games.length === 0) {
     libraryGrid.innerHTML = `<p class="no-games-message">No games in your library yet. Add one to get started!</p>`;
     return "";
@@ -211,8 +227,11 @@ async function renderLibraryPagination(count) {
     if (!clickedButton) return;
 
     currentLibraryPage = Number(clickedButton.dataset.libraryPage);
-    const result = await getRecentlyAddedGames(currentLibraryPage);
-    const renderedList = renderRecentlyAddedGames(result.data.results);
+    const result = await getGamesList(
+      currentLibraryPage,
+      getSelectedStatuses(),
+    );
+    const renderedList = renderGamesList(result.data.results);
     libraryGrid.innerHTML = renderedList;
     renderLibraryPagination(result.data.count);
   });
@@ -220,14 +239,17 @@ async function renderLibraryPagination(count) {
 
 // fetches and renders the user's library; redirects to the home page if not authenticated
 async function loadLibrary() {
-  const { ok, data } = await getRecentlyAddedGames(currentLibraryPage);
+  const { ok, data } = await getGamesList(
+    currentLibraryPage,
+    getSelectedStatuses(),
+  );
 
-  if (!ok) {
-    window.location.href = "index.html";
-    return;
-  }
+  // if (!ok) {
+  //window.location.href = "index.html";
+  //return;
+  //}
 
-  const renderedList = renderRecentlyAddedGames(data.results);
+  const renderedList = renderGamesList(data.results);
   libraryGrid.innerHTML = renderedList;
   renderLibraryPagination(data.count);
 }

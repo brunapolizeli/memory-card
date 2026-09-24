@@ -358,10 +358,11 @@ ul {
   display: flex;
   flex-direction: column;
   padding: 0;
+  width: 100%;
 }
 
 .library-game-info {
-  width: 100%;
+  min-width: 100%;
   display: grid;
   grid-template-columns: 8.125rem 1fr;
   align-items: start;
@@ -386,7 +387,7 @@ ul {
 .library-grid-overlay:not([hidden]) {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
 }
 
 .library-game-title {
@@ -463,6 +464,12 @@ ul {
 .api-page-btn.active {
   background-color: var(--color-primary-blue);
   color: white;
+}
+
+.library-pagination {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .game-page-cover {

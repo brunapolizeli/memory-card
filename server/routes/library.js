@@ -58,24 +58,39 @@ router.post("/add-from-search", authenticate, async (req, res) => {
   }
 });
 
-router.get("/recently-added-games", authenticate, async (req, res) => {
-  const { page } = req.query;
+router.get("/games-list", authenticate, async (req, res) => {
+  const { page, statuses } = req.query;
   const pageSize = 4;
   const offset = (page - 1) * pageSize;
 
+  const statusesArray = statuses
+    ? Array.isArray(statuses)
+      ? statuses
+      : [statuses]
+    : undefined;
+
+  let query = `SELECT games.name, games.image_url, games.tags, 
+  user_games.id AS user_games_id, user_games.status, 
+  user_games.platform, user_games.hours_played, 
+  user_games.user_rating, games.rawg_rating
+  FROM user_games
+  JOIN games ON user_games.game_id = games.id
+  WHERE user_games.user_id = $1`;
+
+  const values = [req.userId];
+
+  if (statusesArray) {
+    query += ` AND user_games.status = ANY($${values.length + 1})`;
+    values.push(statusesArray);
+  }
+
+  query += ` ORDER BY user_games.created_at DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
+  values.push(pageSize, offset);
+
+  console.log(values);
+
   try {
-    const result = await pool.query(
-      `SELECT games.name, games.image_url, games.tags, 
-      user_games.id AS user_games_id, user_games.status, 
-      user_games.platform, user_games.hours_played, 
-      user_games.user_rating, games.rawg_rating
-      FROM user_games
-      JOIN games ON user_games.game_id = games.id
-      WHERE user_games.user_id = $1
-      ORDER BY user_games.created_at
-      LIMIT $2 OFFSET $3`,
-      [req.userId, pageSize, offset],
-    );
+    const result = await pool.query(query, values);
 
     const countResult = await pool.query(
       `SELECT COUNT(*) FROM user_games WHERE user_id = $1`,

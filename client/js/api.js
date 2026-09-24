@@ -8,13 +8,16 @@ export async function getCurrentlyPlaying() {
   return { ok: response.ok, data };
 }
 
-export async function getRecentlyAddedGames(page = 1) {
-  const response = await fetch(
-    `${API_BASE_URL}/library/recently-added-games?page=${page}`,
-    {
-      credentials: "include",
-    },
-  );
+export async function getGamesList(page = 1, statuses = []) {
+  let url = `${API_BASE_URL}/library/games-list?page=${page}`;
+
+  statuses.forEach((status) => {
+    url += `&statuses=${status}`;
+  });
+
+  const response = await fetch(url, {
+    credentials: "include",
+  });
   const data = await response.json();
   return { ok: response.ok, data };
 }
