@@ -59,7 +59,7 @@ router.post("/add-from-search", authenticate, async (req, res) => {
 });
 
 router.get("/games-list", authenticate, async (req, res) => {
-  const { page, statuses, progress } = req.query;
+  const { page, statuses, progress, playtime } = req.query;
   const pageSize = 4;
   const offset = (page - 1) * pageSize;
 
@@ -73,6 +73,12 @@ router.get("/games-list", authenticate, async (req, res) => {
     ? Array.isArray(progress)
       ? progress
       : [progress]
+    : undefined;
+
+  const playtimeArray = playtime
+    ? Array.isArray(playtime)
+      ? playtime
+      : [playtime]
     : undefined;
 
   let query = `SELECT games.name, games.image_url, games.tags, 
@@ -103,6 +109,48 @@ router.get("/games-list", authenticate, async (req, res) => {
 
     if (progressConditions.length > 0) {
       query += ` AND (${progressConditions.join(" OR ")})`;
+    }
+  }
+
+  if (playtimeArray) {
+    const playtimeConditions = [];
+
+    if (playtimeArray.includes("0-10h")) {
+      playtimeConditions.push(
+        "user_games.total_playtime BETWEEN 0 AND 10 * 60",
+      );
+    }
+
+    if (playtimeArray.includes("10-25h")) {
+      playtimeConditions.push(
+        "user_games.total_playtime BETWEEN 10 * 60 AND 25 * 60",
+      );
+    }
+
+    if (playtimeArray.includes("25-50h")) {
+      playtimeConditions.push(
+        "user_games.total_playtime BETWEEN 25 * 60 AND 50 * 60",
+      );
+    }
+
+    if (playtimeArray.includes("50-100h")) {
+      playtimeConditions.push(
+        "user_games.total_playtime BETWEEN 50 * 60 AND 100 * 60",
+      );
+    }
+
+    if (playtimeArray.includes("100-250h")) {
+      playtimeConditions.push(
+        "user_games.total_playtime BETWEEN 100 * 60 AND 250 * 60",
+      );
+    }
+
+    if (playtimeArray.includes("250h+")) {
+      playtimeConditions.push("user_games.total_playtime > 250 * 60");
+    }
+
+    if (playtimeConditions.length > 0) {
+      query += ` AND (${playtimeConditions.join(" OR ")})`;
     }
   }
 

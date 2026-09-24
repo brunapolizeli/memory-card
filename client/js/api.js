@@ -8,7 +8,12 @@ export async function getCurrentlyPlaying() {
   return { ok: response.ok, data };
 }
 
-export async function getGamesList(page = 1, statuses = [], progress = []) {
+export async function getGamesList(
+  page = 1,
+  statuses = [],
+  progress = [],
+  playtime = [],
+) {
   let url = `${API_BASE_URL}/library/games-list?page=${page}`;
 
   statuses.forEach((status) => {
@@ -17,6 +22,10 @@ export async function getGamesList(page = 1, statuses = [], progress = []) {
 
   progress.forEach((progressItem) => {
     url += `&progress=${progressItem}`;
+  });
+
+  playtime.forEach((playtimeItem) => {
+    url += `&playtime=${playtimeItem}`;
   });
 
   const response = await fetch(url, {

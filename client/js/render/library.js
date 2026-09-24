@@ -24,9 +24,15 @@ const statusFilterOptionsCheckboxes = document.querySelectorAll(
 const progressFilterOptionsCheckboxes = document.querySelectorAll(
   ".progress-filter-options input[type='checkbox']",
 );
+const playtimeFilterOptionsCheckboxes = document.querySelectorAll(
+  ".playtime-filter-options input[type='checkbox']",
+);
 const statusFilterOptions = document.querySelector(".status-filter-options");
 const progressFilterOptions = document.querySelector(
   ".progress-filter-options",
+);
+const playtimeFilterOptions = document.querySelector(
+  ".playtime-filter-options",
 );
 let currentApiPage = 1;
 let currentLibraryPage = 1;
@@ -171,6 +177,11 @@ progressFilterOptions.addEventListener("change", () => {
   loadLibrary();
 });
 
+playtimeFilterOptions.addEventListener("change", () => {
+  currentLibraryPage = 1;
+  loadLibrary();
+});
+
 // builds one <li> per game already in the user's library
 function renderGamesList(games) {
   if (games.length === 0) {
@@ -244,6 +255,7 @@ async function renderLibraryPagination(count) {
       currentLibraryPage,
       getSelectedValues(statusFilterOptionsCheckboxes),
       getSelectedValues(progressFilterOptionsCheckboxes),
+      getSelectedValues(playtimeFilterOptionsCheckboxes),
     );
     const renderedList = renderGamesList(result.data.results);
     libraryGrid.innerHTML = renderedList;
@@ -258,6 +270,7 @@ async function loadLibrary() {
     currentLibraryPage,
     getSelectedValues(statusFilterOptionsCheckboxes),
     getSelectedValues(progressFilterOptionsCheckboxes),
+    getSelectedValues(playtimeFilterOptionsCheckboxes),
   );
 
   if (!ok) {
