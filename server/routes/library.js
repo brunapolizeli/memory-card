@@ -59,7 +59,7 @@ router.post("/add-from-search", authenticate, async (req, res) => {
 });
 
 router.get("/games-list", authenticate, async (req, res) => {
-  const { page, statuses, progress, playtime } = req.query;
+  const { page, statuses, progress, playtime, user_ratings } = req.query;
   const pageSize = 4;
   const offset = (page - 1) * pageSize;
 
@@ -79,6 +79,12 @@ router.get("/games-list", authenticate, async (req, res) => {
     ? Array.isArray(playtime)
       ? playtime
       : [playtime]
+    : undefined;
+
+  const userRatingsArray = user_ratings
+    ? Array.isArray(user_ratings)
+      ? user_ratings
+      : [user_ratings]
     : undefined;
 
   let query = `SELECT games.name, games.image_url, games.tags, 
@@ -151,6 +157,29 @@ router.get("/games-list", authenticate, async (req, res) => {
 
     if (playtimeConditions.length > 0) {
       query += ` AND (${playtimeConditions.join(" OR ")})`;
+    }
+  }
+
+  if (userRatingsArray) {
+    const ratingConditions = [];
+
+    const numericRatings = userRatingsArray.filter(
+      (rating) => rating !== "not-rated",
+    );
+
+    if (numericRatings.length > 0) {
+      ratingConditions.push(
+        `user_games.user_rating = ANY($${values.length + 1})`,
+      );
+      values.push(numericRatings);
+    }
+
+    if (userRatingsArray.includes("not-rated")) {
+      ratingConditions.push("user_games.user_rating IS NULL");
+    }
+
+    if (ratingConditions.length > 0) {
+      query += ` AND (${ratingConditions.join(" OR ")})`;
     }
   }
 

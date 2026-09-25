@@ -13,6 +13,7 @@ export async function getGamesList(
   statuses = [],
   progress = [],
   playtime = [],
+  user_ratings = [],
 ) {
   let url = `${API_BASE_URL}/library/games-list?page=${page}`;
 
@@ -26,6 +27,10 @@ export async function getGamesList(
 
   playtime.forEach((playtimeItem) => {
     url += `&playtime=${playtimeItem}`;
+  });
+
+  user_ratings.forEach((user_rating) => {
+    url += `&user_ratings=${user_rating}`;
   });
 
   const response = await fetch(url, {
