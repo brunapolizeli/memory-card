@@ -331,3 +331,11 @@ export async function getPlatforms() {
   const data = await response.json();
   return { ok: response.ok, data };
 }
+
+export async function getUserPlatforms() {
+  const response = await fetch(`${API_BASE_URL}/library/user-platforms`, {
+    credentials: "include",
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}

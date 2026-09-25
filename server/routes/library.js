@@ -535,4 +535,20 @@ router.patch("/update-game-modes", authenticate, async (req, res) => {
   }
 });
 
+router.get("/user-platforms", authenticate, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT DISTINCT platform 
+      FROM user_games
+      WHERE user_id = $1 AND platform IS NOT NULL`,
+      [req.userId],
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to retrieve user platforms" });
+  }
+});
+
 export default router;

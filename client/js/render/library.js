@@ -3,6 +3,7 @@ import {
   addGameFromSearch,
   getGamesList,
   removeGameFromLibrary,
+  getUserPlatforms,
 } from "../api.js";
 
 // --- DOM references ---
@@ -38,6 +39,9 @@ const playtimeFilterOptions = document.querySelector(
   ".playtime-filter-options",
 );
 const ratingFilterOptions = document.querySelector(".rating-filter-options");
+const platformFilterOptions = document.querySelector(
+  ".platform-filter-options",
+);
 let currentApiPage = 1;
 let currentLibraryPage = 1;
 let lastQuery = "";
@@ -274,6 +278,16 @@ async function renderLibraryPagination(count) {
   });
 }
 
+function renderUserPlatforms(userPlatforms) {
+  return userPlatforms
+    .map(({ platform }) => {
+      return `<li>
+              <label>${platform} <input type="checkbox" value="${platform}"></label>
+            </li>`;
+    })
+    .join("");
+}
+
 // fetches and renders the user's library, filtered by whatever status/progress
 // checkboxes are currently checked; redirects to the home page if not authenticated
 async function loadLibrary() {
@@ -289,9 +303,11 @@ async function loadLibrary() {
     window.location.href = "index.html";
     return;
   }
-
-  const renderedList = renderGamesList(data.results);
-  libraryGrid.innerHTML = renderedList;
+  const userPlatforms = await getUserPlatforms();
+  const renderedUserPlatforms = renderUserPlatforms(userPlatforms.data);
+  platformFilterOptions.innerHTML = renderedUserPlatforms;
+  const renderedGamesList = renderGamesList(data.results);
+  libraryGrid.innerHTML = renderedGamesList;
   renderLibraryPagination(data.count);
 }
 
