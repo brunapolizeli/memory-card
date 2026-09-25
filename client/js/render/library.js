@@ -154,6 +154,7 @@ searchResultsApi.addEventListener("click", async (event) => {
   if (result.ok) {
     addButton.textContent = "Added!";
     addButton.disabled = true;
+    loadLibrary();
   } else {
     addButton.textContent = result.data.error;
     setTimeout(() => {
