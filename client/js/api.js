@@ -160,14 +160,14 @@ export async function updateStatus(id, status) {
   return { ok: response.ok, data };
 }
 
-export async function updatePlatform(id, name) {
-  const response = await fetch(`${API_BASE_URL}/library/update-platform`, {
+export async function updatePlatforms(id, platforms) {
+  const response = await fetch(`${API_BASE_URL}/library/update-platforms`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
     body: JSON.stringify({
       id,
-      name,
+      platforms,
     }),
   });
   const data = await response.json();

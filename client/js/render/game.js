@@ -2,7 +2,7 @@ import {
   getGameDetails,
   updateProgress,
   updateStatus,
-  updatePlatform,
+  updatePlatforms,
   updateHoursPlayed,
   updateMinutesPlayed,
   updateUserRating,
@@ -56,7 +56,9 @@ const platinumNotesField = document.querySelector(".platinum-notes-field");
 const gameModeField = document.querySelector(".game-mode-field");
 const addModeBtn = document.querySelector(".add-mode-btn");
 const addedGameModesList = document.querySelector(".added-game-modes");
+const addedPlatformsList = document.querySelector(".added-platforms");
 let gameModes = [];
+let userPlatforms = [];
 let allPlatforms = [];
 
 // ---- Intro (title, cover) ----
@@ -134,12 +136,7 @@ statusOptions.addEventListener("change", async (event) => {
   loadGame();
 });
 
-// ---- Platform ----
-
-function getPlatformLabel(game) {
-  if (!game.platform) return "Choose Platform";
-  return game.platform;
-}
+// ---- Platforms ----
 
 platformSelectionBtn.addEventListener("click", async () => {
   platformSearchOverlay.hidden = false;
@@ -176,8 +173,14 @@ platformSearchResults.addEventListener("click", async (event) => {
   const item = event.target.closest(".platform");
   if (!item) return;
 
-  const name = item.dataset.name;
-  const result = await updatePlatform(gameId, name);
+  const newPlatform = item.dataset.name;
+
+  if (userPlatforms.includes(newPlatform)) return;
+
+  userPlatforms.push(newPlatform);
+  renderUserPlatforms();
+
+  const result = await updatePlatforms(gameId, userPlatforms);
 
   if (result.ok) {
     loadGame();
@@ -185,6 +188,23 @@ platformSearchResults.addEventListener("click", async (event) => {
     main.inert = false;
   }
 });
+
+function renderUserPlatforms() {
+  addedPlatformsList.innerHTML = userPlatforms
+    .map((platform) => {
+      return `<li class="platform-tag">
+        ${platform}
+        <button
+          type="button"
+          class="remove-platform-btn"
+          data-platform="${platform}"
+        >
+          ×
+        </button>
+      </li>`;
+    })
+    .join("");
+}
 
 // ---- Hours / Minutes played ----
 
@@ -474,7 +494,6 @@ async function loadGame() {
 
   progressToggleBtn.innerHTML = `${getProgressLabel(data)} ${downwardArrowIcon}`;
   statusToggleBtn.innerHTML = `${getStatusLabel(data)} ${downwardArrowIcon}`;
-  platformSelectionBtn.innerHTML = `${getPlatformLabel(data)} ${downwardArrowIcon}`;
 
   hoursPlayedField.value = getHoursPlayedLabel(data);
   minutesPlayedField.value = getMinutesPlayedLabel(data);
@@ -509,6 +528,9 @@ async function loadGame() {
 
   gameModes = data.game_modes || [];
   renderGameModes();
+
+  userPlatforms = data.platforms || [];
+  renderUserPlatforms();
 
   startDateField.value = getDate(data, "start_date");
   completedDateField.value = getDate(data, "completed_date");

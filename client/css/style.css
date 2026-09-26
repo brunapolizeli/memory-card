@@ -510,7 +510,8 @@ ul {
 .game-details,
 .timeline-section,
 .notes-section,
-.game-mode-section {
+.game-mode-section,
+.platform-selection-section {
   background: linear-gradient(180deg, #e8f1fb 0%, white 100%);
   border-radius: 0.625rem;
   box-shadow:
@@ -798,14 +799,16 @@ ul {
 
 .user-rating-subtitle,
 .difficulty-subtitle,
-.game-mode-subtitle {
+.game-mode-subtitle,
+.platform-selection-subtitle {
   width: 100%;
   margin: 0.2rem 0 0 0;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: #5b7a99;
 }
 
-.game-mode-input-row {
+.game-mode-input-row,
+.platform-selection-input-row {
   position: relative;
   margin-top: 0.625rem;
 }
@@ -831,7 +834,8 @@ ul {
   justify-content: center;
 }
 
-.added-game-modes {
+.added-game-modes,
+.added-platforms {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -839,7 +843,8 @@ ul {
   padding: 0;
 }
 
-.mode-tag {
+.mode-tag,
+.platform-tag {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -850,7 +855,8 @@ ul {
   font-size: 0.85rem;
 }
 
-.remove-mode-btn {
+.remove-mode-btn,
+.remove-platform-btn {
   background: transparent;
   border: none;
   cursor: pointer;

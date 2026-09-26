@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/currently-playing", authenticate, async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT games.name, games.image_url, user_games.status, user_games.platform, user_games.hours_played, user_games.user_rating, games.rawg_rating
+      `SELECT games.name, games.image_url, user_games.status, user_games.platforms, user_games.hours_played, user_games.user_rating, games.rawg_rating
              FROM user_games 
              JOIN games ON user_games.game_id = games.id
              WHERE user_games.user_id = $1 AND user_games.status IN ('playing', 'replaying', 'on-hold')`,
@@ -89,7 +89,7 @@ router.get("/games-list", authenticate, async (req, res) => {
 
   let query = `SELECT games.name, games.image_url, games.tags, 
   user_games.id AS user_games_id, user_games.status, 
-  user_games.platform, user_games.hours_played, 
+  user_games.platforms, user_games.hours_played, 
   user_games.user_rating, games.rawg_rating
   FROM user_games
   JOIN games ON user_games.game_id = games.id
@@ -292,25 +292,25 @@ router.patch("/update-status", authenticate, async (req, res) => {
   }
 });
 
-router.patch("/update-platform", authenticate, async (req, res) => {
-  const { id, name } = req.body;
+router.patch("/update-platforms", authenticate, async (req, res) => {
+  const { id, platforms } = req.body;
 
   try {
     const result = await pool.query(
       `UPDATE user_games
-      SET platform = $1
+      SET platforms = $1
       WHERE id = $2 AND user_id = $3`,
-      [name, id, req.userId],
+      [platforms, id, req.userId],
     );
 
     if (result.rowCount === 0) {
       return res.status(404).json({ error: "Game not found" });
     }
 
-    res.json({ message: "Platform updated sucessfully" });
+    res.json({ message: "Platforms updated sucessfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Failed to update game platform" });
+    res.status(500).json({ error: "Failed to update game platforms" });
   }
 });
 
@@ -538,9 +538,11 @@ router.patch("/update-game-modes", authenticate, async (req, res) => {
 router.get("/user-platforms", authenticate, async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT DISTINCT platform 
-      FROM user_games
-      WHERE user_id = $1 AND platform IS NOT NULL`,
+      `SELECT DISTINCT platform
+       FROM user_games
+       CROSS JOIN LATERAL unnest(platforms) AS platform
+       WHERE user_id = $1
+       AND platforms IS NOT NULL`,
       [req.userId],
     );
 
