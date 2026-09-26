@@ -206,6 +206,23 @@ function renderUserPlatforms() {
     .join("");
 }
 
+addedPlatformsList.addEventListener("click", async (event) => {
+  const btn = event.target.closest(".remove-platform-btn");
+  if (!btn) return;
+
+  const platformToRemove = btn.dataset.platform;
+  userPlatforms = userPlatforms.filter(
+    (platform) => platform !== platformToRemove,
+  );
+  renderUserPlatforms();
+
+  const result = await updatePlatforms(gameId, userPlatforms);
+
+  if (result.ok) {
+    loadGame();
+  }
+});
+
 // ---- Hours / Minutes played ----
 
 function getHoursPlayedLabel(game) {
