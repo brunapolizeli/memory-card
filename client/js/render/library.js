@@ -297,13 +297,19 @@ async function loadLibrary() {
     showLoadingOverlay();
   }
 
-  const { ok, data } = await getGamesList(
+  const { ok, status, data } = await getGamesList(
     currentLibraryPage,
     getSelectedValues(statusFilterOptionsCheckboxes),
     getSelectedValues(progressFilterOptionsCheckboxes),
     getSelectedValues(playtimeFilterOptionsCheckboxes),
     getSelectedValues(ratingFilterOptionsCheckboxes),
   );
+
+  if (status === 401) {
+    window.location.href = "index.html";
+    return;
+  }
+
   const userPlatforms = await getUserPlatforms();
   const renderedUserPlatforms = renderUserPlatforms(userPlatforms.data);
   platformFilterOptions.innerHTML = renderedUserPlatforms;

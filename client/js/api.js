@@ -37,7 +37,7 @@ export async function getGamesList(
     credentials: "include",
   });
   const data = await response.json();
-  return { ok: response.ok, data };
+  return { ok: response.ok, status: response.status, data };
 }
 
 export async function login(loginEmail, loginPassword) {
