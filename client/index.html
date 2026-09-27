@@ -54,6 +54,7 @@
         </section>
       </main>
       <div id="footer-placeholder"></div>
+      <div id="loading-overlay-placeholder"></div>
     </div>
     <div class="modal-overlay">
       <button type="button" class="close-auth-btn">x</button>
@@ -100,9 +101,12 @@
         updateHeaderAuthState,
         initHeaderListeners,
       } from "./js/shared/layout.js";
+      import { renderLoadingOverlay } from "./js/shared/loading.js";
 
       document.querySelector("#header-placeholder").innerHTML = renderHeader();
       document.querySelector("#footer-placeholder").innerHTML = renderFooter();
+      document.querySelector("#loading-overlay-placeholder").innerHTML =
+        renderLoadingOverlay();
       updateHeaderAuthState();
       initHeaderListeners();
     </script>

@@ -5,6 +5,7 @@ import {
   removeGameFromLibrary,
   getUserPlatforms,
 } from "../api.js";
+import { showLoadingOverlay, hideLoadingOverlay } from "../shared/loading.js";
 
 // --- DOM references ---
 const searchGamesApiInput = document.querySelector(".search-games-api-input");
@@ -47,6 +48,7 @@ let currentLibraryPage = 1;
 let lastQuery = "";
 let gameIdToRemove = null;
 let currentSearchResults = [];
+let isFirstLoad = true;
 
 // builds one <li> per RAWG search result
 function renderSearchedGames(gamesArray) {
@@ -291,6 +293,10 @@ function renderUserPlatforms(userPlatforms) {
 // fetches and renders the user's library, filtered by whatever status/progress
 // checkboxes are currently checked; redirects to the home page if not authenticated
 async function loadLibrary() {
+  if (isFirstLoad) {
+    showLoadingOverlay();
+  }
+
   const { ok, data } = await getGamesList(
     currentLibraryPage,
     getSelectedValues(statusFilterOptionsCheckboxes),
@@ -298,17 +304,15 @@ async function loadLibrary() {
     getSelectedValues(playtimeFilterOptionsCheckboxes),
     getSelectedValues(ratingFilterOptionsCheckboxes),
   );
-
-  if (!ok) {
-    window.location.href = "index.html";
-    return;
-  }
   const userPlatforms = await getUserPlatforms();
   const renderedUserPlatforms = renderUserPlatforms(userPlatforms.data);
   platformFilterOptions.innerHTML = renderedUserPlatforms;
   const renderedGamesList = renderGamesList(data.results);
   libraryGrid.innerHTML = renderedGamesList;
   renderLibraryPagination(data.count);
+
+  isFirstLoad = false;
+  hideLoadingOverlay();
 }
 
 loadLibrary();

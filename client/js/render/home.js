@@ -1,9 +1,7 @@
-import { getCurrentlyPlaying, login, signup } from "../api.js";
+import { login, signup } from "../api.js";
 import { updateHeaderAuthState } from "../shared/layout.js";
 
 // --- DOM references ---
-const currentlyPlaying = document.querySelector(".currently-playing");
-const dotsContainer = document.querySelector(".hero-dots-container");
 const loginBtn = document.querySelector(".login-btn");
 const authModal = document.querySelector(".auth-modal");
 const loginForm = document.querySelector(".login-form");
@@ -20,116 +18,6 @@ const loginError = document.querySelector(".login-error");
 const usernameError = document.querySelector(".username-error");
 const emailError = document.querySelector(".email-error");
 const signupError = document.querySelector(".signup-error");
-
-// hero carousel
-async function renderCurrentlyPlaying() {
-  const { ok, data } = await getCurrentlyPlaying();
-
-  // not logged in: show the illustration instead of the carousel
-  if (!ok) {
-    currentlyPlaying.innerHTML = `<img src="assets/home/logged-out.png" alt="Please log in to see your currently playing games" class="logged-out-illustration">`;
-    return;
-  }
-
-  const games = data;
-
-  // logged in, but nothing in progress yet
-  if (games.length === 0) {
-    currentlyPlaying.innerHTML = `<p class="no-games-message">No games in progress. Add one for it to show here!</p>`;
-    return;
-  }
-
-  // only show up to 5 games in the carousel, even if there are more
-  const games_slice = games.slice(0, 5);
-
-  // builds one <li> per displayed game
-  const renderedGamesList = games_slice
-    .map(
-      (
-        {
-          name,
-          image_url,
-          tags,
-          platform,
-          hours_played,
-          user_rating,
-          rawg_rating,
-        },
-        index,
-      ) => {
-        return `<li class="hero-game-info" data-index="${index}">
-                <img class="hero-game-cover" src="${image_url}">
-                <div class="hero-game-details">
-                    <h3 class="hero-game-title">${name}</h3>
-                    <div class="hero-game-details-one">
-                        <p>${platform}</p>
-                        <p>${tags?.[0] ?? ""}</p>
-                    </div>
-                    <div class="hero-game-details-two">
-                        <p>${hours_played}</p>
-                        <p>${user_rating ?? "No rating"}</p>
-                    </div>
-                </div>
-            </li>`;
-      },
-    )
-    .join("");
-
-  // if there are more than 5 games, adds a 6th card linking to the full library
-  const seeAllGamesItem =
-    games.length > 5 ? `<li class="see-all-games-item"></li>` : "";
-
-  currentlyPlaying.innerHTML = renderedGamesList + seeAllGamesItem;
-
-  const gameItems = document.querySelectorAll(".game-info");
-
-  // one dot per displayed game, plus an extra dot if the "see all" card exists
-  const gamesListDots = games_slice
-    .map((_, index) => {
-      return `<span class="hero-games-list-dot" data-index="${index}"></span>`;
-    })
-    .join("");
-
-  const extraDot =
-    games.length > 5
-      ? `<span class="hero-games-list-dot" data-index="5"></span>`
-      : "";
-
-  dotsContainer.innerHTML = gamesListDots + extraDot;
-
-  // tracks which game is currently centered in view and highlights its dot
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const activeIndex = entry.target.dataset.index;
-
-        document.querySelectorAll(".hero-games-list-dot").forEach((dot) => {
-          dot.classList.remove("active");
-        });
-
-        document
-          .querySelector(`.hero-games-list-dot[data-index="${activeIndex}"]`)
-          .classList.add("active");
-      }
-    });
-  });
-
-  gameItems.forEach((li) => {
-    observer.observe(li);
-  });
-
-  // clicking a dot scrolls the carousel to the matching game
-  dotsContainer.addEventListener("click", (event) => {
-    const clickedIndex = event.target.dataset.index;
-    const targetLi = document.querySelector(
-      `.game-info[data-index="${clickedIndex}"]`,
-    );
-
-    targetLi.scrollIntoView({ behavior: "smooth", inline: "center" });
-  });
-}
-
-renderCurrentlyPlaying();
 
 // opens the auth modal and blocks interaction with the rest of the page
 loginBtn.addEventListener("click", () => {
@@ -178,7 +66,6 @@ loginForm.addEventListener("submit", async (event) => {
   authModal.classList.remove("visible");
   document.querySelector(".home-content").inert = false;
   updateHeaderAuthState();
-  renderCurrentlyPlaying();
 });
 
 loginForm.addEventListener("input", () => {
@@ -218,7 +105,7 @@ signupForm.addEventListener("submit", async (event) => {
   document.querySelector(".home-content").inert = false;
 
   await login(email, password);
-  renderCurrentlyPlaying();
+  updateHeaderAuthState();
 });
 
 signupForm.addEventListener("input", () => {

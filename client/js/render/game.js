@@ -15,6 +15,7 @@ import {
   updateGameModes,
   getPlatforms,
 } from "../api.js";
+import { hideLoadingOverlay, showLoadingOverlay } from "../shared/loading.js";
 
 const params = new URLSearchParams(window.location.search);
 const gameId = params.get("id");
@@ -60,6 +61,7 @@ const addedPlatformsList = document.querySelector(".added-platforms");
 let gameModes = [];
 let userPlatforms = [];
 let allPlatforms = [];
+let isFirstLoad = true;
 
 // ---- Intro (title, cover) ----
 
@@ -504,8 +506,16 @@ platinumNotesField.addEventListener("change", async () => {
 // ---- Load / render everything ----
 
 async function loadGame() {
+  if (isFirstLoad) {
+    showLoadingOverlay();
+  }
+
   const { ok, data } = await getGameDetails(gameId);
-  if (!ok) return;
+  if (!ok) {
+    isFirstLoad = false;
+    hideLoadingOverlay();
+    return;
+  }
 
   renderIntro(data);
 
@@ -555,6 +565,9 @@ async function loadGame() {
 
   completedNotesField.value = getNotes(data, "completed_notes");
   platinumNotesField.value = getNotes(data, "platinum_notes");
+
+  isFirstLoad = false;
+  hideLoadingOverlay();
 }
 
 loadGame();

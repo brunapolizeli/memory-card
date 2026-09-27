@@ -866,6 +866,18 @@ ul {
   padding: 0;
 }
 
+.loading-overlay:not([hidden]) {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-pale-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
 @keyframes modal-rise {
   to {
     transform: translateY(0) scale(1);
