@@ -20,7 +20,7 @@ router.get("/currently-playing", authenticate, async (req, res) => {
 });
 
 router.post("/add-from-search", authenticate, async (req, res) => {
-  const { external_id, name, image_url, tags, rawg_rating } = req.body;
+  const { external_id, name, image_url, genres, rawg_rating } = req.body;
 
   try {
     let gameResult = await pool.query(
@@ -34,8 +34,8 @@ router.post("/add-from-search", authenticate, async (req, res) => {
       gameId = gameResult.rows[0].id;
     } else {
       const newGame = await pool.query(
-        `INSERT INTO games (external_id, name, image_url, tags, rawg_rating, source) VALUES ($1, $2, $3, $4, $5, 'rawg') RETURNING id`,
-        [external_id, name, image_url, tags, rawg_rating],
+        `INSERT INTO games (external_id, name, image_url, genres, rawg_rating, source) VALUES ($1, $2, $3, $4, $5, 'rawg') RETURNING id`,
+        [external_id, name, image_url, genres, rawg_rating],
       );
       gameId = newGame.rows[0].id;
     }
@@ -59,7 +59,15 @@ router.post("/add-from-search", authenticate, async (req, res) => {
 });
 
 router.get("/games-list", authenticate, async (req, res) => {
-  const { page, statuses, progress, playtime, user_ratings } = req.query;
+  const {
+    page,
+    statuses,
+    progress,
+    playtime,
+    user_ratings,
+    platforms,
+    genres,
+  } = req.query;
   const pageSize = 4;
   const offset = (page - 1) * pageSize;
 
@@ -87,7 +95,19 @@ router.get("/games-list", authenticate, async (req, res) => {
       : [user_ratings]
     : undefined;
 
-  let query = `SELECT games.name, games.image_url, games.tags, 
+  const platformsArray = platforms
+    ? Array.isArray(platforms)
+      ? platforms
+      : [platforms]
+    : undefined;
+
+  const genresArray = genres
+    ? Array.isArray(genres)
+      ? genres
+      : [genres]
+    : undefined;
+
+  let query = `SELECT games.name, games.image_url, games.genres, 
   user_games.id AS user_games_id, user_games.status, 
   user_games.platforms, user_games.hours_played, 
   user_games.user_rating, games.rawg_rating
@@ -183,6 +203,21 @@ router.get("/games-list", authenticate, async (req, res) => {
     }
   }
 
+  // && means "the two arrays have at least one item in common"
+  if (platformsArray) {
+    query += ` AND user_games.platforms && $${values.length + 1}`;
+    values.push(platformsArray);
+  }
+
+  if (genresArray) {
+    query += ` AND games.genres && $${values.length + 1}`;
+    values.push(genresArray);
+  }
+
+  // saved before ORDER BY/LIMIT, so the count uses the same filters
+  const filteredQuery = query;
+  const filteredValues = [...values];
+
   query += ` ORDER BY user_games.created_at DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
   values.push(pageSize, offset);
 
@@ -190,8 +225,8 @@ router.get("/games-list", authenticate, async (req, res) => {
     const result = await pool.query(query, values);
 
     const countResult = await pool.query(
-      `SELECT COUNT(*) FROM user_games WHERE user_id = $1`,
-      [req.userId],
+      `SELECT COUNT(*) FROM (${filteredQuery}) AS filtered_games`,
+      filteredValues,
     );
 
     res.json({
@@ -229,7 +264,7 @@ router.get("/game-details", authenticate, async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT games.name, games.image_url, games.tags, games.rawg_rating, user_games.*
+      `SELECT games.name, games.image_url, games.genres, games.rawg_rating, user_games.*
       FROM user_games
       JOIN games ON user_games.game_id = games.id
       WHERE user_games.id = $1 AND user_games.user_id = $2`,
@@ -538,11 +573,10 @@ router.patch("/update-game-modes", authenticate, async (req, res) => {
 router.get("/user-platforms", authenticate, async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT DISTINCT platform
+      `SELECT DISTINCT unnest(platforms) AS platform
        FROM user_games
-       CROSS JOIN LATERAL unnest(platforms) AS platform
        WHERE user_id = $1
-       AND platforms IS NOT NULL`,
+       ORDER BY platform`,
       [req.userId],
     );
 
@@ -550,6 +584,24 @@ router.get("/user-platforms", authenticate, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to retrieve user platforms" });
+  }
+});
+
+router.get("/user-genres", authenticate, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT DISTINCT unnest(games.genres) AS genre
+       FROM user_games
+       JOIN games ON user_games.game_id = games.id
+       WHERE user_games.user_id = $1
+       ORDER BY genre`,
+      [req.userId],
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to retrieve user genres" });
   }
 });
 

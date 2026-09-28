@@ -4,6 +4,7 @@ import {
   getGamesList,
   removeGameFromLibrary,
   getUserPlatforms,
+  getUserGenres,
 } from "../api.js";
 import { showLoadingOverlay, hideLoadingOverlay } from "../shared/loading.js";
 
@@ -20,18 +21,8 @@ const searchResultsApi = document.querySelector(".search-results-api");
 const libraryFilters = document.querySelector(".library-filters");
 const libraryGridOverlay = document.querySelector(".library-grid-overlay");
 const libraryGrid = document.querySelector(".library-grid");
-const statusFilterOptionsCheckboxes = document.querySelectorAll(
-  ".status-filter-options input[type='checkbox']",
-);
-const progressFilterOptionsCheckboxes = document.querySelectorAll(
-  ".progress-filter-options input[type='checkbox']",
-);
-const playtimeFilterOptionsCheckboxes = document.querySelectorAll(
-  ".playtime-filter-options input[type='checkbox']",
-);
-const ratingFilterOptionsCheckboxes = document.querySelectorAll(
-  ".rating-filter-options input[type='checkbox']",
-);
+
+// one <ul> per filter dropdown; the checkboxes inside are read on demand
 const statusFilterOptions = document.querySelector(".status-filter-options");
 const progressFilterOptions = document.querySelector(
   ".progress-filter-options",
@@ -43,12 +34,17 @@ const ratingFilterOptions = document.querySelector(".rating-filter-options");
 const platformFilterOptions = document.querySelector(
   ".platform-filter-options",
 );
+const genreFilterOptions = document.querySelector(".genre-filter-options");
+
+// --- State ---
 let currentApiPage = 1;
 let currentLibraryPage = 1;
 let lastQuery = "";
 let gameIdToRemove = null;
-let currentSearchResults = [];
-let isFirstLoad = true;
+let currentSearchResults = []; // last RAWG results, so "Add" can look up the clicked game
+let isFirstLoad = true; // the loading overlay and the platform/genre lists only run once
+
+// --- RAWG search ---
 
 // builds one <li> per RAWG search result
 function renderSearchedGames(gamesArray) {
@@ -62,15 +58,6 @@ function renderSearchedGames(gamesArray) {
     })
     .join("");
 }
-
-// opens/closes each library filter dropdown independently
-document.querySelectorAll(".filter-toggle").forEach((button) => {
-  button.addEventListener("click", () => {
-    const dropdown = button.closest(".filter-dropdown");
-    const optionsList = dropdown.querySelector(".filter-options");
-    optionsList.hidden = !optionsList.hidden;
-  });
-});
 
 // builds the [1, "...", 5, 6, 7, "...", 20] pattern for pagination
 function getPageNumbers(currentPage, totalPages) {
@@ -169,12 +156,39 @@ searchResultsApi.addEventListener("click", async (event) => {
   }
 });
 
-// generic helper: reads the currently checked boxes out of any given NodeList,
-// used by both the status and progress filter groups
-function getSelectedValues(checkboxes) {
+// --- Filters ---
+
+// opens/closes each library filter dropdown independently
+document.querySelectorAll(".filter-toggle").forEach((button) => {
+  button.addEventListener("click", () => {
+    const dropdown = button.closest(".filter-dropdown");
+    const optionsList = dropdown.querySelector(".filter-options");
+    optionsList.hidden = !optionsList.hidden;
+  });
+});
+
+// reads the checked boxes inside a filter dropdown, looking them up at call time
+// so it also works for checkboxes that were rendered later (platforms, genres)
+function getSelectedValues(dropdownSelector) {
+  const checkboxes = document.querySelectorAll(
+    `${dropdownSelector} input[type='checkbox']`,
+  );
+
   return [...checkboxes]
     .filter((checkbox) => checkbox.checked)
     .map((checkbox) => checkbox.value);
+}
+
+// one array per filter, in the same order getGamesList expects its arguments
+function getSelectedFilters() {
+  return [
+    getSelectedValues(".status-filter-options"),
+    getSelectedValues(".progress-filter-options"),
+    getSelectedValues(".playtime-filter-options"),
+    getSelectedValues(".rating-filter-options"),
+    getSelectedValues(".platform-filter-options"),
+    getSelectedValues(".genre-filter-options"),
+  ];
 }
 
 // reload the library (back to page 1) whenever a filter checkbox changes
@@ -198,6 +212,40 @@ ratingFilterOptions.addEventListener("change", () => {
   loadLibrary();
 });
 
+platformFilterOptions.addEventListener("change", () => {
+  currentLibraryPage = 1;
+  loadLibrary();
+});
+
+genreFilterOptions.addEventListener("change", () => {
+  currentLibraryPage = 1;
+  loadLibrary();
+});
+
+// builds the platform checkboxes from the platforms the user has actually used
+function renderUserPlatforms(userPlatforms) {
+  return userPlatforms
+    .map(({ platform }) => {
+      return `<li>
+              <label>${platform} <input type="checkbox" value="${platform}"></label>
+            </li>`;
+    })
+    .join("");
+}
+
+// builds the genre checkboxes from the genres of the games in the user's library
+function renderUserGenres(userGenres) {
+  return userGenres
+    .map(({ genre }) => {
+      return `<li>
+              <label>${genre} <input type="checkbox" value="${genre}"></label>
+            </li>`;
+    })
+    .join("");
+}
+
+// --- Library grid ---
+
 // builds one <li> per game already in the user's library
 function renderGamesList(games) {
   if (games.length === 0) {
@@ -212,7 +260,7 @@ function renderGamesList(games) {
         name,
         image_url,
         platform,
-        tags,
+        genres,
         status,
         hours_played,
         user_rating,
@@ -228,7 +276,7 @@ function renderGamesList(games) {
                   <h3 class="library-game-title">${name}</h3>
                   <div class="library-game-details-one">
                     <p>${platform ?? "—"}</p>
-                    <p>${tags?.[0] ?? "—"}</p>
+                    <p>${genres?.[0] ?? "—"}</p>
                   </div>
                   <div class="library-game-details-two">
                     <p>${status ? status.charAt(0).toUpperCase() + status.slice(1) : "—"}</p>
@@ -269,59 +317,13 @@ async function renderLibraryPagination(count) {
     currentLibraryPage = Number(clickedButton.dataset.libraryPage);
     const result = await getGamesList(
       currentLibraryPage,
-      getSelectedValues(statusFilterOptionsCheckboxes),
-      getSelectedValues(progressFilterOptionsCheckboxes),
-      getSelectedValues(playtimeFilterOptionsCheckboxes),
-      getSelectedValues(ratingFilterOptionsCheckboxes),
+      ...getSelectedFilters(),
     );
     const renderedList = renderGamesList(result.data.results);
     libraryGrid.innerHTML = renderedList;
     renderLibraryPagination(result.data.count);
   });
 }
-
-function renderUserPlatforms(userPlatforms) {
-  return userPlatforms
-    .map(({ platform }) => {
-      return `<li>
-              <label>${platform} <input type="checkbox" value="${platform}"></label>
-            </li>`;
-    })
-    .join("");
-}
-
-// fetches and renders the user's library, filtered by whatever status/progress
-// checkboxes are currently checked; redirects to the home page if not authenticated
-async function loadLibrary() {
-  if (isFirstLoad) {
-    showLoadingOverlay();
-  }
-
-  const { ok, status, data } = await getGamesList(
-    currentLibraryPage,
-    getSelectedValues(statusFilterOptionsCheckboxes),
-    getSelectedValues(progressFilterOptionsCheckboxes),
-    getSelectedValues(playtimeFilterOptionsCheckboxes),
-    getSelectedValues(ratingFilterOptionsCheckboxes),
-  );
-
-  if (status === 401) {
-    window.location.href = "index.html";
-    return;
-  }
-
-  const userPlatforms = await getUserPlatforms();
-  const renderedUserPlatforms = renderUserPlatforms(userPlatforms.data);
-  platformFilterOptions.innerHTML = renderedUserPlatforms;
-  const renderedGamesList = renderGamesList(data.results);
-  libraryGrid.innerHTML = renderedGamesList;
-  renderLibraryPagination(data.count);
-
-  isFirstLoad = false;
-  hideLoadingOverlay();
-}
-
-loadLibrary();
 
 // toggles the options menu ("..." button) for a specific game card
 libraryGrid.addEventListener("click", (event) => {
@@ -372,3 +374,43 @@ libraryGrid.addEventListener("click", async (event) => {
   const id = card.dataset.userGameId;
   window.location.href = `game.html?id=${id}`;
 });
+
+// --- Load ---
+
+// fetches and renders the user's library, filtered by whatever checkboxes are
+// currently checked; redirects to the home page if not authenticated.
+// The loading overlay and the platform/genre lists only run on the first load.
+async function loadLibrary() {
+  if (isFirstLoad) {
+    showLoadingOverlay();
+  }
+
+  const { status, data } = await getGamesList(
+    currentLibraryPage,
+    ...getSelectedFilters(),
+  );
+
+  // not authenticated: leave before touching anything else
+  if (status === 401) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  // built once, so the checkboxes keep their state while filtering
+  if (isFirstLoad) {
+    const userPlatforms = await getUserPlatforms();
+    platformFilterOptions.innerHTML = renderUserPlatforms(userPlatforms.data);
+
+    const userGenres = await getUserGenres();
+    genreFilterOptions.innerHTML = renderUserGenres(userGenres.data);
+  }
+
+  const renderedGamesList = renderGamesList(data.results);
+  libraryGrid.innerHTML = renderedGamesList;
+  renderLibraryPagination(data.count);
+
+  isFirstLoad = false;
+  hideLoadingOverlay();
+}
+
+loadLibrary();

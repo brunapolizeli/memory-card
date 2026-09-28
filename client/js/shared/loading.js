@@ -1,7 +1,7 @@
 export function renderLoadingOverlay() {
   return `<div class="loading-overlay" hidden>
-            <img class="loading-dolphin" src="assets/shared/loading-dolphin.gif" alt="Loading" />
-          </div>`;
+          <img class="loading-dolphin" src="assets/shared/loading-dolphin.gif" alt="Loading" />
+        </div>`;
 }
 
 export function showLoadingOverlay() {

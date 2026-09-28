@@ -14,23 +14,33 @@ export async function getGamesList(
   progress = [],
   playtime = [],
   user_ratings = [],
+  platforms = [],
+  genres = [],
 ) {
   let url = `${API_BASE_URL}/library/games-list?page=${page}`;
 
   statuses.forEach((status) => {
-    url += `&statuses=${status}`;
+    url += `&statuses=${encodeURIComponent(status)}`;
   });
 
   progress.forEach((progressItem) => {
-    url += `&progress=${progressItem}`;
+    url += `&progress=${encodeURIComponent(progressItem)}`;
   });
 
   playtime.forEach((playtimeItem) => {
-    url += `&playtime=${playtimeItem}`;
+    url += `&playtime=${encodeURIComponent(playtimeItem)}`;
   });
 
   user_ratings.forEach((user_rating) => {
-    url += `&user_ratings=${user_rating}`;
+    url += `&user_ratings=${encodeURIComponent(user_rating)}`;
+  });
+
+  platforms.forEach((platform) => {
+    url += `&platforms=${encodeURIComponent(platform)}`;
+  });
+
+  genres.forEach((genre) => {
+    url += `&genres=${encodeURIComponent(genre)}`;
   });
 
   const response = await fetch(url, {
@@ -334,6 +344,14 @@ export async function getPlatforms() {
 
 export async function getUserPlatforms() {
   const response = await fetch(`${API_BASE_URL}/library/user-platforms`, {
+    credentials: "include",
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
+
+export async function getUserGenres() {
+  const response = await fetch(`${API_BASE_URL}/library/user-genres`, {
     credentials: "include",
   });
   const data = await response.json();
