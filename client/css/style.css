@@ -470,6 +470,13 @@ ul {
   left: 100%;
 }
 
+.more-items-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
 .library-card-item-wrapper {
   position: relative;
 }
