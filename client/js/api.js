@@ -98,7 +98,7 @@ export async function addGameFromSearch(game) {
       external_id: game.id,
       name: game.name,
       image_url: game.background_image,
-      tags: game.genres.map((g) => g.name),
+      genres: game.genres.map((g) => g.name),
       rawg_rating: game.rating,
     }),
   });
@@ -357,6 +357,14 @@ export async function getUserPlatforms() {
 
 export async function getUserGenres() {
   const response = await fetch(`${API_BASE_URL}/library/user-genres`, {
+    credentials: "include",
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
+
+export async function getUserExternalIds() {
+  const response = await fetch(`${API_BASE_URL}/library/user-external-ids`, {
     credentials: "include",
   });
   const data = await response.json();

@@ -5,6 +5,7 @@ import {
   removeGameFromLibrary,
   getUserPlatforms,
   getUserGenres,
+  getUserExternalIds,
 } from "../api.js";
 import { showLoadingOverlay, hideLoadingOverlay } from "../shared/loading.js";
 
@@ -49,17 +50,27 @@ let currentRawgSearchResults = [];
 let isFirstLoad = true;
 let currentLibrarySearch = "";
 let librarySearchTimeout;
+// external ids (as numbers) of the games already in the user's library,
+// fetched once per RAWG search so the result buttons can show "Added!"
+let userExternalIds = [];
 
 // --- RAWG search ---
 
-// builds one <li> per RAWG search result
+// builds one <li> per RAWG search result; results already in the library
+// get a disabled "Added!" button instead of "Add"
 function renderSearchedGames(gamesArray) {
   return gamesArray
     .map(({ id, name, background_image }) => {
+      let btn = `<button class="add-game-api-btn" data-id="${id}">Add</button>`;
+
+      if (userExternalIds.includes(id)) {
+        btn = `<button class="add-game-api-btn" disabled>Added!</button>`;
+      }
+
       return `<li>
               <img class="game-image-api-search" src="${background_image ?? "assets/library/default-cover.png"}">
               <h3>${name}</h3>
-              <button class="add-game-api-btn" data-id="${id}">Add</button>
+              ${btn}
             </li>`;
     })
     .join("");
@@ -124,6 +135,13 @@ searchGamesApiBtn.addEventListener("click", async (event) => {
     lastQuery = input;
     const result = await searchGames(input, currentApiPage);
     currentRawgSearchResults = result.data.results;
+
+    // refreshed on every new search, so games added earlier show as "Added!"
+    const idsResult = await getUserExternalIds();
+    userExternalIds = idsResult.data.map(({ external_id }) =>
+      Number(external_id),
+    );
+
     const renderedList = renderSearchedGames(result.data.results);
     searchResultsApi.innerHTML = renderedList;
     renderApiPagination(result.data.count);
@@ -153,6 +171,8 @@ searchResultsApi.addEventListener("click", async (event) => {
   if (result.ok) {
     addButton.textContent = "Added!";
     addButton.disabled = true;
+    // keeps the list in sync, so paging through the results still shows "Added!"
+    userExternalIds.push(clickedId);
     loadLibrary();
   } else {
     addButton.textContent = result.data.error;
@@ -228,6 +248,8 @@ genreFilterOptions.addEventListener("change", () => {
   loadLibrary();
 });
 
+// search by name: waits until the person stops typing before reloading,
+// so each key press doesn't fire its own request
 searchGamesLibraryField.addEventListener("input", () => {
   clearTimeout(librarySearchTimeout);
 
@@ -236,7 +258,7 @@ searchGamesLibraryField.addEventListener("input", () => {
 
     currentLibraryPage = 1;
     loadLibrary();
-  }, 1000);
+  }, 400);
 });
 
 // builds the platform checkboxes from the platforms the user has actually used
@@ -263,11 +285,11 @@ function renderUserGenres(userGenres) {
 
 // --- Library grid ---
 
-// builds one <li> per game already in the user's library
+// builds one <li> per game in the user's library; when there is nothing to show
+// (empty library, or a search/filter with no match) it returns a message instead
 function renderGamesList(games) {
   if (games.length === 0) {
-    libraryGrid.innerHTML = `<p class="no-games-message">No games in your library yet. Add one to get started!</p>`;
-    return "";
+    return `<p class="no-games-message">No games found.</p>`;
   }
 
   return games
@@ -276,7 +298,7 @@ function renderGamesList(games) {
         user_games_id,
         name,
         image_url,
-        platform,
+        platforms,
         genres,
         status,
         hours_played,
@@ -292,7 +314,7 @@ function renderGamesList(games) {
                 <div class="library-game-details">
                   <h3 class="library-game-title">${name}</h3>
                   <div class="library-game-details-one">
-                    <p>${platform ?? "—"}</p>
+                    <p>${platforms?.[0] ?? "—"}</p>
                     <p>${genres?.[0] ?? "—"}</p>
                   </div>
                   <div class="library-game-details-two">
@@ -396,8 +418,9 @@ libraryGrid.addEventListener("click", async (event) => {
 // --- Load ---
 
 // fetches and renders the user's library, filtered by whatever checkboxes are
-// currently checked; redirects to the home page if not authenticated.
-// The loading overlay and the platform/genre lists only run on the first load.
+// currently checked and by the search text; redirects to the home page if not
+// authenticated. The loading overlay and the platform/genre lists only run on
+// the first load.
 async function loadLibrary() {
   if (isFirstLoad) {
     showLoadingOverlay();

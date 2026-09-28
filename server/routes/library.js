@@ -609,4 +609,21 @@ router.get("/user-genres", authenticate, async (req, res) => {
   }
 });
 
+router.get("/user-external-ids", authenticate, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT games.external_id
+       FROM user_games 
+       JOIN games ON user_games.game_id = games.id 
+       WHERE user_games.user_id = $1`,
+      [req.userId],
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to retrieve user external ids" });
+  }
+});
+
 export default router;
