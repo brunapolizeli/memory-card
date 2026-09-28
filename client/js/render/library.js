@@ -304,6 +304,9 @@ function renderGamesList(games) {
         hours_played,
         user_rating,
       }) => {
+        // platforms and genres: with one item (or none) the line is plain text;
+        // with more than one, the first item is shown plus a "+" button that
+        // opens a mini card with all of them
         let platformsLine = `<p>${platforms?.[0] ?? "—"}</p>`;
         let genresLine = `<p>${genres?.[0] ?? "—"}</p>`;
 
@@ -353,19 +356,57 @@ function renderGamesList(games) {
     .join("");
 }
 
+// hidden mini card that lists every item of a platforms/genres array
 function renderMore(items) {
   return `<ul class="more-items-list" hidden>
     ${items.map((item) => `<li>${item}</li>`).join("")}
   </ul>`;
 }
 
+// closes every open popup: the "+" mini cards and the "..." card menus
+function closeAllPopups() {
+  document.querySelectorAll(".more-items-list").forEach((list) => {
+    list.hidden = true;
+  });
+
+  document.querySelectorAll(".library-game-options-menu").forEach((menu) => {
+    menu.hidden = true;
+  });
+}
+
+// opens/closes the mini card of the clicked "+" button; only one popup can be
+// open at a time, so everything else is closed first
 libraryGrid.addEventListener("click", (event) => {
   const btn = event.target.closest(".more-items-btn");
   if (!btn) return;
 
   const wrapper = btn.closest(".library-card-item-wrapper");
   const list = wrapper.querySelector(".more-items-list");
-  list.hidden = !list.hidden;
+
+  // saved before closing everything, so clicking the same button again
+  // closes the list instead of reopening it
+  const wasClosed = list.hidden;
+
+  closeAllPopups();
+  list.hidden = !wasClosed;
+});
+
+// a click outside any popup (and outside the buttons that open them)
+// closes all open popups
+document.addEventListener("click", (event) => {
+  if (
+    event.target.closest(".more-items-list") ||
+    event.target.closest(".more-items-btn")
+  )
+    return;
+
+  if (
+    event.target.closest(".library-game-options-menu") ||
+    event.target.closest(".library-game-options-btn")
+  )
+    return;
+
+  closeAllPopups();
 });
 
 // renders pagination for the user's library and handles page clicks
@@ -402,14 +443,21 @@ async function renderLibraryPagination(count) {
   });
 }
 
-// toggles the options menu ("..." button) for a specific game card
+// toggles the options menu ("..." button) of a specific game card; only one
+// popup can be open at a time, so everything else is closed first
 libraryGrid.addEventListener("click", (event) => {
   const button = event.target.closest(".library-game-options-btn");
   if (!button) return;
 
   const card = button.closest(".library-game-info");
   const menu = card.querySelector(".library-game-options-menu");
-  menu.hidden = !menu.hidden;
+
+  // saved before closing everything, so clicking the same button again
+  // closes the menu instead of reopening it
+  const wasClosed = menu.hidden;
+
+  closeAllPopups();
+  menu.hidden = !wasClosed;
 });
 
 // opens the remove-confirmation modal for a specific game
