@@ -36,13 +36,19 @@ const platformFilterOptions = document.querySelector(
 );
 const genreFilterOptions = document.querySelector(".genre-filter-options");
 
+const searchGamesLibraryField = document.querySelector(
+  ".search-games-library-field",
+);
+
 // --- State ---
 let currentApiPage = 1;
 let currentLibraryPage = 1;
 let lastQuery = "";
 let gameIdToRemove = null;
-let currentSearchResults = []; // last RAWG results, so "Add" can look up the clicked game
-let isFirstLoad = true; // the loading overlay and the platform/genre lists only run once
+let currentRawgSearchResults = [];
+let isFirstLoad = true;
+let currentLibrarySearch = "";
+let librarySearchTimeout;
 
 // --- RAWG search ---
 
@@ -103,7 +109,7 @@ function renderApiPagination(count) {
 
     currentApiPage = Number(clickedButton.dataset.apiPage);
     const result = await searchGames(lastQuery, currentApiPage);
-    currentSearchResults = result.data.results;
+    currentRawgSearchResults = result.data.results;
     const renderedList = renderSearchedGames(result.data.results);
     searchResultsApi.innerHTML = renderedList;
     renderApiPagination(result.data.count);
@@ -117,7 +123,7 @@ searchGamesApiBtn.addEventListener("click", async (event) => {
     currentApiPage = 1;
     lastQuery = input;
     const result = await searchGames(input, currentApiPage);
-    currentSearchResults = result.data.results;
+    currentRawgSearchResults = result.data.results;
     const renderedList = renderSearchedGames(result.data.results);
     searchResultsApi.innerHTML = renderedList;
     renderApiPagination(result.data.count);
@@ -134,13 +140,13 @@ closeSearchResultsApiBtn.addEventListener("click", () => {
   libraryGridOverlay.hidden = false;
 });
 
-// handles clicking "Add" on a search result, using currentSearchResults to find the full game object
+// handles clicking "Add" on a search result, using currentRawgSearchResults to find the full game object
 searchResultsApi.addEventListener("click", async (event) => {
   const addButton = event.target.closest(".add-game-api-btn");
   if (!addButton) return;
 
   const clickedId = Number(addButton.dataset.id);
-  const game = currentSearchResults.find((g) => g.id === clickedId);
+  const game = currentRawgSearchResults.find((g) => g.id === clickedId);
 
   const result = await addGameFromSearch(game);
 
@@ -220,6 +226,17 @@ platformFilterOptions.addEventListener("change", () => {
 genreFilterOptions.addEventListener("change", () => {
   currentLibraryPage = 1;
   loadLibrary();
+});
+
+searchGamesLibraryField.addEventListener("input", () => {
+  clearTimeout(librarySearchTimeout);
+
+  librarySearchTimeout = setTimeout(() => {
+    currentLibrarySearch = searchGamesLibraryField.value;
+
+    currentLibraryPage = 1;
+    loadLibrary();
+  }, 1000);
 });
 
 // builds the platform checkboxes from the platforms the user has actually used
@@ -318,6 +335,7 @@ async function renderLibraryPagination(count) {
     const result = await getGamesList(
       currentLibraryPage,
       ...getSelectedFilters(),
+      currentLibrarySearch,
     );
     const renderedList = renderGamesList(result.data.results);
     libraryGrid.innerHTML = renderedList;
@@ -388,6 +406,7 @@ async function loadLibrary() {
   const { status, data } = await getGamesList(
     currentLibraryPage,
     ...getSelectedFilters(),
+    currentLibrarySearch,
   );
 
   // not authenticated: leave before touching anything else

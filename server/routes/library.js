@@ -67,6 +67,7 @@ router.get("/games-list", authenticate, async (req, res) => {
     user_ratings,
     platforms,
     genres,
+    search,
   } = req.query;
   const pageSize = 4;
   const offset = (page - 1) * pageSize;
@@ -203,7 +204,6 @@ router.get("/games-list", authenticate, async (req, res) => {
     }
   }
 
-  // && means "the two arrays have at least one item in common"
   if (platformsArray) {
     query += ` AND user_games.platforms && $${values.length + 1}`;
     values.push(platformsArray);
@@ -214,7 +214,11 @@ router.get("/games-list", authenticate, async (req, res) => {
     values.push(genresArray);
   }
 
-  // saved before ORDER BY/LIMIT, so the count uses the same filters
+  if (search) {
+    query += ` AND games.name ILIKE $${values.length + 1}`;
+    values.push(`%${search}%`);
+  }
+
   const filteredQuery = query;
   const filteredValues = [...values];
 

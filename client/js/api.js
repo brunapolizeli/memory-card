@@ -16,6 +16,7 @@ export async function getGamesList(
   user_ratings = [],
   platforms = [],
   genres = [],
+  search = "",
 ) {
   let url = `${API_BASE_URL}/library/games-list?page=${page}`;
 
@@ -42,6 +43,10 @@ export async function getGamesList(
   genres.forEach((genre) => {
     url += `&genres=${encodeURIComponent(genre)}`;
   });
+
+  if (search) {
+    url += `&search=${encodeURIComponent(search)}`;
+  }
 
   const response = await fetch(url, {
     credentials: "include",
