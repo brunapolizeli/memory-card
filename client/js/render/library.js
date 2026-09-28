@@ -304,6 +304,28 @@ function renderGamesList(games) {
         hours_played,
         user_rating,
       }) => {
+        let platformsLine = `<p>${platforms?.[0] ?? "—"}</p>`;
+        let genresLine = `<p>${genres?.[0] ?? "—"}</p>`;
+
+        if (platforms !== null) {
+          if (platforms.length > 1) {
+            platformsLine = `<div class="library-card-item-wrapper">
+                          ${platforms?.[0]}
+                          <button type="button" class="more-items-btn">⁺</button>
+                          ${renderMore(platforms)}
+                          </div>`;
+          }
+        }
+        if (genres !== null) {
+          if (genres.length > 1) {
+            genresLine = `<div class="library-card-item-wrapper">
+                          ${genres?.[0]}
+                          <button type="button" class="more-items-btn">⁺</button>
+                          ${renderMore(genres)}
+                          </div>`;
+          }
+        }
+
         return `<li class="library-game-info" data-user-game-id="${user_games_id}">
                 <button class="library-game-options-btn" type="button">˙˙˙</button>
                 <ul class="library-game-options-menu" hidden>
@@ -314,8 +336,8 @@ function renderGamesList(games) {
                 <div class="library-game-details">
                   <h3 class="library-game-title">${name}</h3>
                   <div class="library-game-details-one">
-                    <p>${platforms?.[0] ?? "—"}</p>
-                    <p>${genres?.[0] ?? "—"}</p>
+                    ${platformsLine}
+                    ${genresLine}
                   </div>
                   <div class="library-game-details-two">
                     <p>${status ? status.charAt(0).toUpperCase() + status.slice(1) : "—"}</p>
@@ -330,6 +352,21 @@ function renderGamesList(games) {
     )
     .join("");
 }
+
+function renderMore(items) {
+  return `<ul class="more-items-list" hidden>
+    ${items.map((item) => `<li>${item}</li>`).join("")}
+  </ul>`;
+}
+
+libraryGrid.addEventListener("click", (event) => {
+  const btn = event.target.closest(".more-items-btn");
+  if (!btn) return;
+
+  const wrapper = btn.closest(".library-card-item-wrapper");
+  const list = wrapper.querySelector(".more-items-list");
+  list.hidden = !list.hidden;
+});
 
 // renders pagination for the user's library and handles page clicks
 async function renderLibraryPagination(count) {

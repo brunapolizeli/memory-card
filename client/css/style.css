@@ -448,16 +448,30 @@ ul {
   background-color: transparent;
 }
 
-.library-game-options-menu {
+.library-game-options-menu,
+.more-items-list {
   position: absolute;
-  top: 10%;
-  right: 0;
   background-color: var(--color-glass-bg);
   backdrop-filter: blur(8px);
   border: 1px solid var(--color-border-pale);
   border-radius: 0.5rem;
   box-shadow: 0 4px 12px var(--color-shadow-dark);
   padding: 2vh 5vw;
+  z-index: 10;
+}
+
+.library-game-options-menu {
+  top: 10%;
+  right: 0;
+}
+
+.more-items-list {
+  top: 0;
+  left: 100%;
+}
+
+.library-card-item-wrapper {
+  position: relative;
 }
 
 .library-page-btn.active,
