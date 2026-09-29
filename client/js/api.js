@@ -17,6 +17,8 @@ export async function getGamesList(
   platforms = [],
   genres = [],
   search = "",
+  sort_by,
+  sort_by_direction,
 ) {
   let url = `${API_BASE_URL}/library/games-list?page=${page}`;
 
@@ -46,6 +48,12 @@ export async function getGamesList(
 
   if (search) {
     url += `&search=${encodeURIComponent(search)}`;
+  }
+
+  if (sort_by && sort_by_direction) {
+    url +=
+      `&sort_by=${encodeURIComponent(sort_by)}` +
+      `&sort_by_direction=${encodeURIComponent(sort_by_direction)}`;
   }
 
   const response = await fetch(url, {

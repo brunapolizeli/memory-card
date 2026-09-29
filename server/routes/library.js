@@ -68,6 +68,8 @@ router.get("/games-list", authenticate, async (req, res) => {
     platforms,
     genres,
     search,
+    sort_by,
+    sort_by_direction,
   } = req.query;
   const pageSize = 4;
   const offset = (page - 1) * pageSize;
@@ -219,10 +221,19 @@ router.get("/games-list", authenticate, async (req, res) => {
     values.push(`%${search}%`);
   }
 
+  const sortColumns = {
+    name: "games.name",
+    hours: "user_games.total_playtime",
+    rating: "user_games.user_rating",
+  };
+
+  const orderColumn = sortColumns[sort_by] ?? "user_games.created_at";
+  const orderDirection = sort_by_direction === "asc" ? "ASC" : "DESC";
+
   const filteredQuery = query;
   const filteredValues = [...values];
 
-  query += ` ORDER BY user_games.created_at DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
+  query += ` ORDER BY ${orderColumn} ${orderDirection} LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
   values.push(pageSize, offset);
 
   try {

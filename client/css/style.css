@@ -417,7 +417,9 @@ ul {
   flex-shrink: 0;
 }
 
-.downward-arrow-icon {
+.downward-arrow-icon,
+.asc-arrow-icon,
+.desc-arrow-icon {
   width: 0.7rem;
 }
 
@@ -897,6 +899,10 @@ ul {
   align-items: center;
   justify-content: center;
   z-index: 200;
+}
+
+.sort-toggle-btn.active {
+  filter: brightness(0.85);
 }
 
 @keyframes modal-rise {

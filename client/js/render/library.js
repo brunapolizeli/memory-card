@@ -22,6 +22,7 @@ const searchResultsApi = document.querySelector(".search-results-api");
 const libraryFilters = document.querySelector(".library-filters");
 const libraryGridOverlay = document.querySelector(".library-grid-overlay");
 const libraryGrid = document.querySelector(".library-grid");
+const sortToggleBtns = document.querySelector(".sort-toggle-btns");
 
 // one <ul> per filter dropdown; the checkboxes inside are read on demand
 const statusFilterOptions = document.querySelector(".status-filter-options");
@@ -50,9 +51,9 @@ let currentRawgSearchResults = [];
 let isFirstLoad = true;
 let currentLibrarySearch = "";
 let librarySearchTimeout;
-// external ids (as numbers) of the games already in the user's library,
-// fetched once per RAWG search so the result buttons can show "Added!"
 let userExternalIds = [];
+let sortByCriteria = "";
+let sortByDirection = "";
 
 // --- RAWG search ---
 
@@ -283,6 +284,46 @@ function renderUserGenres(userGenres) {
     .join("");
 }
 
+sortToggleBtns.addEventListener("click", (event) => {
+  const btn = event.target.closest(".sort-toggle-btn");
+  if (!btn) return;
+
+  const clickedCriteria = btn.dataset.sort;
+
+  if (clickedCriteria === sortByCriteria) {
+    if (sortByDirection === "asc") {
+      sortByDirection = "desc";
+    } else {
+      sortByCriteria = "";
+      sortByDirection = "asc";
+    }
+  } else {
+    sortByCriteria = clickedCriteria;
+    sortByDirection = "asc";
+  }
+
+  document.querySelectorAll(".sort-toggle-btn").forEach((b) => {
+    b.classList.remove("active");
+    b.innerHTML = `${b.dataset.sort.charAt(0).toUpperCase() + b.dataset.sort.slice(1)}`;
+  });
+
+  if (sortByCriteria !== "") {
+    btn.classList.add("active");
+  }
+
+  btn.innerHTML = `${clickedCriteria.charAt(0).toUpperCase() + clickedCriteria.slice(1)}
+                   ${
+                     clickedCriteria === sortByCriteria
+                       ? sortByDirection === "asc"
+                         ? "<img class='asc-arrow-icon' src='assets/icons/upward-arrow-icon.png'>"
+                         : "<img class='desc-arrow-icon' src='assets/icons/downward-arrow-icon.png'>"
+                       : ""
+                   }`;
+
+  currentLibraryPage = 1;
+  loadLibrary();
+});
+
 // --- Library grid ---
 
 // builds one <li> per game in the user's library; when there is nothing to show
@@ -436,6 +477,8 @@ async function renderLibraryPagination(count) {
       currentLibraryPage,
       ...getSelectedFilters(),
       currentLibrarySearch,
+      sortByCriteria,
+      sortByDirection,
     );
     const renderedList = renderGamesList(result.data.results);
     libraryGrid.innerHTML = renderedList;
@@ -515,6 +558,8 @@ async function loadLibrary() {
     currentLibraryPage,
     ...getSelectedFilters(),
     currentLibrarySearch,
+    sortByCriteria,
+    sortByDirection,
   );
 
   // not authenticated: leave before touching anything else
