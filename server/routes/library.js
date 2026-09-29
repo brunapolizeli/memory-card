@@ -7,7 +7,9 @@ const router = express.Router();
 router.get("/currently-playing", authenticate, async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT games.name, games.image_url, user_games.status, user_games.platforms, user_games.hours_played, user_games.user_rating, games.rawg_rating
+      `SELECT games.name, games.image_url, user_games.status,
+      (SELECT array_agg(platform) FROM user_game_platforms WHERE user_game_platforms.user_game_id = user_games.id) AS platforms,
+      user_games.hours_played, user_games.user_rating, games.rawg_rating
              FROM user_games 
              JOIN games ON user_games.game_id = games.id
              WHERE user_games.user_id = $1 AND user_games.status IN ('playing', 'replaying', 'on-hold')`,
@@ -112,7 +114,10 @@ router.get("/games-list", authenticate, async (req, res) => {
 
   let query = `SELECT games.name, games.image_url, games.genres, 
   user_games.id AS user_games_id, user_games.status, 
-  user_games.platforms, user_games.hours_played, 
+  (SELECT array_agg(platform) 
+  FROM user_game_platforms 
+  WHERE user_game_platforms.user_game_id = user_games.id) AS platforms,
+  user_games.hours_played, 
   user_games.user_rating, games.rawg_rating
   FROM user_games
   JOIN games ON user_games.game_id = games.id
@@ -207,7 +212,11 @@ router.get("/games-list", authenticate, async (req, res) => {
   }
 
   if (platformsArray) {
-    query += ` AND user_games.platforms && $${values.length + 1}`;
+    query += ` AND EXISTS (
+    SELECT 1 FROM user_game_platforms
+    WHERE user_game_platforms.user_game_id = user_games.id
+    AND user_game_platforms.platform = ANY($${values.length + 1})
+  )`;
     values.push(platformsArray);
   }
 
@@ -292,6 +301,16 @@ router.get("/game-details", authenticate, async (req, res) => {
       return res.status(404).json({ error: "Game not found" });
     }
 
+    const platformsResult = await pool.query(
+      `SELECT platform, hours_played, minutes_played, total_playtime
+       FROM user_game_platforms
+       WHERE user_game_id = $1
+       ORDER BY platform`,
+      [id],
+    );
+
+    game.platform_details = platformsResult.rows;
+
     res.json(game);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch game" });
@@ -346,18 +365,20 @@ router.patch("/update-platforms", authenticate, async (req, res) => {
   const { id, platforms } = req.body;
 
   try {
-    const result = await pool.query(
-      `UPDATE user_games
-      SET platforms = $1
-      WHERE id = $2 AND user_id = $3`,
-      [platforms, id, req.userId],
+    await pool.query(
+      `INSERT INTO user_game_platforms (user_game_id, platform)
+       SELECT $1, unnest($2::text[])
+       ON CONFLICT (user_game_id, platform) DO NOTHING`,
+      [id, platforms],
     );
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Game not found" });
-    }
+    await pool.query(
+      `DELETE FROM user_game_platforms
+       WHERE user_game_id = $1 AND platform != ALL($2::text[])`,
+      [id, platforms],
+    );
 
-    res.json({ message: "Platforms updated sucessfully" });
+    res.json({ message: "Platforms updated successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to update game platforms" });
@@ -588,9 +609,10 @@ router.patch("/update-game-modes", authenticate, async (req, res) => {
 router.get("/user-platforms", authenticate, async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT DISTINCT unnest(platforms) AS platform
-       FROM user_games
-       WHERE user_id = $1
+      `SELECT DISTINCT user_game_platforms.platform
+       FROM user_game_platforms
+       JOIN user_games ON user_game_platforms.user_game_id = user_games.id
+       WHERE user_games.user_id = $1
        ORDER BY platform`,
       [req.userId],
     );

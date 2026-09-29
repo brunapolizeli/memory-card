@@ -556,7 +556,7 @@ async function loadGame() {
   gameModes = data.game_modes || [];
   renderGameModes();
 
-  userPlatforms = data.platforms || [];
+  userPlatforms = (data.platform_details || []).map((obj) => obj.platform);
   renderUserPlatforms();
 
   startDateField.value = getDate(data, "start_date");
