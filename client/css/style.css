@@ -664,8 +664,6 @@ ul {
 }
 
 .platform-selection {
-  grid-row: 1;
-  grid-column: 1 / -1;
   display: flex;
   align-items: center;
   gap: 0.3125rem;
@@ -673,7 +671,7 @@ ul {
 
 .hours-played-wrapper,
 .minutes-played-wrapper {
-  grid-row: 2;
+  grid-row: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -903,6 +901,36 @@ ul {
 
 .sort-toggle-btn.active {
   filter: brightness(0.85);
+}
+
+.hours-by-platform-list {
+  grid-column: 1;
+}
+
+.minutes-by-platform-list {
+  grid-column: 2;
+}
+
+.hours-by-platform-list,
+.minutes-by-platform-list {
+  grid-row: 2;
+  margin: 0;
+  padding: 0;
+}
+
+.hours-by-platform,
+.minutes-by-platform {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-pale);
+}
+
+.hours-by-platform-field,
+.minutes-by-platform-field {
+  width: clamp(2rem, 8vw, 3rem);
+  height: clamp(2rem, 8vw, 3rem);
 }
 
 @keyframes modal-rise {

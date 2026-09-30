@@ -151,7 +151,16 @@
                     />
                     Hours Played
                   </h4>
-                  <input class="hours-played-field" type="text" />
+                  <div class="hours-field-wrapper">
+                    <input class="hours-played-field" type="text" readonly />
+                    <button class="open-hours-by-platform-btn" type="button">
+                      <img
+                        class="downward-arrow-icon"
+                        src="assets/icons/downward-arrow-icon.png"
+                      />
+                    </button>
+                  </div>
+                  <ul class="hours-by-platform-list" hidden></ul>
                 </div>
                 <div class="minutes-played-wrapper">
                   <h4 class="minutes-played-field-title">
@@ -161,7 +170,16 @@
                     />
                     Minutes Played
                   </h4>
-                  <input class="minutes-played-field" type="text" />
+                  <div class="minutes-field-wrapper">
+                    <input class="minutes-played-field" type="text" readonly />
+                    <button class="open-minutes-by-platform-btn" type="button">
+                      <img
+                        class="downward-arrow-icon"
+                        src="assets/icons/downward-arrow-icon.png"
+                      />
+                    </button>
+                  </div>
+                  <ul class="minutes-by-platform-list" hidden></ul>
                 </div>
                 <div class="user-rating-wrapper">
                   <div class="user-rating-title-wrapper">

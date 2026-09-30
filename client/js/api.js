@@ -197,37 +197,6 @@ export async function updatePlatforms(id, platforms) {
   return { ok: response.ok, data };
 }
 
-export async function updateHoursPlayed(id, hours_played) {
-  const response = await fetch(`${API_BASE_URL}/library/update-hours-played`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({
-      id,
-      hours_played,
-    }),
-  });
-  const data = await response.json();
-  return { ok: response.ok, data };
-}
-
-export async function updateMinutesPlayed(id, minutes_played) {
-  const response = await fetch(
-    `${API_BASE_URL}/library/update-minutes-played`,
-    {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        id,
-        minutes_played,
-      }),
-    },
-  );
-  const data = await response.json();
-  return { ok: response.ok, data };
-}
-
 export async function updateUserRating(id, value) {
   const response = await fetch(`${API_BASE_URL}/library/update-user-rating`, {
     method: "PATCH",
@@ -375,6 +344,40 @@ export async function getUserExternalIds() {
   const response = await fetch(`${API_BASE_URL}/library/user-external-ids`, {
     credentials: "include",
   });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
+
+export async function updatePlatformHours(id, hours_played) {
+  const response = await fetch(
+    `${API_BASE_URL}/library/update-platform-hours`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        id,
+        hours_played,
+      }),
+    },
+  );
+  const data = await response.json();
+  return { ok: response.ok, data };
+}
+
+export async function updatePlatformMinutes(id, minutes_played) {
+  const response = await fetch(
+    `${API_BASE_URL}/library/update-platform-minutes`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        id,
+        minutes_played,
+      }),
+    },
+  );
   const data = await response.json();
   return { ok: response.ok, data };
 }

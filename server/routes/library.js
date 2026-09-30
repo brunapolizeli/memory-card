@@ -302,7 +302,7 @@ router.get("/game-details", authenticate, async (req, res) => {
     }
 
     const platformsResult = await pool.query(
-      `SELECT platform, hours_played, minutes_played, total_playtime
+      `SELECT id, platform, hours_played, minutes_played, total_playtime
        FROM user_game_platforms
        WHERE user_game_id = $1
        ORDER BY platform`,
@@ -382,56 +382,6 @@ router.patch("/update-platforms", authenticate, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to update game platforms" });
-  }
-});
-
-router.patch("/update-hours-played", authenticate, async (req, res) => {
-  const { id, hours_played } = req.body;
-
-  try {
-    const result = await pool.query(
-      `UPDATE user_games
-      SET hours_played = $1
-      WHERE id = $2 AND user_id = $3`,
-      [hours_played, id, req.userId],
-    );
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Game not found" });
-    }
-
-    res.json({ message: "Playtime updated successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to update game playtime" });
-  }
-});
-
-router.patch("/update-minutes-played", authenticate, async (req, res) => {
-  const { id, minutes_played } = req.body;
-
-  if (minutes_played > 59) {
-    return res
-      .status(400)
-      .json({ error: "Minutes played field must not exceed 59" });
-  }
-
-  try {
-    const result = await pool.query(
-      `UPDATE user_games
-      SET minutes_played = $1
-      WHERE id = $2 AND user_id = $3`,
-      [minutes_played, id, req.userId],
-    );
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Game not found" });
-    }
-
-    res.json({ message: "Playtime updated successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to update game playtime" });
   }
 });
 
@@ -656,6 +606,56 @@ router.get("/user-external-ids", authenticate, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to retrieve user external ids" });
+  }
+});
+
+router.patch("/update-platform-hours", authenticate, async (req, res) => {
+  const { id, hours_played } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_game_platforms
+       SET hours_played = $1
+       FROM user_games
+       WHERE user_game_platforms.id = $2
+       AND user_game_platforms.user_game_id = user_games.id
+       AND user_games.user_id = $3`,
+      [hours_played, id, req.userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game platform not found" });
+    }
+
+    res.json({ message: "Playtime updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game platform playtime" });
+  }
+});
+
+router.patch("/update-platform-minutes", authenticate, async (req, res) => {
+  const { id, minutes_played } = req.body;
+
+  try {
+    const result = await pool.query(
+      `UPDATE user_game_platforms
+       SET minutes_played = $1
+       FROM user_games
+       WHERE user_game_platforms.id = $2
+       AND user_game_platforms.user_game_id = user_games.id
+       AND user_games.user_id = $3`,
+      [minutes_played, id, req.userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Game platform not found" });
+    }
+
+    res.json({ message: "Playtime updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update game platform playtime" });
   }
 });
 

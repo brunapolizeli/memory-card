@@ -3,8 +3,6 @@ import {
   updateProgress,
   updateStatus,
   updatePlatforms,
-  updateHoursPlayed,
-  updateMinutesPlayed,
   updateUserRating,
   updateDifficulty,
   updateStartDate,
@@ -14,6 +12,8 @@ import {
   updatePlatinumNotes,
   updateGameModes,
   getPlatforms,
+  updatePlatformHours,
+  updatePlatformMinutes,
 } from "../api.js";
 import { hideLoadingOverlay, showLoadingOverlay } from "../shared/loading.js";
 
@@ -58,10 +58,22 @@ const gameModeField = document.querySelector(".game-mode-field");
 const addModeBtn = document.querySelector(".add-mode-btn");
 const addedGameModesList = document.querySelector(".added-game-modes");
 const addedPlatformsList = document.querySelector(".added-platforms");
+const hoursByPlatformList = document.querySelector(".hours-by-platform-list");
+const minutesByPlatformList = document.querySelector(
+  ".minutes-by-platform-list",
+);
+const openHoursByPlatformBtn = document.querySelector(
+  ".open-hours-by-platform-btn",
+);
+const openMinutesByPlatformBtn = document.querySelector(
+  ".open-minutes-by-platform-btn",
+);
 let gameModes = [];
 let userPlatforms = [];
 let allPlatforms = [];
 let isFirstLoad = true;
+let hoursByPlatformDirection = "desc";
+let minutesByPlatformDirection = "desc";
 
 // ---- Intro (title, cover) ----
 
@@ -255,24 +267,28 @@ function sanitizeNumericField(field, max) {
   }
 }
 
-hoursPlayedField.addEventListener("input", () => {
-  sanitizeNumericField(hoursPlayedField);
+hoursByPlatformList.addEventListener("input", (event) => {
+  sanitizeNumericField(event.target);
 });
 
-minutesPlayedField.addEventListener("input", () => {
-  sanitizeNumericField(minutesPlayedField, 59);
+minutesByPlatformList.addEventListener("input", (event) => {
+  sanitizeNumericField(event.target, 59);
 });
 
-hoursPlayedField.addEventListener("blur", async () => {
-  const result = await updateHoursPlayed(gameId, hoursPlayedField.value);
+hoursByPlatformList.addEventListener("focusout", async (event) => {
+  const platformRowId = event.target.dataset.id;
+
+  const result = await updatePlatformHours(platformRowId, event.target.value);
 
   if (result.ok) {
     loadGame();
   }
 });
 
-minutesPlayedField.addEventListener("blur", async () => {
-  const result = await updateMinutesPlayed(gameId, minutesPlayedField.value);
+minutesByPlatformList.addEventListener("focusout", async (event) => {
+  const platformRowId = event.target.dataset.id;
+
+  const result = await updatePlatformMinutes(platformRowId, event.target.value);
 
   if (result.ok) {
     loadGame();
@@ -503,6 +519,52 @@ platinumNotesField.addEventListener("change", async () => {
   }
 });
 
+function renderPlatformFields(platformDetails, property, fieldClass) {
+  return userPlatforms
+    .map((platform) => {
+      const foundPlatform = platformDetails.find(
+        (obj) => obj.platform === platform,
+      );
+
+      return `<li class="${fieldClass}-by-platform">
+              <p class="platform-name">${platform}</p>
+              <input class="${fieldClass}-by-platform-field" 
+              data-platform="${platform}" data-id="${foundPlatform.id}" value="${foundPlatform[property] ?? 0}" type="number">
+            </li>`;
+    })
+    .join("");
+}
+
+openHoursByPlatformBtn.addEventListener("click", () => {
+  const image = document.querySelector(".open-hours-by-platform-btn img");
+
+  hoursByPlatformDirection =
+    hoursByPlatformDirection === "desc" ? "asc" : "desc";
+
+  if (hoursByPlatformDirection === "desc") {
+    image.src = `assets/icons/downward-arrow-icon.png`;
+    hoursByPlatformList.hidden = true;
+  } else {
+    image.src = `assets/icons/upward-arrow-icon.png`;
+    hoursByPlatformList.hidden = false;
+  }
+});
+
+openMinutesByPlatformBtn.addEventListener("click", () => {
+  const image = document.querySelector(".open-minutes-by-platform-btn img");
+
+  minutesByPlatformDirection =
+    minutesByPlatformDirection === "desc" ? "asc" : "desc";
+
+  if (minutesByPlatformDirection === "desc") {
+    image.src = `assets/icons/downward-arrow-icon.png`;
+    minutesByPlatformList.hidden = true;
+  } else {
+    image.src = `assets/icons/upward-arrow-icon.png`;
+    minutesByPlatformList.hidden = false;
+  }
+});
+
 // ---- Load / render everything ----
 
 async function loadGame() {
@@ -565,6 +627,17 @@ async function loadGame() {
 
   completedNotesField.value = getNotes(data, "completed_notes");
   platinumNotesField.value = getNotes(data, "platinum_notes");
+
+  hoursByPlatformList.innerHTML = renderPlatformFields(
+    data.platform_details,
+    "hours_played",
+    "hours",
+  );
+  minutesByPlatformList.innerHTML = renderPlatformFields(
+    data.platform_details,
+    "minutes_played",
+    "minutes",
+  );
 
   isFirstLoad = false;
   hideLoadingOverlay();
