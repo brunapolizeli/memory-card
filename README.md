@@ -1,4 +1,4 @@
-[🇺🇸 English](README.md) | [🇧🇷 Português](README.pt-BR.md)
+[English](README.md) | [Português](README.pt-BR.md)
 
 ## ⚠️ Current Status
 
@@ -10,7 +10,7 @@ For the best experience, view on a mobile device, use your browser's mobile emul
 
 # Memory Card
 
-A personal video game tracker built with vanilla JavaScript, Node.js, Express, and PostgreSQL.
+A personal video game tracker built with vanilla JavaScript, Node.js, Express.js, and PostgreSQL.
 
 [**Live Demo: memcard-log.vercel.app**](https://memcard-log.vercel.app/)
 
@@ -26,37 +26,19 @@ The project is being developed with a Frutiger Aero (2004–2013) inspired visua
 
 ## Features
 
-- Custom signup and login with bcrypt password hashing
-- JWT-based sessions stored in httpOnly cookies
-- Login/signup modal with field-specific validation and error messages
-- Shared header and footer rendered through a reusable JavaScript module, with live login/logout state
-- Mobile hamburger navigation
-- **Currently Playing** carousel populated from the user's library
-  - Scroll-snap navigation with pagination dots synced via IntersectionObserver
-  - Up to 5 games, with a link to the full library when more are available
-  - Separate states for logged-out users, empty libraries, and populated libraries
-- Game search powered by the RAWG API through a backend proxy
-- **Add Game** flow for adding RAWG games to a user's library
-  - Existing entries in the shared `games` catalog are reused instead of duplicated
-- **Library** page with:
-  - Paginated grid of the user's games
-  - Game removal with a confirmation modal
-  - Navigation to a game's details page
-- **Game details** page with:
-  - Progress tracking (not started / started / completed / platinum)
-  - Status selection across 7 states (Wishlist, Backlog, Playing, On Hold, Finished, Replaying, Dropped)
-  - Platform selection via a searchable list sourced from the RAWG platforms API
-  - Editable hours and minutes played, with input sanitization
-  - User rating on a 6-star scale, with a dynamic, color-coded label
-- Normalized database structure using shared `games` and `user_games` tables
+- Custom signup/login with bcrypt and JWT sessions in httpOnly cookies
+- Game search and metadata via the RAWG API
+- Add games to your library, with duplicate detection against a shared catalog
+- Library page with combinable filters (status, platform, genre, progress, playtime, rating), debounced name search, and sortable columns
+- Game details page covering progress, status, multi-platform tracking with per-platform playtime, user rating, difficulty, completion dates, and freeform notes
+- Normalized PostgreSQL schema, with a database trigger keeping aggregate playtime in sync across platforms
 
 ---
 
 ## Planned Features
 
-- Library filtering and sorting by status, platform, genre/tag, completion, playtime, and rating
-- Difficulty rating, completion/platinum dates, and notes on the game details page
-- Profile page with statistics and charts
+- Dashboard page with library-wide statistics and charts
+- Profile page with account settings (avatar, email, password)
 - Desktop responsive layout
 
 ---
@@ -75,9 +57,10 @@ memory-card/
 │   │   ├── api.js
 │   │   ├── config.js
 │   │   └── main.js
+│   ├── dashboard.html
+│   ├── game.html
 │   ├── index.html
-│   ├── library.html
-│   └── game.html
+│   └── library.html
 ├── server/
 │   ├── db/
 │   ├── middleware/
@@ -94,7 +77,7 @@ memory-card/
 ## Technologies
 
 - **Frontend:** Vanilla JavaScript, HTML5, CSS3
-- **Backend:** Node.js, Express
+- **Backend:** Node.js, Express.js
 - **Database:** PostgreSQL hosted on [Neon](https://neon.tech)
 - **Migrations:** `node-pg-migrate`
 - **Authentication:** bcrypt, JSON Web Tokens, httpOnly cookies

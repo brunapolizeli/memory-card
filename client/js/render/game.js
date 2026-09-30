@@ -19,12 +19,20 @@ import { hideLoadingOverlay, showLoadingOverlay } from "../shared/loading.js";
 
 const params = new URLSearchParams(window.location.search);
 const gameId = params.get("id");
+
+// --- Intro ---
 const gamePageTitle = document.querySelector(".game-page-title");
 const gamePageCover = document.querySelector(".game-page-cover");
+
+// --- Progress dropdown ---
 const progressToggleBtn = document.querySelector(".progress-toggle-btn");
 const progressOptions = document.querySelector(".progress-options");
+
+// --- Status dropdown ---
 const statusToggleBtn = document.querySelector(".status-toggle-btn");
 const statusOptions = document.querySelector(".status-options");
+
+// --- Platform selection modal ---
 const platformSelectionBtn = document.querySelector(".platform-selection-btn");
 const platformSearchOverlay = document.querySelector(
   ".platform-search-overlay",
@@ -37,27 +45,11 @@ const platformSearchInput = document.querySelector(".platform-search-input");
 const platformSearchResults = document.querySelector(
   ".platform-search-results",
 );
+const addedPlatformsList = document.querySelector(".added-platforms");
+
+// --- Hours / minutes played (overall + per-platform breakdown) ---
 const hoursPlayedField = document.querySelector(".hours-played-field");
 const minutesPlayedField = document.querySelector(".minutes-played-field");
-const userRatingStars = document.querySelector(".user-rating-stars");
-const userRatingFraction = document.querySelector(".user-rating-fraction");
-const userRatingLabel = document.querySelector(".user-rating-label");
-const downwardArrowIcon = `<img class="downward-arrow-icon" src="assets/icons/downward-arrow-icon.png">`;
-const rawgStars = document.querySelectorAll(".rawg-rating-stars li");
-const rawgRatingFraction = document.querySelector(".rawg-rating-fraction");
-const difficultyDrops = document.querySelector(".difficulty-drops");
-const difficultyLabel = document.querySelector(".difficulty-label");
-const userRatingTooltip = document.querySelector(".user-rating-tooltip");
-const difficultyTooltip = document.querySelector(".difficulty-tooltip");
-const startDateField = document.querySelector(".start-date-field");
-const completedDateField = document.querySelector(".completed-date-field");
-const platinumDateField = document.querySelector(".platinum-date-field");
-const completedNotesField = document.querySelector(".completed-notes-field");
-const platinumNotesField = document.querySelector(".platinum-notes-field");
-const gameModeField = document.querySelector(".game-mode-field");
-const addModeBtn = document.querySelector(".add-mode-btn");
-const addedGameModesList = document.querySelector(".added-game-modes");
-const addedPlatformsList = document.querySelector(".added-platforms");
 const hoursByPlatformList = document.querySelector(".hours-by-platform-list");
 const minutesByPlatformList = document.querySelector(
   ".minutes-by-platform-list",
@@ -68,11 +60,45 @@ const openHoursByPlatformBtn = document.querySelector(
 const openMinutesByPlatformBtn = document.querySelector(
   ".open-minutes-by-platform-btn",
 );
+
+// --- Your Rating (1-6 stars) ---
+const userRatingStars = document.querySelector(".user-rating-stars");
+const userRatingFraction = document.querySelector(".user-rating-fraction");
+const userRatingLabel = document.querySelector(".user-rating-label");
+const userRatingTooltip = document.querySelector(".user-rating-tooltip");
+
+// shared icon, reused in every dropdown toggle button
+const downwardArrowIcon = `<img class="downward-arrow-icon" src="assets/icons/downward-arrow-icon.png">`;
+
+// --- RAWG Rating (read-only) ---
+const rawgStars = document.querySelectorAll(".rawg-rating-stars li");
+const rawgRatingFraction = document.querySelector(".rawg-rating-fraction");
+
+// --- Difficulty Score (1-5 drops) ---
+const difficultyDrops = document.querySelector(".difficulty-drops");
+const difficultyLabel = document.querySelector(".difficulty-label");
+const difficultyTooltip = document.querySelector(".difficulty-tooltip");
+
+// --- Timeline dates ---
+const startDateField = document.querySelector(".start-date-field");
+const completedDateField = document.querySelector(".completed-date-field");
+const platinumDateField = document.querySelector(".platinum-date-field");
+
+// --- Notes ---
+const completedNotesField = document.querySelector(".completed-notes-field");
+const platinumNotesField = document.querySelector(".platinum-notes-field");
+
+// --- Game Modes (free-text tags) ---
+const gameModeField = document.querySelector(".game-mode-field");
+const addModeBtn = document.querySelector(".add-mode-btn");
+const addedGameModesList = document.querySelector(".added-game-modes");
+
+// --- State ---
 let gameModes = [];
-let userPlatforms = [];
-let allPlatforms = [];
+let userPlatforms = []; // names only, derived from data.platform_details on load
+let allPlatforms = []; // full RAWG platform list, fetched once when the search modal opens
 let isFirstLoad = true;
-let hoursByPlatformDirection = "desc";
+let hoursByPlatformDirection = "desc"; // controls the arrow icon + open/closed state
 let minutesByPlatformDirection = "desc";
 
 // ---- Intro (title, cover) ----
@@ -103,6 +129,7 @@ progressToggleBtn.addEventListener("click", () => {
 progressOptions.addEventListener("change", async (event) => {
   const selectedValue = event.target.value;
 
+  // maps a single radio value to the three independent progress flags
   const progressMap = {
     "not-started": { started: false, completed: false, platinum: false },
     started: { started: true, completed: false, platinum: false },
@@ -152,6 +179,7 @@ statusOptions.addEventListener("change", async (event) => {
 
 // ---- Platforms ----
 
+// opens the search modal and loads the full RAWG platform list
 platformSelectionBtn.addEventListener("click", async () => {
   platformSearchOverlay.hidden = false;
   main.inert = true;
@@ -164,6 +192,7 @@ closePlatformSearchBtn.addEventListener("click", () => {
   main.inert = false;
 });
 
+// filters allPlatforms as the person types, showing up to 5 matches
 platformSearchInput.addEventListener("input", (event) => {
   const searchTerm = event.target.value;
 
@@ -183,6 +212,7 @@ platformSearchInput.addEventListener("input", (event) => {
   platformSearchResults.innerHTML += renderedPlatformsList;
 });
 
+// adds the clicked platform to the game (skips it if already added)
 platformSearchResults.addEventListener("click", async (event) => {
   const item = event.target.closest(".platform");
   if (!item) return;
@@ -203,6 +233,7 @@ platformSearchResults.addEventListener("click", async (event) => {
   }
 });
 
+// builds one tag per added platform, each with its own remove button
 function renderUserPlatforms() {
   addedPlatformsList.innerHTML = userPlatforms
     .map((platform) => {
@@ -220,6 +251,7 @@ function renderUserPlatforms() {
     .join("");
 }
 
+// delegated: removes the platform whose tag was clicked
 addedPlatformsList.addEventListener("click", async (event) => {
   const btn = event.target.closest(".remove-platform-btn");
   if (!btn) return;
@@ -249,7 +281,7 @@ function getMinutesPlayedLabel(game) {
   return game.minutes_played;
 }
 
-// Shared by hours and minutes fields: strips non-digits, removes leading
+// Shared by all numeric fields: strips non-digits, removes leading
 // zero, and clamps to an optional max (used for minutes, capped at 59).
 function sanitizeNumericField(field, max) {
   field.value = field.value.replace(/[^0-9]/g, "");
@@ -267,6 +299,7 @@ function sanitizeNumericField(field, max) {
   }
 }
 
+// delegated sanitization for the per-platform hour/minute fields
 hoursByPlatformList.addEventListener("input", (event) => {
   sanitizeNumericField(event.target);
 });
@@ -275,6 +308,8 @@ minutesByPlatformList.addEventListener("input", (event) => {
   sanitizeNumericField(event.target, 59);
 });
 
+// delegated save: focusout (unlike blur) bubbles, so one listener on the
+// list covers every per-platform field, identified by its data-id
 hoursByPlatformList.addEventListener("focusout", async (event) => {
   const platformRowId = event.target.dataset.id;
 
@@ -392,6 +427,8 @@ function getRawgRatingFraction(game) {
   return `${game.rawg_rating}/5`;
 }
 
+// fills each star fully, partially (by percentage), or not at all,
+// based on the decimal part of the RAWG rating
 function renderRawgRating(game) {
   const rating = game.rawg_rating;
   const integer = Math.floor(rating);
@@ -436,8 +473,8 @@ addModeBtn.addEventListener("click", async () => {
   }
 });
 
-// Delegated listener: catches clicks on any "×" button inside the list,
-// since each tag (and its remove button) is generated dynamically.
+// delegated: removes the mode whose "×" was clicked, since tags are
+// generated dynamically
 addedGameModesList.addEventListener("click", async (event) => {
   const btn = event.target.closest(".remove-mode-btn");
   if (!btn) return;
@@ -519,6 +556,9 @@ platinumNotesField.addEventListener("change", async () => {
   }
 });
 
+// builds one <li> per platform, reading the given property (hours_played
+// or minutes_played) off the matching object in platformDetails; shared
+// by both the hours and minutes lists, which only differ by property/class
 function renderPlatformFields(platformDetails, property, fieldClass) {
   return userPlatforms
     .map((platform) => {
@@ -535,6 +575,7 @@ function renderPlatformFields(platformDetails, property, fieldClass) {
     .join("");
 }
 
+// toggles the per-platform hours drawer and flips the arrow icon
 openHoursByPlatformBtn.addEventListener("click", () => {
   const image = document.querySelector(".open-hours-by-platform-btn img");
 
@@ -550,6 +591,7 @@ openHoursByPlatformBtn.addEventListener("click", () => {
   }
 });
 
+// same toggle, for the minutes drawer
 openMinutesByPlatformBtn.addEventListener("click", () => {
   const image = document.querySelector(".open-minutes-by-platform-btn img");
 
@@ -584,6 +626,8 @@ async function loadGame() {
   progressToggleBtn.innerHTML = `${getProgressLabel(data)} ${downwardArrowIcon}`;
   statusToggleBtn.innerHTML = `${getStatusLabel(data)} ${downwardArrowIcon}`;
 
+  // hours_played/minutes_played are now kept in sync by a DB trigger,
+  // from the sum of user_game_platforms; these two fields only display them
   hoursPlayedField.value = getHoursPlayedLabel(data);
   minutesPlayedField.value = getMinutesPlayedLabel(data);
 
@@ -618,6 +662,8 @@ async function loadGame() {
   gameModes = data.game_modes || [];
   renderGameModes();
 
+  // platform_details carries {id, platform, hours_played, minutes_played,
+  // total_playtime} per row; userPlatforms keeps just the names, for the tags
   userPlatforms = (data.platform_details || []).map((obj) => obj.platform);
   renderUserPlatforms();
 
