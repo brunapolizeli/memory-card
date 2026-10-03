@@ -389,3 +389,11 @@ export async function getUserStats() {
   const data = await response.json();
   return { ok: response.ok, data };
 }
+
+export async function getGamesByPlatform() {
+  const response = await fetch(`${API_BASE_URL}/dashboard/games-by-platform`, {
+    credentials: "include",
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}

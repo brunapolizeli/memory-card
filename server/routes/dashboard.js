@@ -69,4 +69,30 @@ router.get("/user-stats", authenticate, async (req, res) => {
   }
 });
 
+router.get("/games-by-platform", authenticate, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT user_game_platforms.platform, COUNT(*) AS total
+             FROM user_game_platforms
+             JOIN user_games ON user_game_platforms.user_game_id = user_games.id
+             WHERE user_games.user_id = $1
+             GROUP BY user_game_platforms.platform
+             ORDER BY total DESC, user_game_platforms.platform`,
+      [req.userId],
+    );
+
+    const platforms = result.rows.map((row) => ({
+      platform: row.platform,
+      total: Number(row.total),
+    }));
+
+    const grandTotal = platforms.reduce((sum, item) => sum + item.total, 0);
+
+    res.json({ platforms, grandTotal });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch user platforms" });
+  }
+});
+
 export default router;
