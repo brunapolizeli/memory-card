@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.js";
 import gamesRouter from "./routes/games.js";
 import libraryRouter from "./routes/library.js";
+import dashboardRouter from "./routes/dashboard.js";
 
 const app = express();
 const PORT = 3000;
@@ -17,6 +18,7 @@ app.use(cookieParser());
 app.use("/auth", authRouter);
 app.use("/games", gamesRouter);
 app.use("/library", libraryRouter);
+app.use("/dashboard", dashboardRouter);
 
 if (!process.env.VERCEL) {
   app.listen(PORT, () => {

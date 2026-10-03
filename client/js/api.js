@@ -381,3 +381,11 @@ export async function updatePlatformMinutes(id, minutes_played) {
   const data = await response.json();
   return { ok: response.ok, data };
 }
+
+export async function getUserStats() {
+  const response = await fetch(`${API_BASE_URL}/dashboard/user-stats`, {
+    credentials: "include",
+  });
+  const data = await response.json();
+  return { ok: response.ok, data };
+}

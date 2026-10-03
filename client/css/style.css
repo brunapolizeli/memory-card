@@ -258,7 +258,7 @@ footer {
 .library-dropdowns {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  row-gap: 2vh;
+  row-gap: 2rem;
   justify-items: center;
 }
 
@@ -931,6 +931,13 @@ ul {
 .minutes-by-platform-field {
   width: clamp(2rem, 8vw, 3rem);
   height: clamp(2rem, 8vw, 3rem);
+}
+
+.user-stats-grid {
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  text-align: center;
 }
 
 @keyframes modal-rise {
